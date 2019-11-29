@@ -17,13 +17,41 @@
 //
 // suffix extension must not end in .java for first shebang line to be correctly discarded
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
+import java.io.IOException;
+import java.util.stream.Stream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
-public class Main {
+public class MyMain {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws URISyntaxException, IOException {
 
-        System.out.println("test");
+        //System.out.println(System.getProperty("java.class.path"));
 
+        //String prog = MyMain.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        //CodeSource codeSource = MyMain.class.getProtectionDomain().getCodeSource();
+        // returns null => NPE further down
+        //System.out.println(codeSource.getLocation());
+        //codeSource.getLocation().toURI();
+        //codeSource.getLocation().toURI().getPath();
+        //File progFile = new File(codeSource.getLocation().toURI().getPath());
+        //String prog = progFile.getParentFile().getPath();
+        //String srcdir = new File(prog).getParent();
+        //System.out.println(srcdir);
+
+        var lines = readInput();
+        lines.forEach(System.out::println);
+	}
+
+	private static Stream<String> readInput() throws IOException {
+        var reader = new BufferedReader(new InputStreamReader(System.in));
+		if (!reader.ready())
+			return Stream.empty();
+		else
+			return reader.lines();
     }
 
 }
