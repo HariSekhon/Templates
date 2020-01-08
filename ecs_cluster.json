@@ -1,0 +1,15 @@
+{
+    "clusterName": "", 
+    "tags": [
+        {
+            "key": "", 
+            "value": ""
+        }
+    ], 
+    "settings": [
+        {
+            "name": "containerInsights", 
+            "value": ""
+        }
+    ]
+}
