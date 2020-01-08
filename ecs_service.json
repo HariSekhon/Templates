@@ -1,0 +1,66 @@
+{
+    "cluster": "", 
+    "serviceName": "", 
+    "taskDefinition": "", 
+    "loadBalancers": [
+        {
+            "targetGroupArn": "", 
+            "loadBalancerName": "", 
+            "containerName": "", 
+            "containerPort": 0
+        }
+    ], 
+    "serviceRegistries": [
+        {
+            "registryArn": "", 
+            "port": 0, 
+            "containerName": "", 
+            "containerPort": 0
+        }
+    ], 
+    "desiredCount": 0, 
+    "clientToken": "", 
+    "launchType": "FARGATE", 
+    "platformVersion": "", 
+    "role": "", 
+    "deploymentConfiguration": {
+        "maximumPercent": 0, 
+        "minimumHealthyPercent": 0
+    }, 
+    "placementConstraints": [
+        {
+            "type": "distinctInstance", 
+            "expression": ""
+        }
+    ], 
+    "placementStrategy": [
+        {
+            "type": "binpack", 
+            "field": ""
+        }
+    ], 
+    "networkConfiguration": {
+        "awsvpcConfiguration": {
+            "subnets": [
+                ""
+            ], 
+            "securityGroups": [
+                ""
+            ], 
+            "assignPublicIp": "ENABLED"
+        }
+    }, 
+    "healthCheckGracePeriodSeconds": 0, 
+    "schedulingStrategy": "DAEMON", 
+    "deploymentController": {
+        "type": "EXTERNAL"
+    }, 
+    "tags": [
+        {
+            "key": "", 
+            "value": ""
+        }
+    ], 
+    "enableECSManagedTags": true, 
+    "propagateTags": "SERVICE"
+}
