@@ -12,6 +12,8 @@
 #  https://www.linkedin.com/in/harisekhon
 #
 
+# https://registry.terraform.io/browse/modules?provider=google&verified=true
+
 provider "google" {
-    project = "my-project-id"
+  #project = "my-project-id"
 }
