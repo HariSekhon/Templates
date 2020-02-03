@@ -12,4 +12,6 @@
 #  https://www.linkedin.com/in/harisekhon
 #
 
-provider "google" {}
+provider "google" {
+    project = "my-project-id"
+}
