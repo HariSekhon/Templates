@@ -12,3 +12,6 @@
 #
 #  https://www.linkedin.com/in/harisekhon
 #
+
+set -euo pipefail
+[ -n "${DEBUG:-}" ] && set -x
