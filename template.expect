@@ -1,0 +1,22 @@
+#!/usr/bin/env expect
+#  [% VIM_TAGS %]
+#
+#  Author: Hari Sekhon
+#  Date: [% DATE # 2009-03-28 17:40:47 +0000 (Sat, 28 Mar 2009) %]
+#
+#  [% URL %]
+#
+#  [% LICENSE %]
+#
+#  [% MESSAGE %]
+#
+#  [% LINKEDIN %]
+#
+
+set send_slow {1 .1}
+proc send {ignore arg} {
+    sleep .1
+    exp_send -s -- $arg
+}
+
+

@@ -1,0 +1,13 @@
+#!/usr/bin/env jruby
+#!/opt/cloudera/parcels/CDH/lib/hbase/bin/hbase-jruby
+#
+#  Author: Hari Sekhon
+#  Date: [% DATE # 2014-01-10 14:19:32 +0000 (Fri, 10 Jan 2014) %]
+#
+#  [% URL %]
+#
+#  [% URL %]
+#
+#  [% VIM_TAGS %]
+
+
