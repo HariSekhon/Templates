@@ -44,14 +44,14 @@ public class MyMain {
 
         var lines = readInput();
         lines.forEach(System.out::println);
-	}
+    }
 
-	private static Stream<String> readInput() throws IOException {
+    private static Stream<String> readInput() throws IOException {
         var reader = new BufferedReader(new InputStreamReader(System.in));
-		if (!reader.ready())
-			return Stream.empty();
-		else
-			return reader.lines();
+        if (!reader.ready())
+            return Stream.empty();
+        else
+            return reader.lines();
     }
 
 }
