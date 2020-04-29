@@ -14,26 +14,30 @@
 #
 
 set -euo pipefail
+
+# used by usage() in lib/utils.sh
+# shellcheck disable=SC2034
+usage_args="arg [<options>]"
+
+# shellcheck disable=SC2034
+usage_description="
+TODO: DESCRIPTION
+"
+
 [ -n "${DEBUG:-}" ] && set -x
 srcdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-. "$srcdir/bash-tools/lib/utils.sh"
+# shellcheck disable=SC1090
+. "$srcdir/lib/utils.sh"
 
 host="${BLAH_HOST:-${HOST:-localhost}}"
 port="${BLAH_PORT:-${PORT:-80}}"
 
-usage(){
-    if [ -n "$*" ]; then
-        echo "$@"
-        echo
-    fi
-    cat <<EOF
+check_env_defined "API_TOKEN"
 
-usage: ${0##*/}
+help_usage "$@"
 
-EOF
-    exit 3
-}
+min_args 1
 
 until [ $# -lt 1 ]; do
     case $1 in
@@ -59,7 +63,7 @@ fi
 
 check_bin(){
     local bin="$1"
-    if ! command -v $bin &>/dev/null; then
+    if ! command -v "$bin" &>/dev/null; then
         echo "$bin command not found in \$PATH ($PATH)"
         exit 1
     fi
