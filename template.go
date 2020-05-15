@@ -61,24 +61,10 @@ func list_to_slice(list []int) []int {
 		}
 		var num32 int = int(num)
 		slice = append(slice, num32)
+		// sort.Ints(slice)
 	}
 	return slice
 }
-
-// num, err := strconv.ParseInt(response, 10, 32)
-// if err != nil {
-// 	fmt.Printf("ERROR: %s is not a valid integer, try again\n", response)
-// 	continue
-// }
-// var num32 int = int(num)
-// sli = append(sli, num32)
-// sort.Ints(sli)
-// fmt.Printf("Sorted Slice raw: %s\n", sli)
-// fmt.Printf("Sorted Slice integers: ")
-// for _, v := range sli {
-// 	fmt.Printf("%s ", strconv.Itoa(v))
-// }
-// fmt.Printf("\n")
 
 func main() {
 	log.Println("starting main()")
