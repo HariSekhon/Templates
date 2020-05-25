@@ -17,6 +17,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -67,6 +68,9 @@ func list_to_slice(list []int) []int {
 }
 
 func main() {
+	if os.Getenv("DEBUG") != "" {
+		log.Printf("debug logging enabled")
+	}
 	log.Println("starting main()")
 	fmt.Printf("Enter a string: ")
 	line := readline()
