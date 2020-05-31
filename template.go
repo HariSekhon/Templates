@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"sort"
 	"strconv"
