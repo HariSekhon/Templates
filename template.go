@@ -20,7 +20,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"log"
+	//"log"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"sort"
