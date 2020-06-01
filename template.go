@@ -28,6 +28,14 @@ import (
 	"strings"
 )
 
+const description = `
+Tool to do XXX
+
+Tested on Mac OS X and Linux
+`
+
+var prog = path.Base(os.Args[0])
+
 func readline() string {
 	in := bufio.NewReader(os.Stdin)
 	line, err := in.ReadString('\n')
@@ -38,7 +46,7 @@ func readline() string {
 	return line
 }
 
-func prompt_float(msg string) float64 {
+func promptFloat(msg string) float64 {
 	fmt.Printf("%s: ", msg)
 	in := bufio.NewReader(os.Stdin)
 	line, err := in.ReadString('\n')
@@ -46,14 +54,14 @@ func prompt_float(msg string) float64 {
 		log.Fatal(err)
 	}
 	line = strings.TrimSpace(line)
-	user_float, err := strconv.ParseFloat(line, 64)
+	userFloat, err := strconv.ParseFloat(line, 64)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return user_float
+	return userFloat
 }
 
-func list_to_slice(list []int) []int {
+func listToSlice(list []int) []int {
 	slice := make([]int, 0)
 	for _, v := range list {
 		num, err := strconv.ParseInt(v, 10, 32) // append(slice, int) requires 32-bit ints
@@ -69,16 +77,23 @@ func list_to_slice(list []int) []int {
 }
 
 func main() {
-	if os.Getenv("DEBUG") != "" {
-		log.Printf("debug logging enabled")
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "%s\n\nusage: %s [options]\n\n", description, prog)
+		flag.PrintDefaults()
+		os.Exit(3)
 	}
-	log.Println("starting main()")
+	var debug = flag.Bool("debug", false, "Debug mode")
+	flag.Parse()
+	if *debug || os.Getenv("DEBUG") != "" {
+		log.SetLevel(log.DebugLevel)
+		log.Debug("debug logging enabled")
+	}
 	fmt.Printf("Enter a string: ")
 	line := readline()
 	list := strings.Split(line, " ")
 
-	name_address := map[string]string{"name": name, "address": address}
-	json_data, err := json.Marshal(name_address)
+	nameAddress := map[string]string{"name": name, "address": address}
+	jsonData, err := json.Marshal(nameAddress)
 
 	filehandle, err := os.Open(filename)
 	if err != nil {
