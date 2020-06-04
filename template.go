@@ -1,3 +1,4 @@
+///bin/sh -c true; exec /usr/bin/env go run "$0" "$@"
 //  vim:ts=4:sts=4:sw=4:noet
 //
 //  Author: Hari Sekhon
