@@ -82,7 +82,7 @@ func main() {
 		flag.PrintDefaults()
 		os.Exit(3)
 	}
-	var debug = flag.Bool("debug", false, "Debug mode")
+	var debug = flag.Bool("D", false, "Debug mode")
 	flag.Parse()
 	if *debug || os.Getenv("DEBUG") != "" {
 		log.SetLevel(log.DebugLevel)
