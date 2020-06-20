@@ -2,7 +2,7 @@
 //  vim:ts=4:sts=4:sw=4:noet
 //
 //  Author: Hari Sekhon
-//  Date: [% DATE %]
+//  Date: [% DATE # Wed Apr 29 15:16:09 2020 +0100 %]
 //
 //  [% URL %]
 //
