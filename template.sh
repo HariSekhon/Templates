@@ -36,7 +36,7 @@ check_env_defined "API_TOKEN"
 
 help_usage "$@"
 
-min_args 1
+min_args 1 "$@"
 
 until [ $# -lt 1 ]; do
     case $1 in
