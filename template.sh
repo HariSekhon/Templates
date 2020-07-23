@@ -17,7 +17,10 @@ set -euo pipefail
 [ -n "${DEBUG:-}" ] && set -x
 srcdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC1090
+. "$srcdir/lib/utils.sh"
+
+# shellcheck disable=SC2034,SC2154
 usage_description="
 TODO: DESCRIPTION
 "
@@ -25,9 +28,6 @@ TODO: DESCRIPTION
 # used by usage() in lib/utils.sh
 # shellcheck disable=SC2034
 usage_args="arg [<options>]"
-
-# shellcheck disable=SC1090
-. "$srcdir/lib/utils.sh"
 
 host="${BLAH_HOST:-${HOST:-localhost}}"
 port="${BLAH_PORT:-${PORT:-80}}"
