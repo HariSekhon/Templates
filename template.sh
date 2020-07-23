@@ -59,12 +59,3 @@ if [ -z "$host" ]; then
 elif [ -z "$port" ]; then
     usage "--port not defined"
 fi
-
-check_bin(){
-    local bin="$1"
-    if ! command -v "$bin" &>/dev/null; then
-        echo "$bin command not found in \$PATH ($PATH)"
-        exit 1
-    fi
-}
-check_bin curl
