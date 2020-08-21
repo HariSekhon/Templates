@@ -1,8 +1,16 @@
+#  [% VIM_TAGS %]
 #
 #  Author: Hari Sekhon
 #  Date: [% DATE # 2013-09-30 13:41:20 +0100 (Mon, 30 Sep 2013) %]
 #
-#  [% VIM_TAGS %]
+#  [% URL %]
+#
+#  [% LICENSE %]
+#
+#  [% MESSAGE %]
+#
+#  [% LINKEDIN %]
+#
 
 name 'harisekhon-mymodule'
 version '0.0.1'
