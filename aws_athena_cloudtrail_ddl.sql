@@ -1,15 +1,15 @@
+--  vim:ts=4:sts=4:sw=4:et:filetype=sql
 --
 --  Author: Hari Sekhon
---  Date: 2020-01-01 15:38:58 +0000 (Wed, 01 Jan 2020)
+--  Date: [% DATE # 2020-01-01 15:38:58 +0000 (Wed, 01 Jan 2020) %]
 --
---  https://github.com/harisekhon/devops-perl-tools
+--  [% URL %]
 --
---  License: see accompanying Hari Sekhon LICENSE file
+--  [% LICENSE %]
 --
---  If you're using my code you're welcome to connect with me on LinkedIn
---  and optionally send me feedback to help improve or steer this or other code I publish
+--  [% MESSAGE %]
 --
---  https://www.linkedin.com/in/harisekhon
+--  [% LINKEDIN %]
 --
 
 -- replace <MY_BUCKET> and <MY_ACCOUNT_NUMBER> on last line
