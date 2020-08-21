@@ -2,15 +2,15 @@
 //  vim:ts=4:sts=4:sw=4:et:filetype=groovy:syntax=groovy
 //
 //  Author: Hari Sekhon
-//  Date: 2017-06-28 12:39:02 +0200 (Wed, 28 Jun 2017)
+//  Date: [% DATE # 2017-06-28 12:39:02 +0200 (Wed, 28 Jun 2017) ]
 //
-//  https://github.com/harisekhon
+//  [% URL %]
 //
-//  License: see accompanying Hari Sekhon LICENSE file
+//  [% LICENSE %]
 //
-//  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+//  [% MESSAGE %]
 //
-//  https://www.linkedin.com/in/harisekhon
+//  [% LINKEDIN %]
 //
 
 pipeline {
