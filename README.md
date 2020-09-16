@@ -3,17 +3,17 @@ Code & Config Templates
 
 [git.io/code-templates](https://git.io/code-templates)
 
-Code & DevOps Config templates for many popular programming languages and DevOps tools such as
-[Docker](https://www.docker.com/)
-[AWS](https://aws.amazon.com/)
-[GCP](https://cloud.google.com/)
-[Jenkins](https://www.jenkins.io/)
-[Circle CI](https://circleci.com/)
-[Vagrant](https://www.vagrantup.com/)
-[Make](https://www.gnu.org/software/make/)
-[SBT](https://www.scala-sbt.org/)
-[Gradle](https://gradle.org/)
-etc.
+Code & DevOps Config templates for many popular programming languages and DevOps tools including:
+
+- [Docker](https://www.docker.com/)
+- [AWS](https://aws.amazon.com/)
+- [GCP](https://cloud.google.com/)
+- [Jenkins](https://www.jenkins.io/)
+- [Circle CI](https://circleci.com/)
+- [Vagrant](https://www.vagrantup.com/)
+- [Make](https://www.gnu.org/software/make/)
+- [SBT](https://www.scala-sbt.org/)
+- [Gradle](https://gradle.org/)
 
 Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo for which this is now a submodule.
 
