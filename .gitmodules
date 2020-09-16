@@ -1,0 +1,3 @@
+[submodule "kubernetes-templates"]
+	path = kubernetes-templates
+	url = https://github.com/HariSekhon/Kubernetes-templates
