@@ -18,6 +18,8 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 
 Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo for which this is now a submodule.
 
+`new.pl` in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo uses these templates to create new files, autopopulating the date and other headers and drops you in to your `$EDITOR` of choice, eg. vim.
+
 
 ### See Also:
 
