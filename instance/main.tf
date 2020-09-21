@@ -3,7 +3,7 @@
 #  Author: Hari Sekhon
 #  Date: 2020-02-03 13:37:32 +0000 (Mon, 03 Feb 2020)
 #
-#  https://github.com/harisekhon/devops-perl-tools
+#  https://github.com/harisekhon/templates
 #
 #  License: see accompanying Hari Sekhon LICENSE file
 #
