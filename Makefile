@@ -19,8 +19,12 @@
 #	Makefile.in - generic include file with lots of Make targets
 
 
-# this only works in GNU make and not in Mac's built-in make
+# only works in GNU make - is ignored by Mac's built-in make - not portable, should avoid and call bash scripts instead
 #.ONESHELL:
+# make oneshell exit on first error
+#.SHELLFLAGS = -e
+
+SHELL = /usr/bin/env bash
 
 .PHONY: default
 default:
