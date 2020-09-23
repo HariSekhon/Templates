@@ -15,13 +15,25 @@
 # GCP Cloud Build template
 #
 # gcloud builds submit --config cloudbuild.yaml .
+#
+# will tar $PWD to bucket called $PROJECT_ID_cloudbuild
 
+# $PROJECT_ID is auto-populated by Cloud Build
+
+# declare this as the output artifact to link to in GCP Console
 images:
-- 'gcr.io/$PROJECT_ID/myapp'
+- gcr.io/$PROJECT_ID/myapp
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  # $PROJECT_ID is auto-populated by Cloud Build
-  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/myapp', '.' ]
+# use Docker cloud builder to build image
+- name: gcr.io/cloud-builders/docker
+  # multiple tags
+  args: [
+    'build',
+    '-t', 'gcr.io/$PROJECT_ID/myapp:latest',
+    '-t', 'gcr.io/$PROJECT_ID/myapp:1.0',
+    '.'
+  ]
 # check the newly created image
-- name: 'gcr.io/$PROJECT_ID/myapp'
-  args: ['test']
+- name: gcr.io/$PROJECT_ID/myapp:latest
+  args:
+    - test
