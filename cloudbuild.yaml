@@ -42,8 +42,20 @@ steps:
     '-t', 'gcr.io/$PROJECT_ID/myapp:1.0',
     '.'
   ]
+  timeout: 3600s
 # check the newly created image with a test command
 # XXX: replace myapp and tag
 - name: gcr.io/$PROJECT_ID/myapp:latest
   args:
     - test
+  timeout: 60s
+
+#- name: 'gcr.io/cloud-builders/docker'
+#  args: ['push', 'gcr.io/$PROJECT_ID/myapp:1.0']
+
+# CI/CD - deploy to GKE
+#- name: 'gcr.io/cloud-builders/kubectl'
+#  args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/$PROJECT_ID/myapp:1.0']
+#  env:
+#  - 'CLOUDSDK_COMPUTE_ZONE=europe-west1-b'
+#  - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'
