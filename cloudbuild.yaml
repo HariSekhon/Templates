@@ -24,6 +24,7 @@
 
 # declare this image as the output artifact to link to in GCP Console
 images:
+# XXX: replace myapp
 - gcr.io/$PROJECT_ID/myapp
 steps:
 # use Docker cloud builder to build image
@@ -31,6 +32,7 @@ steps:
   # multiple tags
   args: [
     'build',
+    # XXX: replace myapp and tags
     '-t', 'gcr.io/$PROJECT_ID/myapp:latest',
     '-t', 'gcr.io/$PROJECT_ID/myapp:1.0',
     '.'
