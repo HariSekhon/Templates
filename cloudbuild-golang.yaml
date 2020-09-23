@@ -26,8 +26,9 @@
 
 # tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
 
-# $PROJECT_ID is auto-populated by Cloud Build
+# $PROJECT_ID and $BUILD_ID are auto-populated by Cloud Build
 
+timeout: 600s
 steps:
 # uses the official 'golang' docker image from DockerHub to build the binary
 - name: golang
@@ -39,6 +40,6 @@ artifacts:
   objects:
     # XXX: you probably want a unique versioned directory path here to avoid overriding previous binaries
     #      or use Object Versioning - https://cloud.google.com/storage/docs/object-versioning
-    location: 'gs://$PROJECT_ID-go/bin/'
+    location: 'gs://$PROJECT_ID-go/bin/$BUILD_ID/'
     # XXX: replace mybinary - should match the generated binary name (module basename in go.mod)
     paths: ['mybinary']
