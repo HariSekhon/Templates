@@ -35,6 +35,7 @@ steps:
 artifacts:
   objects:
     # XXX: you probably want a unique versioned directory path here to avoid overriding previous binaries
+    #      or use Object Versioning - https://cloud.google.com/storage/docs/object-versioning
     location: 'gs://$PROJECT_ID-go/bin/'
     # XXX: replace mybinary - should match the generated binary name (module basename in go.mod)
     paths: ['mybinary']
