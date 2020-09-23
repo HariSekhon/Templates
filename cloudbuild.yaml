@@ -16,9 +16,13 @@
 #                         G C P   C l o u d   B u i l d
 # ============================================================================ #
 
+# Reference:
+#
+# https://cloud.google.com/cloud-build/docs/build-config
+
 # gcloud builds submit --config cloudbuild.yaml .
 
-# will tar $PWD to bucket called ${PROJECT_ID}_cloudbuild
+# tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
 
 # $PROJECT_ID is auto-populated by Cloud Build
 
