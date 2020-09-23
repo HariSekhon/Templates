@@ -22,14 +22,15 @@
 
 # $PROJECT_ID is auto-populated by Cloud Build
 
-# declare this image as the output artifact to link to in GCP Console
+# push this image to GCR - doing it this way instead of docker push links the image artifact in GCP Console's Cloud Build UI
 images:
 # XXX: replace myapp
 - gcr.io/$PROJECT_ID/myapp
+
 steps:
 # use Docker cloud builder to build image
 - name: gcr.io/cloud-builders/docker
-  # multiple tags
+  # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
   args: [
     'build',
     # XXX: replace myapp and tags
@@ -38,6 +39,7 @@ steps:
     '.'
   ]
 # check the newly created image with a test command
+# XXX: replace myapp and tag
 - name: gcr.io/$PROJECT_ID/myapp:latest
   args:
     - test
