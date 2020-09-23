@@ -12,15 +12,17 @@
 #  https://www.linkedin.com/in/harisekhon
 #
 
-# GCP Cloud Build template
-#
+# ============================================================================ #
+#                         G C P   C l o u d   B u i l d
+# ============================================================================ #
+
 # gcloud builds submit --config cloudbuild.yaml .
-#
-# will tar $PWD to bucket called $PROJECT_ID_cloudbuild
+
+# will tar $PWD to bucket called ${PROJECT_ID}_cloudbuild
 
 # $PROJECT_ID is auto-populated by Cloud Build
 
-# declare this as the output artifact to link to in GCP Console
+# declare this image as the output artifact to link to in GCP Console
 images:
 - gcr.io/$PROJECT_ID/myapp
 steps:
@@ -33,7 +35,7 @@ steps:
     '-t', 'gcr.io/$PROJECT_ID/myapp:1.0',
     '.'
   ]
-# check the newly created image
+# check the newly created image with a test command
 - name: gcr.io/$PROJECT_ID/myapp:latest
   args:
     - test
