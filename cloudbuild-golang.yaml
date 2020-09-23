@@ -34,6 +34,7 @@ steps:
 # artifacts-12345abc-6789-0d1e-23fa-4b5cd678e901.json
 artifacts:
   objects:
+    # XXX: you probably want a unique versioned directory path here to avoid overriding previous binaries
     location: 'gs://$PROJECT_ID-go/bin/'
     # XXX: replace mybinary - should match the generated binary name (module basename in go.mod)
     paths: ['mybinary']
