@@ -26,10 +26,22 @@
 
 # $PROJECT_ID is auto-populated by Cloud Build
 
+# variables - can override these on the CLI:
+# --substitutions=_IMAGE_NAME="myapp",_IMAGE_VERSION:"1.1"
+substitutions:
+	  # XXX: set this
+    _IMAGE_NAME: myapp
+	  _IMAGE_VERSION: 1.0
+	  # GKE details
+	  #_CLOUDSDK_CONTAINER_CLUSTER: mycluster
+    #_CLOUDSDK_COMPUTE_ZONE: europe-west1-b
+
+timeout: 3660s
+
 # push this image to GCR - doing it this way instead of docker push links the image artifact in GCP Console's Cloud Build UI
 images:
 # XXX: replace myapp
-- gcr.io/$PROJECT_ID/myapp
+- gcr.io/$PROJECT_ID/${_IMAGE_NAME}
 
 steps:
 # use Docker cloud builder to build image
@@ -38,24 +50,28 @@ steps:
   args: [
     'build',
     # XXX: replace myapp and tags
-    '-t', 'gcr.io/$PROJECT_ID/myapp:latest',
-    '-t', 'gcr.io/$PROJECT_ID/myapp:1.0',
+		# use variable tags if triggered:
+		# https://cloud.google.com/cloud-build/docs/configuring-builds/substitute-variable-values
+    '-t', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:latest',
+    '-t', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}',
     '.'
   ]
   timeout: 3600s
 # check the newly created image with a test command
 # XXX: replace myapp and tag
-- name: gcr.io/$PROJECT_ID/myapp:latest
+- name: 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}'
   args:
     - test
   timeout: 60s
 
 #- name: 'gcr.io/cloud-builders/docker'
-#  args: ['push', 'gcr.io/$PROJECT_ID/myapp:1.0']
+#  args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}']
 
 # CI/CD - deploy to GKE
+#
 #- name: 'gcr.io/cloud-builders/kubectl'
-#  args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/$PROJECT_ID/myapp:1.0']
+#  args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}']
 #  env:
-#  - 'CLOUDSDK_COMPUTE_ZONE=europe-west1-b'
-#  - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'
+#  - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
+#  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
+#  timeout: 600s
