@@ -19,5 +19,9 @@ variable "vpc_name" {
   default = "default" # XXX: EDIT
 }
 variable "region" {
-  default = "europe-west1" # XXX: EDIT
+  # XXX: EDIT, delete one of
+  # aws
+  default = "eu-west-1"
+  # gcp
+  default = "europe-west1"
 }
