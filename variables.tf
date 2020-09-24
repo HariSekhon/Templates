@@ -13,11 +13,11 @@
 #
 
 variable "project" {
-  default = "myproject-123456"  # XXX: EDIT
+  default = "myproject-123456" # XXX: EDIT
 }
 variable "vpc_name" {
-  default = "default"  # XXX: EDIT
+  default = "default" # XXX: EDIT
 }
 variable "region" {
-  default = "europe-west1"  # XXX: EDIT
+  default = "europe-west1" # XXX: EDIT
 }
