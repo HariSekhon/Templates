@@ -19,6 +19,8 @@
 # Reference:
 #
 # https://cloud.google.com/cloud-build/docs/build-config
+#
+# https://cloud.google.com/cloud-build/docs/build-debug-locally
 
 # gcloud builds submit --config cloudbuild.yaml .
 
@@ -49,15 +51,22 @@ steps:
 # use Docker cloud builder to build image
 - name: gcr.io/cloud-builders/docker
   # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
-  args: [
-    'build',
+  args:
+    - build
     # use variable tags if triggered:
     # https://cloud.google.com/cloud-build/docs/configuring-builds/substitute-variable-values
-    '-t', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:latest',
-    '-t', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}',
-    '.'
-  ]
+    - --tag=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:latest
+    - --tag=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}
+    # use all cached layers where possible (will pull, kaniko cache is better as it's local0
+    - --cache-from=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}
+    - .
+  # or use kaniko builder to cache
+  #name: 'gcr.io/kaniko-project/executor:latest'
+  #- --destination=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}
+  #- --cache=true
+  #- --cache-ttl=6h
   timeout: 3600s
+
 # check the newly created image with a test command
 - name: 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:${_IMAGE_VERSION}'
   args:
