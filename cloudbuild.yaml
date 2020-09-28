@@ -19,6 +19,8 @@
 # Reference:
 #
 # https://cloud.google.com/cloud-build/docs/build-config
+#
+# https://cloud.google.com/cloud-build/docs/build-debug-locally
 
 # gcloud builds submit --config cloudbuild.yaml .
 
