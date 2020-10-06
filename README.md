@@ -79,7 +79,7 @@ new build.gradle
 
 #### New Terraform
 
-Instantly creates and open all standard files for a Terraform deployment:
+Instantly creates and opens all standard files for a Terraform deployment in your `$EDITOR` of choice:
 
 - [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 - [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
