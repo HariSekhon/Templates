@@ -12,6 +12,8 @@
 #  [% LINKEDIN %]
 #
 
+# XXX: remove defaults to enforce use of terraform.tfvars
+
 variable "project" {
   default = "myproject-123456" # XXX: EDIT
 }
