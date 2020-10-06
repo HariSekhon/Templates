@@ -12,26 +12,34 @@
 #  [% LINKEDIN %]
 #
 
-# XXX: remove defaults to enforce use of terraform.tfvars
+# XXX: set these in terraform.tfvars
 
 variable "project" {
-  default = "myproject-123456" # XXX: EDIT
+  #default = "myproject-123456"
 }
 
 variable "vpc_name" {
-  default = "default" # XXX: EDIT
+  #default = "default"
 }
 
 variable "region" {
-  # XXX: EDIT, delete one of
   # aws
-  default = "eu-west-1"
+  #default = "eu-west-1"
   # gcp
-  default = "europe-west1"
+  #default = "europe-west1"
 }
 
 variable "node_count" {
   # only accept integers/floats
-  type    = number
-  default = 2
+  type = number
+  #default = 2
+}
+
+variable "private_cidrs" {
+  type = list
+  #default = [
+  #  "10.0.0.0/8",
+  #  "172.16.0.0/16",
+  #  "192.168.0.0/16"
+  #]
 }
