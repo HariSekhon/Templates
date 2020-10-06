@@ -20,3 +20,5 @@ project  = "myproject-123456"
 region   = "europe-west-1"
 
 vpc_name = "default"
+
+node_count = 3
