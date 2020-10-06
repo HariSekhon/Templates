@@ -48,7 +48,7 @@ Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools)
 
 ### New
 
-`new.pl` can instantiate these templates as new date-timestamped files, autopopulating the date, vim tags, GitHub URL and other headers and drops you in to your `$EDITOR` of choice, eg. `vim`.
+`new.pl` can instantiate these templates as new date-timestamped files, autopopulating the date, vim tags, GitHub URL and other headers and drops you in to your `$EDITOR` of choice (eg. `vim`).
 
 You can give an exact filename like `Dockerfile`, `Makefile`, `Jenkinsfile`, `docker-compose.yml`, `pom.xml`, `build.gradle`, or you can instantiate one of the templates based on their file extension (eg. `py`, `sh`) with any filename (eg. `main.py`, `test.py`, `myapp.py`).
 
