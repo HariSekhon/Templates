@@ -21,9 +21,9 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
 [variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
-[terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - `new.pl terraform` creates and opens all of these with excellent inline reference documentation to AWS / GCP regions, backends, locking etc
+[terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - see this [bundle trick](https://github.com/HariSekhon/Templates/#new)
 - [Docker](https://www.docker.com/) - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
-- [AWS](https://aws.amazon.com/) - [aws_athena_cloudtrail_ddl.sql](https://github.com/HariSekhon/Templates/blob/master/aws_athena_cloudtrail_ddl.sql), [aws_policy_require_mfa.json](https://github.com/HariSekhon/Templates/blob/master/aws_policy_require_mfa.json), [aws_s3_bucket_policy_http_disallow.json](https://github.com/HariSekhon/Templates/blob/master/aws_s3_bucket_policy_http_disallow.json)
+- [AWS](https://aws.amazon.com/) - various templates
 - [GCP](https://cloud.google.com/) - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
 - [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Templates/blob/master/Jenkinsfile)
 - [Circle CI](https://circleci.com/) - [circleci_config.yml](https://github.com/HariSekhon/Templates/blob/master/circleci_config.yml)
@@ -46,9 +46,31 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 
 Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo for which this is now a submodule.
 
-`new.pl` in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo uses these templates to create new date-timestamped files, autopopulating the date, vim tags, GitHub URL and other headers and drops you in to your `$EDITOR` of choice, eg. vim.
+### New
 
-`new.pl tf` - will instantly create and open all base files for a Terraform deployment -
+`new.pl` can instantiate these templates as new date-timestamped files, autopopulating the date, vim tags, GitHub URL and other headers and drops you in to your `$EDITOR` of choice, eg. `vim`.
+
+You can give an exact filename like `Dockerfile`, `Makefile`, `Jenkinsfile`, `docker-compose.yml`, `pom.xml`, `build.gradle`, or you can call instantiate one of the templates based on their file extension eg. `py`, `sh`
+
+```
+new.pl Dockerfile
+```
+```
+new.pl Jenkinsfile
+```
+```
+new.pl docker-compose.yml
+```
+```
+new.pl test.py
+```
+```
+new.pl build.gradle
+```
+
+`new.pl` can be found in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo.
+
+`new.pl tf` - instantly creates and open all standard files for a Terraform deployment -
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
 [variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
