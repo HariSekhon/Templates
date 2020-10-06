@@ -90,11 +90,11 @@ Instantly creates and open all standard files for a Terraform deployment:
 all heavily commented to get a new Terraform environment up and running quickly - with links to things like AWS / GCP regions, Terraform backend providers and state locking etc.
 
 ```
-new.pl terraform
+new terraform
 ```
 or shorter
 ```
-new.pl tf
+new tf
 ```
 
 
