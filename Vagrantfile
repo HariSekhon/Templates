@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
     end
 
     # generic provision for each VM
-    config.vm.provision :shell, :path => "../provision.sh"
+    #config.vm.provision :shell, :path => "../provision.sh"
 
     # ==================================
     config.vm.define "HOST1" do |config|  # XXX: edit
