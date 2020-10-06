@@ -12,21 +12,41 @@ Code & Config Templates
 
 Code & DevOps Config templates for many popular programming languages and DevOps tools including:
 
-- [Kubernetes](https://kubernetes.io/)
-- [Terraform](https://www.terraform.io/)
-- [Docker](https://www.docker.com/)
-- [AWS](https://aws.amazon.com/)
-- [GCP](https://cloud.google.com/)
-- [Jenkins](https://www.jenkins.io/)
-- [Circle CI](https://circleci.com/)
-- [Vagrant](https://www.vagrantup.com/)
-- [Make](https://www.gnu.org/software/make/)
-- [SBT](https://www.scala-sbt.org/)
-- [Gradle](https://gradle.org/)
+- [Kubernetes](https://kubernetes.io/) - [kubernetes-templates/](https://github.com/HariSekhon/Kubernetes-templates) - templates for most major k8s objects including
+[deployment.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/deployment.yaml),
+[statefulset.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/statefulset.yaml),
+[service.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/service.yaml),
+[ingress.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/ingress.yaml), [kustomization.yml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/kustomization.yaml) and many others
+- [Terraform](https://www.terraform.io/) -
+[provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
+[backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
+[variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
+[terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - `new.pl terraform` creates and opens all of these with excellent inline reference documentation to AWS / GCP regions, backends, locking etc
+- [Docker](https://www.docker.com/) - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
+- [AWS](https://aws.amazon.com/) - [aws_athena_cloudtrail_ddl.sql](https://github.com/HariSekhon/Templates/blob/master/aws_athena_cloudtrail_ddl.sql), [aws_policy_require_mfa.json](https://github.com/HariSekhon/Templates/blob/master/aws_policy_require_mfa.json), [aws_s3_bucket_policy_http_disallow.json](https://github.com/HariSekhon/Templates/blob/master/aws_s3_bucket_policy_http_disallow.json)
+- [GCP](https://cloud.google.com/) - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
+- [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Templates/blob/master/Jenkinsfile)
+- [Circle CI](https://circleci.com/) - [circleci_config.yml](https://github.com/HariSekhon/Templates/blob/master/circleci_config.yml)
+- [Vagrant](https://www.vagrantup.com/) - [Vagrantfile](https://github.com/HariSekhon/Templates/blob/master/Vagrantfile)
+- [Make](https://www.gnu.org/software/make/) - [Makefile](https://github.com/HariSekhon/Templates/blob/master/Makefile)
+- [Maven](https://maven.apache.org/) - [pom.xml](https://github.com/HariSekhon/Templates/blob/master/pom.xml)
+- [SBT](https://www.scala-sbt.org/) - [build.sbt](https://github.com/HariSekhon/Templates/blob/master/build.sbt)
+- [Gradle](https://gradle.org/) - [build.gradle](https://github.com/HariSekhon/Templates/blob/master/build.gradle)
+- [Golang](https://golang.org/) - [template.go](https://github.com/HariSekhon/Templates/blob/master/template.go)
+- [Groovy](https://groovy-lang.org/) - [template.groovy](https://github.com/HariSekhon/Templates/blob/master/template.groovy)
+- [Perl](https://www.perl.org/) - [template.pl](https://github.com/HariSekhon/Templates/blob/master/template.pl), [template.pm](https://github.com/HariSekhon/Templates/blob/master/template.pm)
+- [Python](https://www.python.org/) / [Jython](https://www.jython.org/) - [template.py](https://github.com/HariSekhon/Templates/blob/master/template.py) / `template.jy`
+- [Ruby](https://www.ruby-lang.org/en/) / [JRuby](https://www.jruby.org/) - [template.rb](https://github.com/HariSekhon/Templates/blob/master/template.rb), [template.jrb](https://github.com/HariSekhon/Templates/blob/master/template.jrb)
+- [Scala](https://www.scala-lang.org/) - [template.scala](https://github.com/HariSekhon/Templates/blob/master/template.scala)
+- [Bash](https://www.gnu.org/software/bash/) - [template.sh](https://github.com/HariSekhon/Templates/blob/master/template.sh)
+- [Puppet](https://puppet.com/) - [template.pp](https://github.com/HariSekhon/Templates/blob/master/template.pp)
+- SQL - [template.sql](https://github.com/HariSekhon/Templates/blob/master/template.sql)
+- XML - [template.xml](https://github.com/HariSekhon/Templates/blob/master/template.xml)
+- YAML - [template.yaml](https://github.com/HariSekhon/Templates/blob/master/template.yaml)
 
 Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo for which this is now a submodule.
 
-`new.pl` in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo uses these templates to create new files, autopopulating the date and other headers and drops you in to your `$EDITOR` of choice, eg. vim.
+`new.pl` in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo uses these templates to create new date-timestamped files, autopopulating the date, vim tags, GitHub URL and other headers and drops you in to your `$EDITOR` of choice, eg. vim.
 
 `new.pl tf` - will instantly create and open all base files for a Terraform deployment -
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
