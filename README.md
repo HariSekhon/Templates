@@ -50,31 +50,29 @@ Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools)
 
 `new.pl` can instantiate these templates as new date-timestamped files, autopopulating the date, vim tags, GitHub URL and other headers and drops you in to your `$EDITOR` of choice, eg. `vim`.
 
+```alias new=new.pl```
+(done automatically in the [DevOps Bash tools](https://github.com/HariSekhon/DevOps-Bash-tools) repo `.bash.d/`)
+
 You can give an exact filename like `Dockerfile`, `Makefile`, `Jenkinsfile`, `docker-compose.yml`, `pom.xml`, `build.gradle`, or you can instantiate one of the templates based on their file extension eg. `py`, `sh` with your own name eg. `main.py`, `test.py`, `myapp.py`
 
 ```
-new.pl Dockerfile
+new Dockerfile
 ```
 ```
-new.pl Jenkinsfile
+new Jenkinsfile
 ```
 ```
-new.pl docker-compose.yml
+new docker-compose.yml
 ```
 ```
-new.pl myapp.py
+new myapp.py
 ```
 ```
-new.pl build.gradle
+new build.gradle
 ```
 
 `new.pl` can be found in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo.
 
-For even more natural day-to-day usage:
-
-```alias new=new.pl```
-
-This done automatically in the [DevOps Bash tools](https://github.com/HariSekhon/DevOps-Bash-tools) repo's `.bash.d/`.
 
 #### New Terraform
 
