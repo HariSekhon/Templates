@@ -17,13 +17,21 @@
 variable "project" {
   default = "myproject-123456" # XXX: EDIT
 }
+
 variable "vpc_name" {
   default = "default" # XXX: EDIT
 }
+
 variable "region" {
   # XXX: EDIT, delete one of
   # aws
   default = "eu-west-1"
   # gcp
   default = "europe-west1"
+}
+
+variable "node_count" {
+  # only accept integers/floats
+  type    = number
+  default = 2
 }
