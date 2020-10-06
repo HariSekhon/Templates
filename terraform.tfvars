@@ -13,9 +13,15 @@
 #
 
 # AWS
+#
+#   https://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region
+#
 #region   = "eu-west-1"
 
 # GCP
+#
+#   https://cloud.google.com/compute/docs/regions-zones#available
+#
 project = "myproject-123456"
 region  = "europe-west-1"
 
