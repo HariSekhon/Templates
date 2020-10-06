@@ -23,9 +23,16 @@ variable "vpc_name" {
 }
 
 variable "region" {
-  # aws
+  # AWS
+  #
+  #   https://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region
+  #
   #default = "eu-west-1"
-  # gcp
+
+  # GCP
+  #
+  #   https://cloud.google.com/compute/docs/regions-zones#available
+  #
   #default = "europe-west1"
 }
 
