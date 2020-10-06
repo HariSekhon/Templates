@@ -13,6 +13,7 @@ Code & Config Templates
 Code & DevOps Config templates for many popular programming languages and DevOps tools including:
 
 - [Kubernetes](https://kubernetes.io/)
+- [Terraform](https://www.terraform.io/)
 - [Docker](https://www.docker.com/)
 - [AWS](https://aws.amazon.com/)
 - [GCP](https://cloud.google.com/)
@@ -27,6 +28,11 @@ Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools)
 
 `new.pl` in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo uses these templates to create new files, autopopulating the date and other headers and drops you in to your `$EDITOR` of choice, eg. vim.
 
+`new.pl tf` - will instantly create and open all base files for a Terraform deployment -
+[provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
+[variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
+[backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
+[terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars), and `main.tf` - all heavily commented to get a new Terraform environment up and running quickly - with links to things like AWS / GCP regions, Terraform backend providers and state locking etc.
 
 ### See Also:
 
