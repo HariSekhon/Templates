@@ -12,11 +12,11 @@ Code & Config Templates
 
 Code & DevOps Config templates for many popular programming languages and DevOps tools including:
 
-- [Kubernetes](https://kubernetes.io/) - [templates/](https://github.com/HariSekhon/Kubernetes-templates) - for every major k8s object eg.
+- [Kubernetes](https://kubernetes.io/) - templates for every major k8s object eg.
 [deployment.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/deployment.yaml),
 [statefulset.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/statefulset.yaml),
 [service.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/service.yaml),
-[ingress.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/ingress.yaml), [kustomization.yml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/kustomization.yaml) and many others
+[ingress.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/ingress.yaml), [kustomization.yml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-templates)
 - [Terraform](https://www.terraform.io/) -
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
