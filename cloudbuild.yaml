@@ -18,13 +18,14 @@
 
 # References:
 #
-#   https://cloud.google.com/cloud-build/docs/build-config
+#     https://cloud.google.com/cloud-build/docs/build-config
 #
-#   https://cloud.google.com/cloud-build/docs/speeding-up-builds
+#     https://cloud.google.com/cloud-build/docs/speeding-up-builds
 #
-#   https://cloud.google.com/cloud-build/docs/building-leaner-containers
+#     https://cloud.google.com/cloud-build/docs/building-leaner-containers
 #
-#   https://cloud.google.com/cloud-build/docs/build-debug-locally
+#     https://cloud.google.com/cloud-build/docs/build-debug-locally
+
 
 # gcloud builds submit --config cloudbuild.yaml .
 
