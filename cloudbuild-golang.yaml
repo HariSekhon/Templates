@@ -16,11 +16,12 @@
 #                         G C P   C l o u d   B u i l d
 # ============================================================================ #
 
-# Reference:
+# References:
 #
-# https://cloud.google.com/cloud-build/docs/build-config
+#     https://cloud.google.com/cloud-build/docs/build-config
 #
-# https://cloud.google.com/cloud-build/docs/building/build-go
+#     https://cloud.google.com/cloud-build/docs/building/build-go
+
 
 # gcloud builds submit --config cloudbuild-golang.yaml .
 
