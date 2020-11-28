@@ -20,6 +20,8 @@
 #     https://cloud.google.com/cloud-build/docs/build-config
 #
 #     https://cloud.google.com/cloud-build/docs/building/build-go
+#
+#     https://cloud.google.com/cloud-build/docs/access-private-github-repos
 
 
 # gcloud builds submit --config cloudbuild-golang.yaml .
