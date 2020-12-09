@@ -67,6 +67,7 @@ cache:
     #- $HOME/.groovy
     #- $HOME/.rvm
     #- $HOME/go/pkg
+    # bash-tools is not a submodule, but downloaded via Make so ok ot cache whole
     - bash-tools
 
 # ==============================================
