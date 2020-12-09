@@ -51,11 +51,21 @@ before_cache:
   - rm -f $HOME/.cache/pip/log/debug.log
 
 cache:
+  #- npm
   - pip
+  #- packages # R
   - directories:
     - $HOME/.cache
-    - $HOME/.cpanm
     - $HOME/.cpan
+    - $HOME/.cpanm
+    - $HOME/.gem
+    #- $HOME/.m2
+    #- $HOME/.ivy
+    #- $HOME/.ivy2
+    #- $HOME/.gradle
+    #- $HOME/.sbt
+    #- $HOME/.groovy
+    #- $HOME/.rvm
     - bash-tools/pytools_checks
 
 # ==============================================
