@@ -24,6 +24,9 @@
 #     https://cloud.google.com/cloud-build/docs/access-private-github-repos
 
 
+# XXX: See core cloudbuild.yml adjacent for more tips and tricks
+
+
 # gcloud builds submit --config cloudbuild-golang.yaml .
 
 # tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
