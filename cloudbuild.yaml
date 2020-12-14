@@ -43,8 +43,14 @@ substitutions:
   _IMAGE_VERSION: "1.0"
   #_REGISTRY: eu.gcr.io
   _REGISTRY: gcr.io
-  # if you hardcode _PROJECT to a shared project, you'll need to switch your GCloud SDK core.project
-  # to submit to that project for the GCS permissions
+  # XXX: if you hardcode _PROJECT to a shared project where you keep all your company images, then
+  #      you'll need to switch your GCloud SDK core.project to submit to that project to get the right GCS permissions to store the image
+  #
+  # XXX: if debugging in a local builder $PROJECT_ID isn't set and comes out literally, breaking the build with the below error
+  #      so in that case you must hardcode _PROJECT's value to get it build in local debug builder
+  #
+  #      invalid argument "gcr.io/$PROJECT_ID/myimage:latest" for "-t, --tag" flag: invalid reference format: repository name must be lowercase
+  #
   _PROJECT: $PROJECT_ID
   # GKE details
   #_CLOUDSDK_CONTAINER_CLUSTER: mycluster
