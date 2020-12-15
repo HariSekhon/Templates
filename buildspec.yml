@@ -1,0 +1,101 @@
+#
+#  Author: Hari Sekhon
+#  Date: [% DATE # 2020-12-15 22:23:33 +0000 (Tue, 15 Dec 2020) %]
+#
+#  [% URL %]
+#
+#  [% LICENSE %]
+#
+#  [% MESSAGE %]
+#
+#  [% LINKEDIN %]
+#
+
+# ============================================================================ #
+#                           A W S   C o d e B u i l d
+# ============================================================================ #
+
+# References:
+#
+#     https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html
+
+
+version: 0.2
+
+# only on Linux, the user to run as - global setting, alternatively set inside a phase section below for localized user
+#run-as: linux-username
+
+env:
+  shell: bash
+  # don't store sensitive stuff like AWS secret keys in variables, use parameter-store or secrets-manager below
+  # any environment variables replace existing environment variables, ie. beware if setting PATH that it'll replace the existing PATH with a non-interpolated literal
+  # project env vars take precedence over these, with start build vars taking highest precedence
+  #variables:
+  #  DEBUG: "1"
+  #exported-variables:
+  #  - DEBUG
+  #parameter-store:
+  #  key: "value"
+  #  key: "value"
+  #secrets-manager:
+  #  key: secret-id:json-key:version-stage:version-id
+  #git-credential-helper: no | yes
+
+phases:
+  # install prerequisites / languages / frameworks / packages to allow build to work
+  install:
+    commands:
+      - setup/ci_bootstrap.sh
+    # languages to install
+    runtime-versions:
+      #java: openjdk11
+      # AWS LTS release of OpenJDK 11
+      java: corretto11
+      golang: 1.14
+      #python: 3.7
+      python: 3.8
+      #ruby: 2.6
+      ruby: 2.7
+  # log in, install packages
+  pre_build:
+    commands:
+      - setup/ci_bootstrap.sh
+  build:
+    commands:
+      - echo Build started on `date`
+      #- mvn install
+      # my builds are much more holistic and generalized through Make than calling Maven/SBT/Gradle/pip/cpan etc directly
+      - make
+      - echo Build completed on `date`
+  post_build:
+    commands:
+      - echo Running Tests on `date`
+      - make test
+      - echo Tests Completed on `date`
+# listed artifacts are uploaded to the output S3 bucket
+#artifacts:
+#  files:
+#    # Java jar - preferably a standalone fat jar
+#    - target/someApp-1.0.jar
+#    # Perl fatpack tarball containing all the self-contained Perl programs
+#    - fatpacks.tar.gz
+
+# uploads to an S3 cache bucket
+#cache:
+#  paths:
+#    - $HOME/.cache
+#    - $HOME/.cpan
+#    - $HOME/.cpanm
+#    - $HOME/.gem
+#    - $HOME/.m2
+#    - $HOME/.ivy
+#    - $HOME/.ivy2
+#    - $HOME/.gradle
+#    - $HOME/.sbt
+#    - $HOME/.groovy
+#    - $HOME/.rvm
+#    - $HOME/go/pkg
+#    # only cache bash-tools is downloaded and not a submodule of the repo
+#    #- bash-tools
+#   # pytools_checks is downloaded so safe to cache
+#    - bash-tools/pytools_checks
