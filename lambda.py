@@ -14,7 +14,7 @@
 #  [% LINKEDIN %]
 #
 
-# Receives a Lambda events from SNS subscription, prints to CloudWatch logs and returns it
+# Receives a Lambda event, prints it to CloudWatch logs along with some environment and context information and returns None
 
 import os
 
