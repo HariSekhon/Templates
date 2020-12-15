@@ -72,6 +72,7 @@ phases:
       - echo Running Tests on `date`
       - make test
       - echo Tests Completed on `date`
+
 # listed artifacts are uploaded to the output S3 bucket
 #artifacts:
 #  files:
