@@ -67,11 +67,14 @@ phases:
       # my builds are much more holistic and generalized through Make than calling Maven/SBT/Gradle/pip/cpan etc directly
       - make
       - echo Build completed on `date`
+      - make test
+      - echo Tests completed on `date`
+  # XXX: always runs regardless of build status
   post_build:
     commands:
-      - echo Running Tests on `date`
+      - echo Post-build started on `date`
       - make test
-      - echo Tests Completed on `date`
+      - echo Post-build completed on `date`
 
 # listed artifacts are uploaded to the output S3 bucket
 #artifacts:
