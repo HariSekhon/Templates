@@ -56,7 +56,7 @@ phases:
       python: 3.8
       #ruby: 2.6
       ruby: 2.7
-  # log in, install packages
+  # eg. sign in to Amazon ECR or install package dependencies
   pre_build:
     commands:
       - setup/ci_bootstrap.sh
