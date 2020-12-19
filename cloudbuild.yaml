@@ -30,6 +30,8 @@
 
 # gcloud builds submit --config cloudbuild.yaml .
 
+# cloud-build-local --config cloudbuild.yml --dryrun=false .  # --push
+
 # tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
 
 # $PROJECT_ID is auto-populated by Cloud Build
