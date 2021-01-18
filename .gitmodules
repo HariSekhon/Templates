@@ -2,5 +2,5 @@
 	path = kubernetes-templates
 	url = https://github.com/HariSekhon/Kubernetes-templates
 [submodule "terraform"]
-	path = terraform
+	path = terraform-templates
 	url = https://github.com/HariSekhon/Terraform-templates
