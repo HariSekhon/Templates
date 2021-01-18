@@ -83,10 +83,10 @@ new build.gradle
 
 Instantly creates and opens all standard files for a Terraform deployment in your `$EDITOR` of choice:
 
-- [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf)
-- [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf)
-- [variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf)
-- [terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars)
+- [provider.tf](https://github.com/HariSekhon/Terraform-templates/blob/master/provider.tf)
+- [backend.tf](https://github.com/HariSekhon/Terraform-templates/blob/master/backend.tf)
+- [variables.tf](https://github.com/HariSekhon/Terraform-templates/blob/master/variables.tf)
+- [terraform.tfvars](https://github.com/HariSekhon/Terraform-templates/blob/master/terraform.tfvars)
 - `main.tf`
 
 all heavily commented to get a new Terraform environment up and running quickly - with links to things like AWS / GCP regions, Terraform backend providers, state locking etc.
