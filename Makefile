@@ -26,6 +26,8 @@
 
 SHELL = /usr/bin/env bash
 
+PATH := $(PATH):$(PWD)/bash-tools
+
 .PHONY: default
 default:
 	@echo "running default build:"
@@ -41,9 +43,16 @@ init:
 	if type -P git; then git submodule update --init --recursive; fi
 	@echo
 
+.PHONY: bash-tools
+bash-tools:
+	@if ! command -v check_pytools.sh; then \
+		curl -L https://git.io/bash-bootstrap | sh; \
+	fi
+
 .PHONY: test
-test:
+test: bash-tools
 	@echo "running tests:"
+	check_pytools.sh
 
 .PHONY: tests
 tests: test
