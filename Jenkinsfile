@@ -151,7 +151,7 @@ pipeline {
                 echo 'Deploying....'
                 // push artifacts and/or deploy to production
                 timeout(time: 15, unit: 'MINUTES') {
-                    echo 'Nothing to deploy'
+                    sh 'make deploy'
                 }
             }
         }
