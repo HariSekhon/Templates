@@ -13,21 +13,51 @@
 //  [% LINKEDIN %]
 //
 
+// ========================================================================== //
+//                        J e n k i n s   P i p e l i n e
+// ========================================================================== //
+
+
+// https://jenkins.io/doc/book/pipeline/syntax/
+
+
 pipeline {
+
+    // run pipeline any agent
     agent any
 
-    environment {
-        //CC = 'clang',
-        DEBUG = '1'
-    }
+    // can't do this when running jenkins in docker itself, gets '.../script.sh: docker: not found'
+//    agent {
+//      docker {
+//          image 'ubuntu:18.04'
+//          args '-v $HOME/.m2:/root/.m2 -v $HOME/.cache/pip:/root/.cache/pip -v $HOME/.cpanm:/root/.cpanm -v $HOME/.sbt:/root/.sbt -v $HOME/.ivy2:/root/.ivy2 -v $HOME/.gradle:/root/.gradle'
+//      }
+//  }
+
+    // need to specify at least one env var if enabling
+    //environment {
+    //    //CC = 'clang',
+    //    DEBUG = '1'
+    //}
 
     options {
         // put timestamps in console logs
-        timestamp()
+        timestamps()
 
+        // timeout entire pipeline after 4 hours
+        timeout(time: 2, unit: 'HOURS')
+
+        //retry entire pipeline 3 times
+        //retry(3)
         // enable dthe build status feedback to Jenkins
+
         gitLabConnection('Gitlab')
         gitlabCommitStatus(name: "Jenkins build $BUILD_DISPLAY_NAME")
+    }
+
+    triggers {
+        cron('H 10 * * 1-5')
+        pollSCM('H/2 * * * *')
     }
 
     //parameters {
@@ -35,6 +65,12 @@ pipeline {
     //}
 
     stages {
+        stage ('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/harisekhon/devops-bash-tools']]])
+            }
+        }
+
         stage('Setup') {
             steps {
                 // rewrite build name to include commit id
@@ -72,23 +108,51 @@ pipeline {
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
                 echo 'Building..'
                 sh 'make'
+//                timeout(time: 10, unit: 'MINUTES') {
+//                    retry(3) {
+////                        sh 'apt update -q'
+////                        sh 'apt install -qy make'
+////                        sh 'make init'
+//                        sh """
+//                            setup/ci_bootstrap.sh &&
+//                            make init
+//                        """
+//                    }
+//                }
+//                timeout(time: 180, unit: 'MINUTES') {
+//                    sh 'make ci'
+//                }
                 // saves artifacts to Jenkins master for basic reporting and archival - not a substitute for Nexus / Artifactory
                 // archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
 
         stage('Test') {
+            //options {
+            //    retry(2)
+            //}
             steps {
                 echo 'Testing..'
-                sh 'make test'
-                // junit '**/target/*.xml'
+                timeout(time: 60, unit: 'MINUTES') {
+                    sh 'make test'
+                    // junit '**/target/*.xml'
+                }
             }
         }
+
+//        stage('Human gate') {
+//            steps {
+//                input "Proceed to deployment?"
+//            }
+//        }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
                 // push artifacts and/or deploy to production
+                timeout(time: 15, unit: 'MINUTES') {
+                    echo 'Nothing to deploy'
+                }
             }
         }
     }
@@ -109,17 +173,34 @@ pipeline {
         }
     }
 
-//    post {
-//        // always, unstable, success, failure or changed
-//        always {
-//            junit '**/target/*.xml'
-//            step([$class: "TapPublisher", testResults: 'src/*/*/*.tap', verbose: false])
-//            archiveArtifacts 'src/*/*/*.tap'
-//        }
-//        failure {
-//            mail to: team@example.com, subject: 'The Pipeline failed :('
-//        }
-//    }
+    post {
+        always {
+            echo 'Always'
+            //deleteDir() // clean up workspace
+
+            // collect JUnit reports for Jenkins UI
+            //junit 'build/reports/**/*.xml'
+            //junit '**/target/*.xml'
+            //
+            // collect artifacts to Jenkins for analysis
+            //archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+            //archiveArtifacts 'src/*/*/*.tap'
+            //step([$class: "TapPublisher", testResults: 'src/*/*/*.tap', verbose: false])
+        }
+        success {
+            echo 'SUCCESS!'
+        }
+        failure {
+            echo 'FAILURE!'
+            //mail to: team@example.com, subject: 'The Pipeline failed :('
+        }
+        unstable {
+            echo 'UNSTABLE!'
+        }
+        changed {
+            echo 'Pipeline state change! (success vs failure)'
+        }
+    }
 }
 
 // https://github.com/jenkinsci/pipeline-examples/tree/master/jenkinsfile-examples/sonarqube:
