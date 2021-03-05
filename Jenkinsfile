@@ -40,6 +40,14 @@ pipeline {
     //    DEBUG = '1'
     //}
 
+	// XXX: do not allow untrusted Pipeline jobs / users to use trusted Credentials as they can extract these environment variables
+	// will be starred *** out in console log but user scripts can still print these
+	// this could be moved under a stage to limit the scope of their visibility
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+    }
+
     options {
         // put timestamps in console logs
         timestamps()
