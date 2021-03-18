@@ -32,7 +32,7 @@ pipeline {
     // run pipeline inside a docker container (requires the jenkins agent has native docker command and docker access - not available by default in jenkins docker images), see:
     //
     //  https://github.com/HariSekhon/Dockerfiles/tree/master/jenkins-agent-docker
-    //  https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-cloud-pod.yaml
+    //  https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent.cloud-pod-DooD.yaml
     //
 //    docker {
 //      image 'ubuntu:18.04'
@@ -43,7 +43,9 @@ pipeline {
 //    kubernetes {
 //    //label 'mylabel'
 //    defaultContainer 'gcloud-sdk'  // default container the build executes in, otherwise uses jnlp by default which doesn't have the right tooling
-//    //yamlFile 'jenkins-k8s-pod.yaml'  // use external pod spec file, relative to root of repo, better for yaml validation and sharing between pipelines
+//    // use external pod spec file, relative to root of repo, better for yaml validation and sharing between pipelines
+//    // https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-pod.yaml
+//    //yamlFile 'jenkins-agent-pod.yaml'
 //    yaml """\
 //      apiVersion: v1
 //      kind: Pod
