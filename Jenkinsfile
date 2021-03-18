@@ -149,7 +149,7 @@ pipeline {
     // not needed in a multibranch pipeline build which does this automatically
     stage ('Checkout') {
       steps {
-        milestone(10)
+        milestone(ordinal: 10, label: "Milestone: Checkout")
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/harisekhon/devops-bash-tools']]])
       }
     }
@@ -158,7 +158,7 @@ pipeline {
       when { branch pattern: '^staging$', comparator: 'REGEXP' }
 
       steps {
-        milestone(20)
+        milestone(ordinal: 20, label: "Milestone: Git Merge")
         timeout(time: 5, unit: 'MINUTES') {
           sh 'path/to/git_merge_staging_to_dev.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
         }
@@ -167,7 +167,7 @@ pipeline {
 
     stage('Setup') {
       steps {
-        milestone(30)
+        milestone(ordinal: 30, label: "Milestone: Setup")
         // execute in container name defined in the kubernetes {} section near the top
         //container('gcloud-sdk') {
 
@@ -203,7 +203,7 @@ pipeline {
 //      }
       steps {
         // forbids older builds from starting
-        milestone(50)
+        milestone(ordinal: 50, label: "Milestone: Build")
         //echo "${params.MyVar}"
         echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
         echo 'Building..'
@@ -235,7 +235,7 @@ pipeline {
       //  retry(2)
       //}
       steps {
-        milestone(70)
+        milestone(ordinal: 70, label: "Milestone: Test")
         echo 'Testing..'
         timeout(time: 60, unit: 'MINUTES') {
           sh 'make test'
@@ -244,9 +244,9 @@ pipeline {
       }
     }
 
-//    stage('Human gate') {
+//    stage('Human Gate') {
 //      steps {
-//        milestone(2)
+//        milestone(ordinal: 85, label: "Milestone: Human Gate")
 //        input "Proceed to deployment?"
 //      }
 //    }
@@ -270,15 +270,16 @@ pipeline {
       //when { branch pattern: '^production$', comparator: 'REGEXP' }
       when { branch pattern: 'production' }
 
-      // prompt to deploy
-      input "Deploy?"
+      // prompt to deploy - use in separate stage Human Gate instead
+      //input "Deploy?"
+
       // discard other deploys once this one has been chosen
       // use Lockable Resources plugin to limit deploy concurrency to 1
       // inversePrecedence: true makes Jenkins use the most recent deployment first, which when combined with Milestone, discards older deploys
       lock(resource: 'Deploy', inversePrecedence: true) {
         steps {
           // forbids older deploys from starting
-          milestone(100)
+          milestone(ordinal: 100, label: "Milestone: Deploy")
           echo 'Deploying....'
           // push artifacts and/or deploy to production
           timeout(time: 15, unit: 'MINUTES') {
