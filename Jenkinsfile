@@ -73,27 +73,6 @@ pipeline {
 //     }
 //  }
 
-  // need to specify at least one env var if enabling
-  //environment {
-  //  //CC = 'clang',
-  //  DEBUG = '1'
-  //}
-
-  // Credentials:
-  //
-  //    https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#handling-credentials
-  //
-  // XXX: do not allow untrusted Pipeline jobs / users to use trusted Credentials as they can extract these environment variables
-  //
-  // these will be starred out *** in console log but user scripts can still print these
-  // can move this under a stage to limit the scope of their visibility
-  environment {
-    // create these credentials as Secret Text in Jenkins UI -> Manage Jenkins -> Manage Credentials -> Jenkins -> Global Credentials -> Add Credentials
-    AWS_ACCESS_KEY_ID   = credentials('aws-secret-key-id')
-    AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-    GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
-  }
-
   options {
     // put timestamps in console logs
     timestamps()
@@ -114,9 +93,30 @@ pipeline {
     pollSCM('H/2 * * * *')
   }
 
+  // need to specify at least one env var if enabling
+  //environment {
+  //  //CC = 'clang',
+  //  DEBUG = '1'
+  //}
+
   //parameters {
   //  string(name: 'MyVar', defaultValue: 'MyString', description: 'blah')
   //}
+
+  // Credentials:
+  //
+  //    https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#handling-credentials
+  //
+  // XXX: do not allow untrusted Pipeline jobs / users to use trusted Credentials as they can extract these environment variables
+  //
+  // these will be starred out *** in console log but user scripts can still print these
+  // can move this under a stage to limit the scope of their visibility
+  environment {
+    // create these credentials as Secret Text in Jenkins UI -> Manage Jenkins -> Manage Credentials -> Jenkins -> Global Credentials -> Add Credentials
+    AWS_ACCESS_KEY_ID   = credentials('aws-secret-key-id')
+    AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+    GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
+  }
 
   stages {
     // not needed in a multibranch pipeline build which does this automatically
