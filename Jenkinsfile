@@ -126,6 +126,17 @@ pipeline {
       }
     }
 
+    stage('Git Merge') {
+      when { branch pattern: '^staging$', comparator: 'REGEXP' }
+
+      steps {
+        milestone(1)
+        timeout(time: 5, unit: 'MINUTES') {
+          sh 'path/to/git_merge_staging_to_dev.sh'
+        }
+      }
+    }
+
     stage('Setup') {
       steps {
         // execute in container name defined in the kubernetes {} section near the top
