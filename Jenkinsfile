@@ -132,7 +132,7 @@ pipeline {
       steps {
         milestone(1)
         timeout(time: 5, unit: 'MINUTES') {
-          sh 'path/to/git_merge_staging_to_dev.sh'
+          sh 'path/to/git_merge_staging_to_dev.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
         }
       }
     }
@@ -178,8 +178,10 @@ pipeline {
         //echo "${params.MyVar}"
         echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
         echo 'Building..'
-        sh 'make'
-//        timeout(time: 10, unit: 'MINUTES') {
+        timeout(time: 60, unit: 'MINUTES') {
+          sh 'make'
+          // or
+          sh './gcp_ci_build.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
 //          retry(3) {
 ////            sh 'apt update -q'
 ////            sh 'apt install -qy make'
@@ -190,6 +192,7 @@ pipeline {
 //            """
 //          }
 //        }
+        }
 //        timeout(time: 180, unit: 'MINUTES') {
 //          sh 'make ci'
 //        }
@@ -250,6 +253,8 @@ pipeline {
           // push artifacts and/or deploy to production
           timeout(time: 15, unit: 'MINUTES') {
             sh 'make deploy'
+            // or
+            sh './gcp_ci_deploy_k8s.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
           }
         }
       }
