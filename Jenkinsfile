@@ -32,17 +32,30 @@ pipeline {
   agent any
   // can override this on a per stage basis, but leaving this as any will incur some overhead on the Jenkins master in that case, better to switch whole pipeline to a remote agent if you can, unless you want to parallelize the stages among different agents, which might be especially useful for on-demand cloud agents run in Kubernetes
 
+  // more fancy agents - Docker or Kubernetes
 //  agent {
+    //
+    // =========================================
+    //                Docker
+    //
+    //    https://www.jenkins.io/doc/book/pipeline/docker/
+    //
     // run pipeline inside a docker container (requires the jenkins agent has native docker command and docker access - not available by default in jenkins docker images), see:
     //
     //  https://github.com/HariSekhon/Dockerfiles/tree/master/jenkins-agent-docker
     //  https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent.cloud-pod-DooD.yaml
     //
+    // put an agent { docker {...} } section in each stage to use different images with different available tools
 //    docker {
 //      image 'ubuntu:18.04'
 //      args '-v $HOME/.m2:/root/.m2 -v $HOME/.cache/pip:/root/.cache/pip -v $HOME/.cpanm:/root/.cpanm -v $HOME/.sbt:/root/.sbt -v $HOME/.ivy2:/root/.ivy2 -v $HOME/.gradle:/root/.gradle'
 //    }
 
+    // =========================================
+    //                Kubernetes
+    //
+    //    https://plugins.jenkins.io/kubernetes/
+    //
     // run pipeline in a k8s pod, can choose different containers in stages further down
 //    kubernetes {
 //    //label 'mylabel'
