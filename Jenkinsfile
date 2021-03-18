@@ -23,6 +23,10 @@
 
 pipeline {
 
+  // ========================================================================== //
+  //                                  A g e n t s
+  // ========================================================================== //
+
   // agent setting is required otherwise build won't ever run
   // run pipeline any agent
   agent any
@@ -43,35 +47,39 @@ pipeline {
 //    kubernetes {
 //    //label 'mylabel'
 //    defaultContainer 'gcloud-sdk'  // default container the build executes in, otherwise uses jnlp by default which doesn't have the right tooling
-//    // use external pod spec file, relative to root of repo, better for yaml validation and sharing between pipelines
+//    // use external yaml rather than inline pod spec - better for yaml validation and sharing between pipelines
 //    // https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-pod.yaml
-//    //yamlFile 'jenkins-agent-pod.yaml'
-//    yaml """\
-//      apiVersion: v1
-//      kind: Pod
-//      metadata:
-//      namespace: jenkins
-//      #  labels:
-//      #  app: gcloud-sdk
-//      spec:
-//        containers:
-//          - name: gcloud-sdk  # do not name this 'jnlp', without that container this'll never come up properly to execute the build
-//            image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
-//            tty: true
-//          # more containers if you want to run different stages in different containers
-//        #  - name: busybox
-//        #    image: busybox
-//        #    command:
-//        #      - cat
-//        #    tty: true
-//        #  - name: golang
-//        #    image: golang:1.10
-//        #    command:
-//        #      - cat
-//        #    tty: true
-//        """.stripIndent()
+//    yamlFile 'jenkins-agent-pod.yaml'  // relative to root of repo
+//    //yaml """\
+//    //  apiVersion: v1
+//    //  kind: Pod
+//    //  metadata:
+//    //  namespace: jenkins
+//    //  #  labels:
+//    //  #  app: gcloud-sdk
+//    //  spec:
+//    //    containers:
+//    //      - name: gcloud-sdk  # do not name this 'jnlp', without that container this'll never come up properly to execute the build
+//    //        image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+//    //        tty: true
+//    //      # more containers if you want to run different stages in different containers
+//    //    #  - name: busybox
+//    //    #    image: busybox
+//    //    #    command:
+//    //    #      - cat
+//    //    #    tty: true
+//    //    #  - name: golang
+//    //    #    image: golang:1.10
+//    //    #    command:
+//    //    #      - cat
+//    //    #    tty: true
+//    //    """.stripIndent()
 //     }
 //  }
+
+  // ========================================================================== //
+  //                                 O p t i o n s
+  // ========================================================================== //
 
   options {
     // put timestamps in console logs
@@ -103,8 +111,10 @@ pipeline {
   //  string(name: 'MyVar', defaultValue: 'MyString', description: 'blah')
   //}
 
-  // Credentials:
-  //
+  // ========================================================================== //
+  //                             C r e d e n t i a l s
+  // ========================================================================== //
+
   //    https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#handling-credentials
   //
   // XXX: do not allow untrusted Pipeline jobs / users to use trusted Credentials as they can extract these environment variables
@@ -117,6 +127,10 @@ pipeline {
     AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
   }
+
+  // ========================================================================== //
+  //                                  S t a g e s
+  // ========================================================================== //
 
   stages {
     // not needed in a multibranch pipeline build which does this automatically
