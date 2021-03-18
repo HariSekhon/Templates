@@ -68,7 +68,7 @@ pipeline {
 //        #    image: golang:1.10
 //        #    command:
 //        #      - cat
-//        #    tty: true  # required
+//        #    tty: true
 //        """.stripIndent()
 //     }
 //  }
