@@ -136,6 +136,7 @@ pipeline {
     // not needed in a multibranch pipeline build which does this automatically
     stage ('Checkout') {
       steps {
+        milestone(10)
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/harisekhon/devops-bash-tools']]])
       }
     }
@@ -144,7 +145,7 @@ pipeline {
       when { branch pattern: '^staging$', comparator: 'REGEXP' }
 
       steps {
-        milestone(1)
+        milestone(20)
         timeout(time: 5, unit: 'MINUTES') {
           sh 'path/to/git_merge_staging_to_dev.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
         }
@@ -153,6 +154,7 @@ pipeline {
 
     stage('Setup') {
       steps {
+        milestone(30)
         // execute in container name defined in the kubernetes {} section near the top
         //container('gcloud-sdk') {
 
@@ -188,7 +190,7 @@ pipeline {
 //      }
       steps {
         // forbids older builds from starting
-        milestone(1)
+        milestone(50)
         //echo "${params.MyVar}"
         echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
         echo 'Building..'
@@ -220,6 +222,7 @@ pipeline {
       //  retry(2)
       //}
       steps {
+        milestone(70)
         echo 'Testing..'
         timeout(time: 60, unit: 'MINUTES') {
           sh 'make test'
@@ -262,7 +265,7 @@ pipeline {
       lock(resource: 'Deploy', inversePrecedence: true) {
         steps {
           // forbids older deploys from starting
-          milestone(3)
+          milestone(100)
           echo 'Deploying....'
           // push artifacts and/or deploy to production
           timeout(time: 15, unit: 'MINUTES') {
