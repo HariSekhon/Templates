@@ -20,6 +20,10 @@
 
 // https://jenkins.io/doc/book/pipeline/syntax/
 
+  // ========================================================================== //
+  //                        S h a r e d   L i b r a r i e s
+  // ========================================================================== //
+
 
 pipeline {
 
@@ -30,7 +34,8 @@ pipeline {
   // agent setting is required otherwise build won't ever run
   // run pipeline any agent
   agent any
-  // can override this on a per stage basis, but leaving this as any will incur some overhead on the Jenkins master in that case, better to switch whole pipeline to a remote agent if you can, unless you want to parallelize the stages among different agents, which might be especially useful for on-demand cloud agents run in Kubernetes
+  // can override this on a per stage basis, but leaving this as "any" will incur some overhead on the Jenkins master in that case, better to switch whole pipeline to a remote agent if you can, unless you want to parallelize the stages among different agents, which might be especially useful for on-demand cloud agents run in Kubernetes
+  // putting agents{} sections in stage will also have options applied to the agent eg. timeout includes agent provisioning time
 
   // more fancy agents - Docker or Kubernetes
 //  agent {
@@ -95,23 +100,39 @@ pipeline {
   // ========================================================================== //
 
   options {
+    // only allow 1 of this pipeline to run at a time - usually better to just lock some stages eg. see Deploy stage further down
+    //disableConcurrentBuilds()
+
     // put timestamps in console logs
     timestamps()
 
-    // timeout entire pipeline after 4 hours
+    // timeout entire pipeline after 2 hours
+    // XXX: if using Human Gate input in prod pipeline, if you don't confirm the deployment within under 2 hours this build will be cancelled to avoid hogging executors
     timeout(time: 2, unit: 'HOURS')
 
     //retry entire pipeline 3 times
     //retry(3)
-    // enable dthe build status feedback to Jenkins
 
-    gitLabConnection('Gitlab')
-    gitlabCommitStatus(name: "Jenkins build $BUILD_DISPLAY_NAME")
+    // https://www.jenkins.io/doc/book/pipeline/syntax/#parallel
+    parallelsAlwaysFailFast()
+
+    // only keep last 100 pipeline logs and artifacts
+    buildDiscarder(logRotator(numToKeepStr: '100')) }
+
+    // https://www.jenkins.io/doc/pipeline/steps/gitlab-plugin/
+    // enable build status feedback to GitLab
+    //gitLabConnection('Gitlab')
+    //gitlabCommitStatus(name: "Jenkins build $BUILD_DISPLAY_NAME")
   }
 
+  // https://www.jenkins.io/doc/book/pipeline/syntax/#cron-syntax
   triggers {
-    cron('H 10 * * 1-5')
-    pollSCM('H/2 * * * *')
+    // replace 0 with H (hash) to randomize starts to spread load and avoid spikes
+    // the time is consistent for each job though as it's based on the hash of the job name
+    pollSCM('H/2 * * * *')  // run every 2 mins, at a consistent offset time within that 2 min interval
+    cron('H 10 * * 1-5')    // run at 10:XX:XX am every weekday morning, ie. some job fixed time between 10-11am
+    cron('@hourly') // same as cron('H * * * *')
+    cron('@daily')  // same as cron('H H * * *')
   }
 
   // need to specify at least one env var if enabling
@@ -136,8 +157,8 @@ pipeline {
   // can move this under a stage to limit the scope of their visibility
   environment {
     // create these credentials as Secret Text in Jenkins UI -> Manage Jenkins -> Manage Credentials -> Jenkins -> Global Credentials -> Add Credentials
-    AWS_ACCESS_KEY_ID   = credentials('aws-secret-key-id')
-    AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+    AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
+    AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
   }
 
@@ -145,7 +166,12 @@ pipeline {
   //                                  S t a g e s
   // ========================================================================== //
 
+  // https://www.jenkins.io/doc/pipeline/steps/
+  //
+  // https://www.jenkins.io/doc/pipeline/steps/workflow-basic-steps/
+
   stages {
+
     // not needed in a multibranch pipeline build which does this automatically
     stage ('Checkout') {
       steps {
@@ -155,7 +181,14 @@ pipeline {
     }
 
     stage('Git Merge') {
-      when { branch pattern: '^staging$', comparator: 'REGEXP' }
+      // applied before stage { agent{} }
+//      options {
+//        // includes agent wait time, agent availability delays could induce this stage to fail this way
+//        timeout(time: 1, unit: 'HOURS')
+//      }
+
+      //when { branch pattern: '^refs/heads/staging$', comparator: 'REGEXP' }
+      when { branch 'refs/heads/staging' }
 
       steps {
         milestone(ordinal: 20, label: "Milestone: Git Merge")
@@ -168,6 +201,7 @@ pipeline {
     stage('Setup') {
       steps {
         milestone(ordinal: 30, label: "Milestone: Setup")
+        label 'Setup'
         // execute in container name defined in the kubernetes {} section near the top
         //container('gcloud-sdk') {
 
@@ -192,6 +226,8 @@ pipeline {
       }
     }
 
+    // Parallelize build via multiple sub-stages if possible:
+    // https://www.jenkins.io/doc/book/pipeline/syntax/#parallel
     stage('Build') {
       // only apply env to this stage
       environment {
@@ -201,12 +237,17 @@ pipeline {
 //      agent {
 //        label 'linux'
 //      }
+
       steps {
         // forbids older builds from starting
         milestone(ordinal: 50, label: "Milestone: Build")
+        // convenient in Blue Ocean to see the environment quickly in a separate expand box
+        timeout(time: 1, unit: 'MINUTES') {
+          sh script: 'env | sort', label: 'Environment'
+        }
         //echo "${params.MyVar}"
-        echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
-        echo 'Building..'
+        echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
+        echo 'Building...'
         timeout(time: 60, unit: 'MINUTES') {
           sh 'make'
           // or
@@ -236,7 +277,7 @@ pipeline {
       //}
       steps {
         milestone(ordinal: 70, label: "Milestone: Test")
-        echo 'Testing..'
+        echo 'Testing...'
         timeout(time: 60, unit: 'MINUTES') {
           sh 'make test'
           // junit '**/target/*.xml'
@@ -245,9 +286,23 @@ pipeline {
     }
 
 //    stage('Human Gate') {
+//      when {
+//        // TODO: test with and without
+//        // https://www.jenkins.io/doc/book/pipeline/syntax/#evaluating-when-before-the-input-directive
+//        beforeInput true  // change order to evaluate when{} first to only prompt if this is on production branch
+//        branch 'refs/heads/production'
+//      }
 //      steps {
 //        milestone(ordinal: 85, label: "Milestone: Human Gate")
+//        // by default input applies after options{} but before agent{} or when{}
+//        // https://www.jenkins.io/doc/book/pipeline/syntax/#input
 //        input "Proceed to deployment?"
+//        input {
+//          message "Proceed to deployment?"
+//          submitter "platform-engineering@mycompany.co.uk"  // only allow people in platform engineering group to approve the human gate
+//          submitterParameter SUBMITTER
+//        }
+//        echo "Deployment approved by ${SUBMITTER}"
 //      }
 //    }
 
@@ -267,8 +322,9 @@ pipeline {
     }
 
     stage('Deploy') {
-      //when { branch pattern: '^production$', comparator: 'REGEXP' }
-      when { branch pattern: 'production' }
+      //when { branch pattern: '^refs/heads/production$', comparator: 'REGEXP' }
+      //when { branch pattern: 'refs/heads/production' }
+      when { branch 'refs/heads/production' }
 
       // prompt to deploy - use in separate stage Human Gate instead
       //input "Deploy?"
@@ -280,7 +336,7 @@ pipeline {
         steps {
           // forbids older deploys from starting
           milestone(ordinal: 100, label: "Milestone: Deploy")
-          echo 'Deploying....'
+          echo 'Deploying...'
           // push artifacts and/or deploy to production
           timeout(time: 15, unit: 'MINUTES') {
             sh 'make deploy'
@@ -292,10 +348,10 @@ pipeline {
 
     stage('Deploy Canary') {
       // XXX: remember to escape backslashes (double backslash)
-      //when { branch pattern: '^staging$', comparator: 'REGEXP' }
-      when { branch pattern: 'staging' }
-      //when { not { branch pattern: 'production' } }
+      //when { branch pattern: '^refs/heads/staging$', comparator: 'REGEXP' }
+      when { branch 'refs/heads/staging' }
 
+      echo 'Deploying Canary release...'
       // uses a Jenkins credential containing an uploaded .kube/config
       withKubeConfig([credentialsId:kubeconfig, contextName:canary]){
         sh 'kubectl apply -f manifests/'
@@ -309,11 +365,11 @@ pipeline {
     stage('Deploy Production') {
       // protection for Multibranch Pipelines to not deploy the wrong environment (prod may have side effects eg. customer notifications that you absolutely cannot allow into Staging / Development environments)
       // path glob by default
-      when { branch pattern: 'production' }
-      // TODO: test this in Prod
+      when { branch 'refs/heads/production' }
       // XXX: remember to escape backslashes (double backslash)
-      //when { branch pattern: '^production$', comparator: 'REGEXP' }
+      //when { branch pattern: '^refs/heads/production$', comparator: 'REGEXP' }
 
+      echo 'Deploying Production release...'
       withKubeConfig([credentialsId:kubeconfig, contextName:prod]){
         sh 'kubectl apply -f manifests/'
       }
@@ -341,6 +397,11 @@ pipeline {
 
   }
 
+  // ========================================================================== //
+  //                                    P o s t
+  // ========================================================================== //
+
+  // https://www.jenkins.io/doc/book/pipeline/syntax/#post
   post {
     always {
       echo 'Always'
@@ -368,6 +429,7 @@ pipeline {
     unstable {
       echo 'UNSTABLE!'
     }
+    // only runs if status changed from last run
     changed {
       echo 'Pipeline state change! (success vs failure)'
     }
