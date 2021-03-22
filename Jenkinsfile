@@ -187,8 +187,10 @@ pipeline {
 //        timeout(time: 1, unit: 'HOURS')
 //      }
 
-      //when { branch pattern: '^refs/heads/staging$', comparator: 'REGEXP' }
-      when { branch 'refs/heads/staging' }
+      // XXX: only works on a Multi-branch pipeline and causes Stage skip in normal Pipeline builds
+      //      usually this will be something like origin/staging - use the Environment step to show the BRANCH_NAME / GIT_BRANCH
+      //when { branch pattern: '^.*/staging$', comparator: 'REGEXP' }
+      when { branch '*/staging' }
 
       steps {
         milestone(ordinal: 20, label: "Milestone: Git Merge")
@@ -290,7 +292,7 @@ pipeline {
 //        // TODO: test with and without
 //        // https://www.jenkins.io/doc/book/pipeline/syntax/#evaluating-when-before-the-input-directive
 //        beforeInput true  // change order to evaluate when{} first to only prompt if this is on production branch
-//        branch 'refs/heads/production'
+//        branch '*/production'
 //      }
 //      steps {
 //        milestone(ordinal: 85, label: "Milestone: Human Gate")
@@ -322,9 +324,9 @@ pipeline {
     }
 
     stage('Deploy') {
-      //when { branch pattern: '^refs/heads/production$', comparator: 'REGEXP' }
-      //when { branch pattern: 'refs/heads/production' }
-      when { branch 'refs/heads/production' }
+      //when { branch pattern: '^.*/production$', comparator: 'REGEXP' }
+      //when { branch pattern: '*/production' }
+      //when { branch '*/production' }
 
       // prompt to deploy - use in separate stage Human Gate instead
       //input "Deploy?"
@@ -348,8 +350,8 @@ pipeline {
 
     stage('Deploy Canary') {
       // XXX: remember to escape backslashes (double backslash)
-      //when { branch pattern: '^refs/heads/staging$', comparator: 'REGEXP' }
-      when { branch 'refs/heads/staging' }
+      //when { branch pattern: '^*/staging$', comparator: 'REGEXP' }
+      when { branch '*/staging' }
 
       echo 'Deploying Canary release...'
       // uses a Jenkins credential containing an uploaded .kube/config
@@ -364,10 +366,10 @@ pipeline {
 
     stage('Deploy Production') {
       // protection for Multibranch Pipelines to not deploy the wrong environment (prod may have side effects eg. customer notifications that you absolutely cannot allow into Staging / Development environments)
-      // path glob by default
-      when { branch 'refs/heads/production' }
       // XXX: remember to escape backslashes (double backslash)
-      //when { branch pattern: '^refs/heads/production$', comparator: 'REGEXP' }
+      //when { branch pattern: '^.*/production$', comparator: 'REGEXP' }
+      // path glob by default
+      when { branch '*/production' }
 
       echo 'Deploying Production release...'
       withKubeConfig([credentialsId:kubeconfig, contextName:prod]){
