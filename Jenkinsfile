@@ -200,8 +200,9 @@ pipeline {
         }
         lock(resource: 'Git Merge Staging to Dev', inversePrecedence: true) {
           timeout(time: 5, unit: 'MINUTES') {
+            // requires SSH Agent plugin + restart
             sshagent (credentials: ['jenkins-ssh-key-for-github']) {
-              sh 'path/to/git_merge_staging_to_dev.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
+              sh 'path/to/git_merge_branch.sh staging dev'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
             }
           }
         }
