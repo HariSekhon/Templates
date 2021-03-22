@@ -193,9 +193,17 @@ pipeline {
       when { branch '*/staging' }
 
       steps {
-        milestone(ordinal: 20, label: "Milestone: Git Merge")
-        timeout(time: 5, unit: 'MINUTES') {
-          sh 'path/to/git_merge_staging_to_dev.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
+        milestone ordinal: 20, label: "Milestone: Git Merge"
+        echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
+        timeout(time: 1, unit: 'MINUTES') {
+          sh script: 'env | sort', label: 'Environment'
+        }
+        lock(resource: 'Git Merge Staging to Dev', inversePrecedence: true) {
+          timeout(time: 5, unit: 'MINUTES') {
+            sshagent (credentials: ['jenkins-ssh-key-for-github']) {
+              sh 'path/to/git_merge_staging_to_dev.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
+            }
+          }
         }
       }
     }
