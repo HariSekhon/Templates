@@ -147,7 +147,7 @@ pipeline {
   //}
 
   // ========================================================================== //
-  //                             C r e d e n t i a l s
+  //               E n v i r o n m e n t   &   C r e d e n t i a l s
   // ========================================================================== //
 
   //    https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#handling-credentials
@@ -161,6 +161,13 @@ pipeline {
     AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
     AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
+
+    // for Run Tests stage
+    // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
+    // reference this in single quotes to interpolate in the shell
+    // XXX: Edit
+    //SELENOID_URL = 'http://x.x.x.x:4444/wd/hub'
+    THREAD_COUNT = 6
   }
 
   // ========================================================================== //
@@ -235,6 +242,29 @@ pipeline {
             fi;
           done;
         '''
+      }
+    }
+
+    // not needed for Kubernetes / Docker agents as they start clean
+    stage('Maven Clean') {
+      steps {
+        sh "mvn clean"
+      }
+    }
+
+    stage('Run Tests') {
+      parallel {
+        stage('Run Desktop Tests') {
+          steps {
+            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount=$THREAD_COUNT"
+          }
+        }
+
+        stage('Run Mobile Tests') {
+          steps {
+            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount=$THREAD_COUNT"
+          }
+        }
       }
     }
 
