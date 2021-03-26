@@ -252,6 +252,7 @@ pipeline {
 
       steps {
         // forbids older builds from starting
+        // XXX: do not wrap milestone in a retry (stage/multi-steps/whole pipeline) because it will fail retry even for the same ordinal number
         milestone(ordinal: 50, label: "Milestone: Build")
         // convenient in Blue Ocean to see the environment quickly in a separate expand box
         timeout(time: 1, unit: 'MINUTES') {
