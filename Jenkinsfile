@@ -110,7 +110,8 @@ pipeline {
     // XXX: if using Human Gate input in prod pipeline, if you don't confirm the deployment within under 2 hours this build will be cancelled to avoid hogging executors
     timeout(time: 2, unit: 'HOURS')
 
-    //retry entire pipeline 3 times
+    //retry entire pipeline 3 times, better to do retry at each Stage / Step for efficiency to not repeat previously succeed steps
+    // XXX: this also fails Milestone ordinals when repeating previous Stage / Step, cannot go backwards
     //retry(3)
 
     // https://www.jenkins.io/doc/book/pipeline/syntax/#parallel
