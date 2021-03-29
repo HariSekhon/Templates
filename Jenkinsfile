@@ -143,7 +143,8 @@ pipeline {
   //}
 
   //parameters {
-  //  string(name: 'MyVar', defaultValue: 'MyString', description: 'blah')
+  //  // access this using ${params.MyVar} elsewhere in build stages
+  //  string(name: 'MyVar', defaultValue: 'MyString', description: 'blah', trim: true)
   //}
 
   // ========================================================================== //
@@ -450,16 +451,29 @@ pipeline {
   post {
     always {
       echo 'Always'
-      //deleteDir() // clean up workspace
+      //deleteDir()  // clean up workspace - not needed if you're running each build in a separate Docker container or Kubernetes pod
 
-      // collect JUnit reports for Jenkins UI
-      //junit 'build/reports/**/*.xml'
-      //junit '**/target/*.xml'
-      //
-      // collect artifacts to Jenkins for analysis
-      //archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-      //archiveArtifacts 'src/*/*/*.tap'
-      //step([$class: "TapPublisher", testResults: 'src/*/*/*.tap', verbose: false])
+//      // collect JUnit reports for Jenkins UI
+//      junit 'build/reports/**/*.xml'
+//      junit '**/target/*.xml'
+//
+//      // collect artifacts to Jenkins for analysis
+//      archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+//      archiveArtifacts 'src/*/*/*.tap'
+//      step([$class: "TapPublisher", testResults: 'src/*/*/*.tap', verbose: false])
+
+//      script {
+//        sh 'chmod -R o+w target/allure-reports'  // if build runs as root but Jenkins Allure plugin runs as jenkins user
+//        //sh 'ls -lR target/allure-reports'        // check the file perms, 0022 umask by default should be ok
+//        allure([
+//          includeProperties: false,
+//          jdk: '',
+//          properties: [],
+//          reportBuildPolicy: 'ALWAYS',
+//          results: [[path: 'target/allure-results']]
+//        ])
+//      }
+
     }
     success {
       echo 'SUCCESS!'
