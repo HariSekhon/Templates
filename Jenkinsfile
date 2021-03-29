@@ -204,6 +204,8 @@ pipeline {
         milestone ordinal: 20, label: "Milestone: Git Merge"
         echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
         timeout(time: 1, unit: 'MINUTES') {
+          sh script: 'whoami', label: 'User' // because $USER is sometimes not defined in env
+          sh script: 'id', label: 'id'       // to compare UID / GID vs filesystem permissions
           sh script: 'env | sort', label: 'Environment'
         }
         lock(resource: 'Git Merge Staging to Dev', inversePrecedence: true) {
