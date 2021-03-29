@@ -180,7 +180,7 @@ pipeline {
 
   stages {
 
-    // not needed in a multibranch pipeline build which does this automatically
+    // not usually needed when sourcing Jenkinsfile from Git SCM in Pipeline / Multibranch Pipeline this is implied
     stage ('Checkout') {
       steps {
         milestone(ordinal: 10, label: "Milestone: Checkout")
