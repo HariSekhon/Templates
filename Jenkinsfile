@@ -271,6 +271,23 @@ pipeline {
       }
     }
 
+    stage('Run Tests in Serial') {
+      stage('Run Desktop Tests') {
+        steps {
+          // continue to Mobile tests regardless of whether this stage fails, will still mark the build to failed though
+          catchError (buildResult: 'FAILURE', stageResult: 'FAILURE') {  // set stage to failed too, not just build
+            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount=$THREAD_COUNT"
+          }
+        }
+      }
+
+      stage('Run Mobile Tests') {
+        steps {
+          sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount=$THREAD_COUNT"
+        }
+      }
+    }
+
     // Parallelize build via multiple sub-stages if possible:
     // https://www.jenkins.io/doc/book/pipeline/syntax/#parallel
     stage('Build') {
@@ -387,7 +404,8 @@ pipeline {
           timeout(time: 15, unit: 'MINUTES') {
             sh 'make deploy'
             // or
-            sh './gcp_ci_deploy_k8s.sh'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
+            // - this autoloads kubeconfig from GKE using GCP serviceaccount credential key
+            sh './gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
           }
         }
       }
@@ -403,9 +421,7 @@ pipeline {
         sh 'kubectl apply -f manifests/'
       }
       // EITHER OR
-      // - this autoloads kubeconfig from GKE using GCP serviceaccount credential key
-      // - find this in DevOps Bash tools repo - https://github.com/HariSekhon/DevOps-Bash-tools/
-      sh 'path/to/gcp_ci_deploy_k8s.sh'
+      sh 'path/to/gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
     }
 
     stage('Deploy Production') {
@@ -420,9 +436,7 @@ pipeline {
         sh 'kubectl apply -f manifests/'
       }
       // EITHER OR
-      // - this autoloads kubeconfig from GKE using GCP serviceaccount credential key
-      // - find this in DevOps Bash tools repo - https://github.com/HariSekhon/DevOps-Bash-tools/
-      sh 'path/to/gcp_ci_deploy_k8s.sh'
+      sh 'path/to/gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
     }
 
     // see https://jenkins.io/blog/2017/09/25/declarative-1/
