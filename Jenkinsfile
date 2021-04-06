@@ -17,12 +17,17 @@
 //                        J e n k i n s   P i p e l i n e
 // ========================================================================== //
 
-
 // https://jenkins.io/doc/book/pipeline/syntax/
 
-  // ========================================================================== //
-  //                        S h a r e d   L i b r a r i e s
-  // ========================================================================== //
+
+// ========================================================================== //
+//                        S h a r e d   L i b r a r i e s
+// ========================================================================== //
+
+// https://www.jenkins.io/doc/book/pipeline/shared-libraries/
+
+// import a preconfigured shared library to use its functions for code reuse
+@Library('namedlibrary@branchOrTag') _
 
 
 pipeline {
