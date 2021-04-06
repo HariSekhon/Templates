@@ -207,7 +207,6 @@ pipeline {
       when { branch '*/staging' }
 
       steps {
-        milestone ordinal: 20, label: "Milestone: Git Merge"
         echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
         timeout(time: 1, unit: 'MINUTES') {
           sh script: 'whoami', label: 'User' // because $USER is sometimes not defined in env
@@ -215,6 +214,7 @@ pipeline {
           sh script: 'env | sort', label: 'Environment'
         }
         lock(resource: 'Git Merge Staging to Dev', inversePrecedence: true) {
+          milestone ordinal: 20, label: "Milestone: Git Merge"
           timeout(time: 5, unit: 'MINUTES') {
             // requires SSH Agent plugin + restart
             sshagent (credentials: ['jenkins-ssh-key-for-github']) {
