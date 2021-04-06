@@ -68,35 +68,38 @@ pipeline {
     //
     // run pipeline in a k8s pod, can choose different containers in stages further down
 //    kubernetes {
-//    //label 'mylabel'
-//    defaultContainer 'gcloud-sdk'  // default container the build executes in, otherwise uses jnlp by default which doesn't have the right tooling
-//    // use external yaml rather than inline pod spec - better for yaml validation and sharing between pipelines
-//    // https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-pod.yaml
-//    yamlFile 'jenkins-agent-pod.yaml'  // relative to root of repo
-//    //yaml """\
-//    //  apiVersion: v1
-//    //  kind: Pod
-//    //  metadata:
-//    //  namespace: jenkins
-//    //  #  labels:
-//    //  #  app: gcloud-sdk
-//    //  spec:
-//    //    containers:
-//    //      - name: gcloud-sdk  # do not name this 'jnlp', without that container this'll never come up properly to execute the build
-//    //        image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
-//    //        tty: true
-//    //      # more containers if you want to run different stages in different containers
-//    //    #  - name: busybox
-//    //    #    image: busybox
-//    //    #    command:
-//    //    #      - cat
-//    //    #    tty: true
-//    //    #  - name: golang
-//    //    #    image: golang:1.10
-//    //    #    command:
-//    //    #      - cat
-//    //    #    tty: true
-//    //    """.stripIndent()
+//      defaultContainer 'gcloud-sdk'  // default container the build executes in, otherwise uses jnlp by default which doesn't have the right tooling
+//      idleMinutes 5  // keep alive for 5 mins to reuse if a new build is triggered in that time
+//      //label 'jenkins-agent' // prefix name for k8s pod - defaults to <pipeline>-<buildnumber>-<randomhash>
+//      //runAsUser <uid>
+//      //runAsGroup <gid>
+//      // use external yaml rather than inline pod spec - better for yaml validation and sharing between pipelines
+//      // https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-pod.yaml
+//      yamlFile 'jenkins-agent-pod.yaml'  // relative to root of repo
+//      //yaml """\
+//      //  apiVersion: v1
+//      //  kind: Pod
+//      //  metadata:
+//      //  namespace: jenkins
+//      //  #  labels:
+//      //  #  app: gcloud-sdk
+//      //  spec:
+//      //    containers:
+//      //      - name: gcloud-sdk  # do not name this 'jnlp', without that container this'll never come up properly to execute the build
+//      //        image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+//      //        tty: true
+//      //      # more containers if you want to run different stages in different containers
+//      //    #  - name: busybox
+//      //    #    image: busybox
+//      //    #    command:
+//      //    #      - cat
+//      //    #    tty: true
+//      //    #  - name: golang
+//      //    #    image: golang:1.10
+//      //    #    command:
+//      //    #      - cat
+//      //    #    tty: true
+//      //    """.stripIndent()
 //     }
 //  }
 
