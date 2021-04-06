@@ -27,7 +27,7 @@
 // https://www.jenkins.io/doc/book/pipeline/shared-libraries/
 
 // import a preconfigured shared library to use its functions for code reuse
-@Library('namedlibrary@branchOrTag') _
+@Library('namedlibrary@master') _
 
 
 pipeline {
