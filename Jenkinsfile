@@ -368,12 +368,13 @@ pipeline {
 //        // by default input applies after options{} but before agent{} or when{}
 //        // https://www.jenkins.io/doc/book/pipeline/syntax/#input
 //        input "Proceed to deployment?"
-//        input {
-//          message "Proceed to deployment?"
-//          submitter "platform-engineering@mycompany.co.uk"  // only allow people in platform engineering group to approve the human gate
-//          submitterParameter SUBMITTER
-//        }
-//        echo "Deployment approved by $SUBMITTER"
+//        def approver = input (
+//          message: "Proceed to deployment?",
+//          submitter: "platform-engineering@mycompany.co.uk",  // only allow people in platform engineering group to approve the human gate
+//          // only do this if you have defined parameters and need to choose which property to store the result in
+//          //submitterParameter: "SUBMITTER"
+//        )
+//        echo "Deployment approved by $approver"
 //      }
 //    }
 
