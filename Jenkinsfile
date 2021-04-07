@@ -373,7 +373,7 @@ pipeline {
 //          submitter "platform-engineering@mycompany.co.uk"  // only allow people in platform engineering group to approve the human gate
 //          submitterParameter SUBMITTER
 //        }
-//        echo "Deployment approved by ${SUBMITTER}"
+//        echo "Deployment approved by $SUBMITTER"
 //      }
 //    }
 
