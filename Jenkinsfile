@@ -374,7 +374,6 @@ pipeline {
 //          // only do this if you have defined parameters and need to choose which property to store the result in
 //          //submitterParameter: "SUBMITTER"
 //        )
-//        //echo "Deployment approved by $approver"
 //      }
 //    }
 
