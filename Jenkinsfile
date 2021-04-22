@@ -197,6 +197,7 @@ pipeline {
       }
     }
 
+    // auto-backport hotfixes to upstream environments
     stage('Git Merge') {
       // applied before stage { agent{} }
 //      options {
@@ -408,7 +409,7 @@ pipeline {
       // discard other deploys once this one has been chosen
       // use Lockable Resources plugin to limit deploy concurrency to 1
       // inversePrecedence: true makes Jenkins use the most recent deployment first, which when combined with Milestone, discards older deploys
-      lock(resource: 'Deploy', inversePrecedence: true) {
+      lock(resource: "Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}", inversePrecedence: true) {
         steps {
           // forbids older deploys from starting
           milestone(ordinal: 100, label: "Milestone: Deploy")
