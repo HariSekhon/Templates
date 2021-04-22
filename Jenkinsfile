@@ -29,6 +29,9 @@
 // import a preconfigured shared library to use its functions for code reuse
 @Library('namedlibrary@master') _
 
+// more dynamic but $BRANCH_NAME is only available in a Jenkins MultiBranch Pipeline
+//library "unbiased@$BRANCH_NAME"
+
 
 pipeline {
 
