@@ -142,9 +142,17 @@ pipeline {
     // replace 0 with H (hash) to randomize starts to spread load and avoid spikes
     // the time is consistent for each job though as it's based on the hash of the job name
     pollSCM('H/2 * * * *')  // run every 2 mins, at a consistent offset time within that 2 min interval
-    cron('H 10 * * 1-5')    // run at 10:XX:XX am every weekday morning, ie. some job fixed time between 10-11am
-    cron('@hourly') // same as cron('H * * * *')
-    cron('@daily')  // same as cron('H H * * *')
+    // XXX: GitHub Jenkins webhooks are more instant and efficient than this frequent polling
+
+    // XXX: Jenkins webhook bug - occasionally fails (rare), so poll GitHub / SCM as a backup to trigger
+    //
+    //      https://issues.jenkins.io/browse/JENKINS-50154
+    //
+    pollSCM('H/10 * * * *')  // run every 2 mins, at a consistent offset time within that 2 min interval
+
+    cron('H 10 * * 1-5')  // run at 10:XX:XX am every weekday morning, ie. some job fixed time between 10-11am
+    cron('@hourly')       // same as cron('H * * * *')
+    cron('@daily')        // same as cron('H H * * *')
   }
 
   // need to specify at least one env var if enabling
