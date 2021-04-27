@@ -524,12 +524,12 @@ pipeline {
     }
     fixed {
       echo "FIXED!"
-      //slackSend "Build Fixed - Job ${env.JOB_NAME} Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+      //slackSend "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
     }
     failure {
       echo 'FAILURE!'
-      //mail to: team@example.com, subject: "Jenkins Pipeline Failed - Job ${env.JOB_NAME} Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
-      //slackSend "Build FAILED - Job ${env.JOB_NAME} Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+      //mail to: team@example.com, subject: "Jenkins Pipeline Failed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER}"
+      //slackSend "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
     }
     unsuccessful {
     }
