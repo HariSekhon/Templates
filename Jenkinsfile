@@ -527,7 +527,8 @@ pipeline {
       //
       // https://www.jenkins.io/doc/pipeline/steps/slack/
       //
-      //slackSend "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+      //slackSend color: 'good',
+      //  message: "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
     }
     failure {
       echo 'FAILURE!'
@@ -535,7 +536,8 @@ pipeline {
 
       // https://www.jenkins.io/doc/pipeline/steps/slack/
       //
-      //slackSend "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+      //slackSend color: 'danger',
+      //  message: "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
     }
     unsuccessful {
     }
