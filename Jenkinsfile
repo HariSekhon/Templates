@@ -522,9 +522,16 @@ pipeline {
       //      color: 'good',
       //      message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
     }
+    fixed {
+      echo "FIXED!"
+      slackSend "Build Fixed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    }
     failure {
       echo 'FAILURE!'
       //mail to: team@example.com, subject: 'The Pipeline failed :('
+      //slackSend "Build FAILED - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    }
+    unsuccessful {
     }
     unstable {
       echo 'UNSTABLE!'
@@ -532,6 +539,8 @@ pipeline {
     // only runs if status changed from last run
     changed {
       echo 'Pipeline state change! (success vs failure)'
+    }
+    cleanup {
     }
   }
 }
