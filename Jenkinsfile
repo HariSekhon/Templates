@@ -528,7 +528,8 @@ pipeline {
       // https://www.jenkins.io/doc/pipeline/steps/slack/
       //
       //slackSend color: 'good',
-      //  message: "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+      //  //message: "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"      // Classic UI
+      //  message: "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
     }
     failure {
       echo 'FAILURE!'
@@ -537,7 +538,8 @@ pipeline {
       // https://www.jenkins.io/doc/pipeline/steps/slack/
       //
       //slackSend color: 'danger',
-      //  message: "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+      //  //message: "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"      // Classic UI
+      //  message: "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
     }
     unsuccessful {
     }
