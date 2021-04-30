@@ -222,6 +222,12 @@ pipeline {
       when { branch '*/staging' }
 
       steps {
+      // XXX: move to Shared Libary to use Groovy to define lock in a String and add an informational Acquiring Lock message to make it more obvious when a build is waiting on a lock before progressing, otherwise they just look like they're hanging
+      //
+			//String gitMergeLock = "Git Merge '$from_branch' to '$to_branch'"
+			//echo "Acquiring Git Merge Lock: $gitMergeLock"
+			//lock(resource: gitMergeLock, inversePrecedence: true) {
+
         echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
         timeout(time: 1, unit: 'MINUTES') {
           sh script: 'whoami', label: 'User' // because $USER is sometimes not defined in env
@@ -418,6 +424,12 @@ pipeline {
 
       // prompt to deploy - use in separate stage Human Gate instead
       //input "Deploy?"
+
+      // XXX: move to Shared Libary to use Groovy to define lock in a String and add an informational Acquiring Lock message to make it more obvious when a build is waiting on a lock before progressing, otherwise they just look like they're hanging
+      //
+      // String deploymentLock = "Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}"
+      // echo "Acquiring Deployment Lock: $deploymentLock"
+      // lock(resource: deploymentLock, inversePrecedence: true) {
 
       // discard other deploys once this one has been chosen
       // use Lockable Resources plugin to limit deploy concurrency to 1
