@@ -26,6 +26,8 @@
 
 // https://www.jenkins.io/doc/book/pipeline/shared-libraries/
 
+// XXX: see vars/ directory in this repo for Shared Libary code
+
 // import a preconfigured shared library to use its functions for code reuse
 @Library('namedlibrary@master') _
 
@@ -224,7 +226,7 @@ pipeline {
       steps {
       // XXX: move to Shared Libary to use Groovy to define lock in a String and add an informational Acquiring Lock message to make it more obvious when a build is waiting on a lock before progressing, otherwise they just look like they're hanging
       //
-      // XXX: see vars/ shared library directory in DevOps Bash tools repo
+      // XXX: see vars/ shared library directory in this repo
       //
 			//String gitMergeLock = "Git Merge '$from_branch' to '$to_branch'"
 			//echo "Acquiring Git Merge Lock: $gitMergeLock"
@@ -428,6 +430,8 @@ pipeline {
       //input "Deploy?"
 
       // XXX: move to Shared Libary to use Groovy to define lock in a String and add an informational Acquiring Lock message to make it more obvious when a build is waiting on a lock before progressing, otherwise they just look like they're hanging
+      //
+      // see vars/ directory in this repo
       //
       // String deploymentLock = "Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}"
       // echo "Acquiring Deployment Lock: $deploymentLock"
