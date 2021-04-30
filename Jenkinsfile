@@ -224,6 +224,8 @@ pipeline {
       steps {
       // XXX: move to Shared Libary to use Groovy to define lock in a String and add an informational Acquiring Lock message to make it more obvious when a build is waiting on a lock before progressing, otherwise they just look like they're hanging
       //
+      // XXX: see vars/ shared library directory in DevOps Bash tools repo
+      //
 			//String gitMergeLock = "Git Merge '$from_branch' to '$to_branch'"
 			//echo "Acquiring Git Merge Lock: $gitMergeLock"
 			//lock(resource: gitMergeLock, inversePrecedence: true) {
