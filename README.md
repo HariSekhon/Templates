@@ -27,7 +27,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - [Docker](https://www.docker.com/) - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
 - [AWS](https://aws.amazon.com/) - various templates
 - [GCP](https://cloud.google.com/) - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
-- [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Templates/blob/master/Jenkinsfile) and [vars/](https://github.com/HariSekhon/Templates/tree/master/vars) Shared Library
+- [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Templates/blob/master/Jenkinsfile) (advanced) and [vars/](https://github.com/HariSekhon/Templates/tree/master/vars) Shared Library
 - [Vagrant](https://www.vagrantup.com/) - [Vagrantfile](https://github.com/HariSekhon/Templates/blob/master/Vagrantfile)
 - [Make](https://www.gnu.org/software/make/) - [Makefile](https://github.com/HariSekhon/Templates/blob/master/Makefile)
 - [Maven](https://maven.apache.org/) - [pom.xml](https://github.com/HariSekhon/Templates/blob/master/pom.xml)
