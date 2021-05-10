@@ -165,13 +165,33 @@ pipeline {
 
   //parameters {
   //  // access this using ${params.MyVar} elsewhere in build stages
-  //  string(name: 'MyVar', defaultValue: 'MyString', description: 'blah', trim: true)
+  //  string(
+  //    name: 'MyVar',
+  //    defaultValue: 'MyString',
+  //    description: 'blah',
+  //    trim: true
+  //  )
   //}
+
+//  parameters {
+//    string(
+//      name: 'CLASS',
+//      // unfortunately this description gets collapsed to one line, and even inserting \n doesn't help
+//      description: """
+//Which class tests to run?
+//
+//(can specify .** wildcard suffix for multiple classes,
+//or #mymethod suffix for exact method within class)
+//""",
+//      defaultValue: 'com.domain.test.admin.MyTest',
+//      trim: true
+//    )
+//  }
 
   // creates a drop-down list prompt in the Jenkins UI with these pre-populated choices - first choice is the default value
   //parameters {
   //  choice(
-  //    name: 'TEST',
+  //    name: 'PACKAGE',
   //    description: 'Which tests to run?',
   //    choices: [
   //      'com.mydomain.test.admin.**',
@@ -204,6 +224,11 @@ pipeline {
     // XXX: Edit
     //SELENOID_URL = 'http://x.x.x.x:4444/wd/hub/'
     THREAD_COUNT = 6
+
+    SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}>"
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/allure/|Allure Report>)"
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/allure/|Allure Report>) - ${params.CLASS}"    // to differentiate Single Class Tests
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/allure/|Allure Report>) - ${params.PACKAGE}"  // to differentiate Single Package Tests
   }
 
   // ========================================================================== //
@@ -304,8 +329,8 @@ pipeline {
     // alternative quick Pipeline to run just a single package of tests for quicker debugging and testing
     stage('Run Single Package Tests') {
       steps {
-        // params.TEST is populated from the parameters { choice { ... } } defined further above which creates a drop-down list prompt in Jenkins UI
-        sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dtest='${params.TEST}' -DthreadCount='$THREAD_COUNT'"
+        // params.PACKAGE is populated from the parameters { choice { ... } } defined further above which creates a drop-down list prompt in Jenkins UI
+        sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dtest='${params.PACKAGE}' -DthreadCount='$THREAD_COUNT'"
       }
     }
 
@@ -568,8 +593,9 @@ pipeline {
       // https://www.jenkins.io/doc/pipeline/steps/slack/
       //
       //slackSend color: 'good',
-      //  //message: "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"      // Classic UI
-      //  message: "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
+      //  //message: "Build Fixed - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"        // Classic UI
+      //  //message: "Build Fixed - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
+      //  message: "Build FAILED - ${env.SLACK_MESSAGE}"  // unified message with better links to Pipeline, Build # logs and even Allure Report
     }
     failure {
       echo 'FAILURE!'
@@ -578,8 +604,9 @@ pipeline {
       // https://www.jenkins.io/doc/pipeline/steps/slack/
       //
       //slackSend color: 'danger',
-      //  //message: "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"      // Classic UI
-      //  message: "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
+      //  //message: "Build FAILED - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"        // Classic UI
+      //  //message: "Build FAILED - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
+      //  message: "Build FAILED - ${env.SLACK_MESSAGE}"  // unified message with better links to Pipeline, Build # logs and even Allure Report
     }
     unsuccessful {
     }
