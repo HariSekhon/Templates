@@ -168,6 +168,20 @@ pipeline {
   //  string(name: 'MyVar', defaultValue: 'MyString', description: 'blah', trim: true)
   //}
 
+  // creates a drop-down list prompt in the Jenkins UI with these pre-populated choices - first choice is the default value
+  //parameters {
+  //  choice(
+  //    name: 'TEST',
+  //    description: 'Which tests to run?',
+  //    choices: [
+  //      'com.mydomain.test.admin.**',
+  //      'com.mydomain.test.main.**',
+  //      'com.mydomain.test.tools.**',
+  //    ]
+  //  )
+  //}
+
+
   // ========================================================================== //
   //               E n v i r o n m e n t   &   C r e d e n t i a l s
   // ========================================================================== //
@@ -287,17 +301,25 @@ pipeline {
       }
     }
 
-    stage('Run Tests') {
+    // alternative quick Pipeline to run just a single package of tests for quicker debugging and testing
+    stage('Run Single Package Tests') {
+      steps {
+        // params.TEST is populated from the parameters { choice { ... } } defined further above which creates a drop-down list prompt in Jenkins UI
+        sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dtest='${params.TEST}' -DthreadCount='$THREAD_COUNT'"
+      }
+    }
+
+    stage('Run Tests in Parallel') {
       parallel {
         stage('Run Desktop Tests') {
           steps {
-            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount=$THREAD_COUNT"
+            sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount='$THREAD_COUNT'"
           }
         }
 
         stage('Run Mobile Tests') {
           steps {
-            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount=$THREAD_COUNT"
+            sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount='$THREAD_COUNT'"
           }
         }
       }
@@ -308,14 +330,14 @@ pipeline {
         steps {
           // continue to Mobile tests regardless of whether this stage fails, will still mark the build to failed though
           catchError (buildResult: 'FAILURE', stageResult: 'FAILURE') {  // set stage to failed too, not just build
-            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount=$THREAD_COUNT"
+            sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount='$THREAD_COUNT'"
           }
         }
       }
 
       stage('Run Mobile Tests') {
         steps {
-          sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount=$THREAD_COUNT"
+          sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount='$THREAD_COUNT'"
         }
       }
     }
