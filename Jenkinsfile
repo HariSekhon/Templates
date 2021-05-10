@@ -183,7 +183,7 @@ pipeline {
 //(can specify .** wildcard suffix for multiple classes,
 //or #mymethod suffix for exact method within class)
 //""",
-//      defaultValue: 'com.domain.test.admin.MyTest',
+//      defaultValue: 'com.domain.test.admin.blah.MyTest',
 //      trim: true
 //    )
 //  }
