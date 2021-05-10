@@ -188,7 +188,7 @@ pipeline {
     // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
     // reference this in single quotes to interpolate in the shell
     // XXX: Edit
-    //SELENOID_URL = 'http://x.x.x.x:4444/wd/hub'
+    //SELENOID_URL = 'http://x.x.x.x:4444/wd/hub/'
     THREAD_COUNT = 6
   }
 
