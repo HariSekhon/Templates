@@ -227,9 +227,9 @@ pipeline {
 
     // using this only to dedupe common message suffix for Slack channel notifications in post {}
     SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}>"
-    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/allure/|Allure Report>)"
-    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/allure/|Allure Report>) - ${params.CLASS}"    // to differentiate Single Class Tests
-    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/allure/|Allure Report>) - ${params.PACKAGE}"  // to differentiate Single Package Tests
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>)"
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>) - ${params.CLASS}"    // to differentiate Single Class Tests
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>) - ${params.PACKAGE}"  // to differentiate Single Package Tests
   }
 
   // ========================================================================== //
