@@ -222,7 +222,9 @@ pipeline {
     // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
     // reference this in single quotes to interpolate in the shell
     // XXX: Edit
-    //SELENOID_URL = 'http://x.x.x.x:4444/wd/hub/'
+    //SELENIUM_HUB_URL = 'http://x.x.x.x:4444/wd/hub/'
+    // if run on K8s through an ingress (see https://github.com/HariSekhon/Kubernetes-templates/)
+    //SELENIUM_HUB_URL = 'https://x.x.x.x/wd/hub/'
     THREAD_COUNT = 6
 
     // using this only to dedupe common message suffix for Slack channel notifications in post {}
@@ -320,6 +322,12 @@ pipeline {
       }
     }
 
+    stage('Wait for Selenium Grid to be up') {
+      steps {
+        sh script: "./selenium_hub_wait_ready.sh '$SELENIUM_HUB_URL' 60"
+      }
+    }
+
     // not needed for Kubernetes / Docker agents as they start clean
     stage('Maven Clean') {
       steps {
@@ -331,7 +339,7 @@ pipeline {
     stage('Run Single Package Tests') {
       steps {
         // params.PACKAGE is populated from the parameters { choice { ... } } defined further above which creates a drop-down list prompt in Jenkins UI
-        sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dtest='${params.PACKAGE}' -DthreadCount='$THREAD_COUNT'"
+        sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dtest='${params.PACKAGE}' -DthreadCount='$THREAD_COUNT'"
       }
     }
 
@@ -339,13 +347,13 @@ pipeline {
       parallel {
         stage('Run Desktop Tests') {
           steps {
-            sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount='$THREAD_COUNT'"
+            sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount='$THREAD_COUNT'"
           }
         }
 
         stage('Run Mobile Tests') {
           steps {
-            sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount='$THREAD_COUNT'"
+            sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount='$THREAD_COUNT'"
           }
         }
       }
@@ -356,14 +364,14 @@ pipeline {
         steps {
           // continue to Mobile tests regardless of whether this stage fails, will still mark the build to failed though
           catchError (buildResult: 'FAILURE', stageResult: 'FAILURE') {  // set stage to failed too, not just build
-            sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount='$THREAD_COUNT'"
+            sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount='$THREAD_COUNT'"
           }
         }
       }
 
       stage('Run Mobile Tests') {
         steps {
-          sh "mvn test -DselenoidUrl='$SELENOID_URL' -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount='$THREAD_COUNT'"
+          sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount='$THREAD_COUNT'"
         }
       }
     }
