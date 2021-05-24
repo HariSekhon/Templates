@@ -78,9 +78,14 @@ pipeline {
 //      //label 'jenkins-agent' // prefix name for k8s pod - defaults to <pipeline>-<buildnumber>-<randomhash>
 //      //runAsUser <uid>
 //      //runAsGroup <gid>
-//      // use external yaml rather than inline pod spec - better for yaml validation and sharing between pipelines
-//      // https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-pod.yaml
+//      //
+//      // XXX: use external yaml rather than inline pod spec - better for yaml validation and sharing between pipelines
+//      // XXX: See more advanced example including pod scheduling avoiding preemptible nodes here:
+//      //
+//      //    https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-pod.yaml
+//      //
 //      yamlFile 'jenkins-agent-pod.yaml'  // relative to root of repo
+//      // or inline:
 //      //yaml """\
 //      //  apiVersion: v1
 //      //  kind: Pod
