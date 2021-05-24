@@ -93,22 +93,43 @@ pipeline {
 //      //      - name: gcloud-sdk  # do not name this 'jnlp', without that container this'll never come up properly to execute the build
 //      //        image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
 //      //        tty: true
+//      //        resources:
+//      //          requests:
+//      //            cpu: 100m
+//      //            memory: 200Mi
+//      //          limits:
+//      //            cpu: "1"
+//      //            memory: 1Gi
+//      //      # more containers if you want to run different stages in different containers eg. to wget -O- | jq ...
 //      //      - name: jq
 //      //        image: stedolan/jq
 //      //        command:
 //      //          - cat
 //      //        tty: true
-//      //      # more containers if you want to run different stages in different containers
-//      //    #  - name: busybox
-//      //    #    image: busybox
-//      //    #    command:
-//      //    #      - cat
-//      //    #    tty: true
-//      //    #  - name: golang
-//      //    #    image: golang:1.10
-//      //    #    command:
-//      //    #      - cat
-//      //    #    tty: true
+//      //        resources:
+//      //          requests:
+//      //            cpu: 100m
+//      //            memory: 50Mi
+//      //          limits:
+//      //            cpu: 500m
+//      //            memory: 500Mi
+//      //      - name: busybox
+//      //        image: busybox
+//      //        command:
+//      //          - cat
+//      //        resources:
+//      //          requests:
+//      //            cpu: 50m
+//      //            memory: 50Mi
+//      //          limits:
+//      //            cpu: 200m
+//      //            memory: 200Mi
+//      //        tty: true
+//      //      #- name: golang
+//      //      #  image: golang:1.10
+//      //      #  command:
+//      //      #    - cat
+//      //      #  tty: true
 //      //    """.stripIndent()
 //     }
 //  }
@@ -275,9 +296,9 @@ pipeline {
       //
       // XXX: see vars/ shared library directory in this repo
       //
-			//String gitMergeLock = "Git Merge '$from_branch' to '$to_branch'"
-			//echo "Acquiring Git Merge Lock: $gitMergeLock"
-			//lock(resource: gitMergeLock, inversePrecedence: true) {
+      //String gitMergeLock = "Git Merge '$from_branch' to '$to_branch'"
+      //echo "Acquiring Git Merge Lock: $gitMergeLock"
+      //lock(resource: gitMergeLock, inversePrecedence: true) {
 
         echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
         timeout(time: 1, unit: 'MINUTES') {
@@ -308,6 +329,7 @@ pipeline {
 
         container('jq')  // defined in kubernetes{} section near top
         sh "wget -qO- ifconfig.co/json | jq -r '.ip'"
+        sh 'script_using_jq.sh'
 
         // rewrite build name to include commit id
         script {
