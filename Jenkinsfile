@@ -93,6 +93,11 @@ pipeline {
 //      //      - name: gcloud-sdk  # do not name this 'jnlp', without that container this'll never come up properly to execute the build
 //      //        image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
 //      //        tty: true
+//      //      - name: jq
+//      //        image: stedolan/jq
+//      //        command:
+//      //          - cat
+//      //        tty: true
 //      //      # more containers if you want to run different stages in different containers
 //      //    #  - name: busybox
 //      //    #    image: busybox
