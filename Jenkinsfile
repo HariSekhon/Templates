@@ -306,6 +306,9 @@ pipeline {
         // execute in container name defined in the kubernetes {} section near the top
         //container('gcloud-sdk') {
 
+        container('jq')  // defined in kubernetes{} section near top
+        sh "wget -qO- ifconfig.co/json | jq -r '.ip'"
+
         // rewrite build name to include commit id
         script {
           currentBuild.displayName = "$BUILD_DISPLAY_NAME (${GIT_COMMIT.take(8)})"
