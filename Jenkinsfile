@@ -95,8 +95,8 @@ pipeline {
 //      //        tty: true
 //      //        resources:
 //      //          requests:
-//      //            cpu: 100m
-//      //            memory: 200Mi
+//      //            cpu: 300m
+//      //            memory: 300Mi
 //      //          limits:
 //      //            cpu: "1"
 //      //            memory: 1Gi
