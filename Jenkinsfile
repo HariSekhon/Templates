@@ -95,8 +95,8 @@ pipeline {
 //      //        tty: true
 //      //        resources:
 //      //          requests:
-//      //            cpu: 300m
-//      //            memory: 300Mi
+//      //            cpu: 300m     # actually takes 800m but overcontend rather than spawning too many nodes for bursty workload
+//      //            memory: 300Mi # uses around 250Mi
 //      //          limits:
 //      //            cpu: "1"
 //      //            memory: 1Gi
