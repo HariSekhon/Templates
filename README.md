@@ -15,10 +15,10 @@ Code & Config Templates
 Code & DevOps Config templates for many popular programming languages and DevOps tools including:
 
 - [Kubernetes](https://kubernetes.io/) - templates for every major k8s object eg.
-[deployment.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/deployment.yaml),
-[statefulset.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/statefulset.yaml),
-[service.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/service.yaml),
-[ingress.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/ingress.yaml), [kustomization.yml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-templates)
+[deployment.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/deployment.yaml),
+[statefulset.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/statefulset.yaml),
+[service.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/service.yaml),
+[ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
 - [Terraform](https://www.terraform.io/) -
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
@@ -106,7 +106,7 @@ new tf
 
 * [SQL Scripts](https://github.com/HariSekhon/SQL-scripts) - 100+ SQL Scripts - PostgreSQL, MySQL, AWS Athena, Google BigQuery
 
-* [Kubernetes templates](https://github.com/HariSekhon/Kubernetes-templates) - Kubernetes YAML templates - Best Practices, Tips & Tricks are baked right into the templates for future deployments
+* [Kubernetes configs](https://github.com/HariSekhon/Kubernetes-configs) - Kubernetes YAML configs - Best Practices, Tips & Tricks are baked right into the templates for future deployments
 
 * [DevOps Python Tools](https://github.com/harisekhon/devops-python-tools) - 80+ DevOps CLI tools for AWS, Hadoop, HBase, Spark, Log Anonymizer, Ambari Blueprints, AWS CloudFormation, Linux, Docker, Spark Data Converters & Validators (Avro / Parquet / JSON / CSV / INI / XML / YAML), Elasticsearch, Solr, Travis CI, Pig, IPython
 
