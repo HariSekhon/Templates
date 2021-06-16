@@ -72,6 +72,13 @@ images:
 #- gcr.io/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
 
 steps:
+# Debug build environment, find we run inside $PWD of /workspace where our local $PWD was unpacked
+#- name: busybox
+#  args:
+#    - sh
+#    - -c
+#
+#    - pwd; ls -l
 # use Docker cloud builder to build image - not available in eu.gcr.io
 - name: gcr.io/cloud-builders/docker
   # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
