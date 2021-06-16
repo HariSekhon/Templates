@@ -73,7 +73,7 @@ steps:
   # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
   args:
     - build
-    # use variable tags if triggered:
+    # extra variables available ifor builds invoked by triggers:
     # https://cloud.google.com/cloud-build/docs/configuring-builds/substitute-variable-values
     - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest
     - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
