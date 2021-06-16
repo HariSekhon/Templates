@@ -77,7 +77,7 @@ steps:
     # https://cloud.google.com/cloud-build/docs/configuring-builds/substitute-variable-values
     - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest
     - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
-    # use all cached layers where possible (will pull, better for seldomly rebuilt images, kaniko cache is better for frequenct as it's local)
+    # use all cached layers where possible (will pull, better for seldomly rebuilt images, kaniko cache is better for frequent as it's local)
     - --cache-from=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
     - .
   # or use kaniko builder to cache
