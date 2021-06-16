@@ -26,18 +26,22 @@
 #     https://cloud.google.com/cloud-build/docs/build-debug-locally
 #
 #     https://cloud.google.com/cloud-build/docs/access-private-github-repos
-
+#
 
 # gcloud builds submit --config cloudbuild.yaml .
 
-# cloud-build-local --config cloudbuild.yml --dryrun=false .  # --push
+# cloud-build-local --config cloudbuild.yaml --dryrun=false .  # --push
 
-# tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
+# Notes:
+#
+# - $PROJECT_ID is auto-populated by Cloud Build
+# - tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
+# - $PWD is unpacked to /workspace inside the docker images being run to create builds
 
-# $PROJECT_ID is auto-populated by Cloud Build
-
-# variables - can override these on the CLI:
-# --substitutions=_IMAGE_NAME="myapp",_IMAGE_VERSION:"1.1"
+# variables - can override these on the CLI via:
+#
+#   --substitutions=_IMAGE_NAME="myapp",_IMAGE_VERSION:"1.1"
+#
 substitutions:
   # XXX: set image and tag
   _IMAGE_NAME: myapp
@@ -79,6 +83,13 @@ steps:
     - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
     # use all cached layers where possible (will pull, better for seldomly rebuilt images, kaniko cache is better for frequent as it's local)
     - --cache-from=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
+    # Specifying a different Dockerfile path is tricky - requires /workspace prefix and cannot be quoted or have a space between args otherwise ends up with this error trying to lstat blank or quote as first dir component:
+    #
+    #   failed to solve with frontend dockerfile.v0: failed to read dockerfile: error from sender: failed to resolve : lstat  : no such file or directory
+    #
+    #- --file=/workspace/DIR1/DIR2/Dockerfile
+    #  this works too:
+    #- -f=/workspace/DIR1/DIR2/Dockerfile
     - .
   # or use kaniko builder to cache
   #name: '${_REGISTRY}/kaniko-project/executor:latest'
