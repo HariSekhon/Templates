@@ -28,9 +28,9 @@
 #     https://cloud.google.com/cloud-build/docs/access-private-github-repos
 #
 
-# gcloud builds submit --config cloudbuild.yaml .
+# gcloud builds submit  # --config cloudbuild.yaml .
 
-# cloud-build-local --config cloudbuild.yaml --dryrun=false .  # --push
+# cloud-build-local --dryrun=false .  # --push --config cloudbuild.yaml
 
 # Notes:
 #
