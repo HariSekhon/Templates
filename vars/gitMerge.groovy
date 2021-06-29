@@ -27,7 +27,8 @@ def call(from_branch, to_branch){
       sshagent (credentials: ['github-ssh-key']) {
         retry(2) {
           // this path needs to be in the triggering repo, which is often not the same as the Shared Library repo this code is found in
-          // a script to do this is found in this DevOps Bash tools repo at the top level
+          // script from DevOps Bash tools repo
+          // external script needs to exist in the source repo, not the shared library repo
           sh "git_merge_branch.sh '$from_branch' '$to_branch'"
         }
       }

@@ -25,6 +25,7 @@ def call(){
       milestone ordinal: 50, label: "Milestone: Solr Reindexing"
       retry(2){
         timeout(time: 90, unit: 'MINUTES') {
+          // external script needs to exist in the source repo, not the shared library repo
           sh 'path/to/solr-reindex.sh'
         }
       }
