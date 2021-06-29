@@ -118,6 +118,19 @@ pipeline {
 //      //          limits:
 //      //            cpu: 500m
 //      //            memory: 500Mi
+//      //      # to integrate Jenkins CI -> ArgoCD via sync deployment call - https://argoproj.github.io/argo-cd/user-guide/ci_automation/#synchronize-the-app-optional
+//      //      - name: argocd
+//      //        image: argoproj/argocd:v2.0.3
+//      //        command:
+//      //          - cat
+//      //        tty: true
+//      //        resources:
+//      //          requests:
+//      //            cpu: 100m
+//      //            memory: 50Mi
+//      //          limits:
+//      //            cpu: 500m
+//      //            memory: 500Mi
 //      //      - name: busybox
 //      //        image: busybox
 //      //        command:
