@@ -257,10 +257,20 @@ pipeline {
   // these will be starred out *** in console log but user scripts can still print these
   // can move this under a stage to limit the scope of their visibility
   environment {
+    // XXX: Edit - useful for scripts to know which environment they're in to make adjustments
+    ENV = 'dev'
+
     // create these credentials as Secret Text in Jenkins UI -> Manage Jenkins -> Manage Credentials -> Jenkins -> Global Credentials -> Add Credentials
     AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
     AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
+
+    // use to purge Cloudflare Cache
+    CLOUDFLARE_API_KEY = credentials('cloudflare-api-key')
+
+    // use to trigger deployment sync's for apps as deploy step
+    ARGOCD_SERVER = 'argocd.domain.com'
+    ARGOCD_AUTH_TOKEN = credentials('argocd-auth-token')
 
     // for Run Tests stage
     // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
