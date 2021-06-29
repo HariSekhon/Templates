@@ -265,6 +265,9 @@ pipeline {
     AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
 
+    CLOUDSDK_CORE_PROJECT = 'mycompany-dev'
+    CLOUDSDK_COMPUTE_REGION = 'europe-west2'
+
     // use to purge Cloudflare Cache
     CLOUDFLARE_API_KEY = credentials('cloudflare-api-key')
 
