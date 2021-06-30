@@ -118,36 +118,6 @@ pipeline {
 //      //          limits:
 //      //            cpu: 500m
 //      //            memory: 500Mi
-//      //      # to integrate Jenkins CI -> ArgoCD via sync deployment call - https://argoproj.github.io/argo-cd/user-guide/ci_automation/#synchronize-the-app-optional
-//      //      - name: argocd
-//      //        image: argoproj/argocd:v2.0.3
-//      //        command:
-//      //          - cat
-//      //        tty: true
-//      //        resources:
-//      //          requests:
-//      //            cpu: 100m
-//      //            memory: 50Mi
-//      //          limits:
-//      //            cpu: 500m
-//      //            memory: 500Mi
-//      //      - name: busybox
-//      //        image: busybox
-//      //        command:
-//      //          - cat
-//      //        resources:
-//      //          requests:
-//      //            cpu: 50m
-//      //            memory: 50Mi
-//      //          limits:
-//      //            cpu: 200m
-//      //            memory: 200Mi
-//      //        tty: true
-//      //      #- name: golang
-//      //      #  image: golang:1.10
-//      //      #  command:
-//      //      #    - cat
-//      //      #  tty: true
 //      //    """.stripIndent()
 //     }
 //  }
@@ -567,9 +537,14 @@ pipeline {
           // push artifacts and/or deploy to production
           timeout(time: 15, unit: 'MINUTES') {
             sh 'make deploy'
-            // or
+            // OR
             // - this autoloads kubeconfig from GKE using GCP serviceaccount credential key
             sh './gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
+            // OR
+            sh '''
+              argocd app sync "$APP" --grpc-web --force
+              argocd app wait "$APP" --grpc-web --timeout 600
+            '''
           }
         }
       }
@@ -596,11 +571,17 @@ pipeline {
       when { branch '*/production' }
 
       echo 'Deploying Production release...'
+      // EITHER
       withKubeConfig([credentialsId:kubeconfig, contextName:prod]){
         sh 'kubectl apply -f manifests/'
       }
-      // EITHER OR
+      // OR - using external scripts ties this to the source repo
       sh 'path/to/gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
+      // OR
+      sh '''
+        argocd app sync "$APP" --grpc-web --force
+        argocd app wait "$APP" --grpc-web --timeout 600
+      '''
     }
 
     // see https://jenkins.io/blog/2017/09/25/declarative-1/
