@@ -229,6 +229,7 @@ pipeline {
   environment {
     // XXX: Edit - useful for scripts to know which environment they're in to make adjustments
     ENV = 'dev'
+    APP = 'www' // used by scripts eg. ArgoCD app sync commands
 
     // create these credentials as Secret Text in Jenkins UI -> Manage Jenkins -> Manage Credentials -> Jenkins -> Global Credentials -> Add Credentials
     AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
