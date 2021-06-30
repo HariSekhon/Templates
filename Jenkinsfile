@@ -358,9 +358,11 @@ pipeline {
         // execute in container name defined in the kubernetes {} section near the top
         //container('gcloud-sdk') {
 
-        container('jq')  // defined in kubernetes{} section near top
-        sh "wget -qO- ifconfig.co/json | jq -r '.ip'"
-        sh 'script_using_jq.sh'
+        // running container defined in kubernetes jenkins pod {} near top
+        container('jq') {
+          sh "wget -qO- ifconfig.co/json | jq -r '.ip'"
+          sh 'script_using_jq.sh'
+        }
 
         // rewrite build name to include commit id
         script {
