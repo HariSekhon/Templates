@@ -231,6 +231,10 @@ pipeline {
     ENV = 'dev'
     APP = 'www' // used by scripts eg. ArgoCD app sync commands
 
+    // used by Git branch auto-merges and GitOps K8s image version updates
+    GIT_USERNAME = 'Jenkins'
+    GIT_EMAIL = 'platform-engineering@MYCOMPANY.CO.UK'
+
     // create these credentials as Secret Text in Jenkins UI -> Manage Jenkins -> Manage Credentials -> Jenkins -> Global Credentials -> Add Credentials
     AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
     AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
