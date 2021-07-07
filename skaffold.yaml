@@ -1,0 +1,62 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2021-07-05 15:33:01 +0100 (Mon, 05 Jul 2021)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https://github.com/HariSekhon/templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                                S k a f f o l d
+# ============================================================================ #
+
+# https://skaffold.dev/docs/pipeline-stages/
+
+---
+apiVersion: skaffold/v2beta18
+kind: Config
+build:
+  #tagPolicy:
+    #gitCommit: {}  # default: tag images with git hashref
+    #envTemplate:
+    #  template: "{{.SOME_ENVIRONMENT_VARIABLE}}"
+    #dateTime:
+    #  format: "2006-01-02_15-04-05.999_MST"
+    #  timezone: "UTC"
+  artifacts:
+  - image: NAME  # XXX: Edit
+deploy:
+  kubeContext: CONTEXT  # XXX: Edit - prevents .kube/config context switching race condition - see also KUBECONFIG isolation trick in https://github.com/HariSekhon/Kubernetes-configs/blob/master/.envrc
+  statusCheck: true     # set to false to disable checking 'kubectl rollout status'
+  statusCheckDeadlineSeconds: 300  # tune up for pre-cache-load webapps that take a long time to complete rolling restarts
+  #
+  # XXX: Edit / choose one:
+  kustomize: {}
+    #paths:
+    #  - .
+  # OR
+  kubectl:
+    manifests:
+      - k8s-*
+  # OR
+  helm:
+    releases:
+    - name: my-release
+      artifactOverrides:
+        image: gcr.io/my-project/my-image  # no tag present! Must match build artifacts image name near top
+      imageStrategy:
+        helm: {}
+  #portForward:
+  #- resourceType: deployment
+  #  resourceName: myDep
+  #  namespace: mynamespace
+  #  port: 8080
+  #  #localPort: 9000   # defaults to same port >= 1024
+  #  #address: 0.0.0.0  # default: 127.0.0.1
