@@ -77,8 +77,31 @@ steps:
 #  args:
 #    - sh
 #    - -c
-#
 #    - pwd; ls -l
+#
+# ============================================================================ #
+#                              P u l l   C a c h e
+# ============================================================================ #
+# Pull previous builds to re-use their cache layers
+# use Docker cloud builder to pull image - not available in eu.gcr.io
+- id: pull-image-cache-latest
+  name: gcr.io/cloud-builders/docker
+  waitFor: [ '-' ]  # don't wait for any other steps
+  entrypoint: 'bash'
+  args:
+    - -c
+    - docker pull ${_REGISTRY}/${_IMAGE_NAME}:latest || exit 0
+#
+- id: pull-image-cache-hashref
+  name: gcr.io/cloud-builders/docker
+  waitFor: [ '-' ]  # don't wait for any other steps
+  entrypoint: 'bash'
+  args:
+    - -c
+    - docker pull ${_REGISTRY}/${_IMAGE_NAME}:${_IMAGE_VERSION} || exit 0
+# ============================================================================ #
+#                             B u i l d   I m a g e
+# ============================================================================ #
 # use Docker cloud builder to build image - not available in eu.gcr.io
 - name: gcr.io/cloud-builders/docker
   # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
@@ -89,6 +112,8 @@ steps:
     - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest
     - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
     # use all cached layers where possible (will pull, better for seldomly rebuilt images, kaniko cache is better for frequent as it's local)
+    - --build-arg=BUILDKIT_INLINE_CACHE=1
+    - --cache-from=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest
     - --cache-from=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
     # Specifying a different Dockerfile path is tricky - requires /workspace prefix and cannot be quoted or have a space between args otherwise ends up with this error trying to lstat blank or quote as first dir component:
     #
