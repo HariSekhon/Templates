@@ -17,6 +17,8 @@
 #                                S k a f f o l d
 # ============================================================================ #
 
+# https://skaffold.dev/docs/references/yaml/
+
 # https://skaffold.dev/docs/pipeline-stages/
 
 # can define multiple Configs in here separated by --- and skaffold with execute all of them
@@ -47,6 +49,9 @@ build:
     #  timezone: "UTC"
   artifacts:
   - image: NAME  # XXX: Edit
+    docker:
+      buildArgs:
+        BUILDKIT_INLINE_CACHE: '1'
     #custom:
     #  buildCommand: ./build.sh
     #  dependencies:
