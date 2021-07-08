@@ -47,6 +47,11 @@ build:
     #  timezone: "UTC"
   artifacts:
   - image: NAME  # XXX: Edit
+    #custom:
+    #  buildCommand: ./build.sh
+    #  dependencies:
+    #    paths:
+    #    - .
 deploy:
   # prevents .kube/config context switching race condition - see also KUBECONFIG isolation trick in https://github.com/HariSekhon/Kubernetes-configs/blob/master/.envrc
   # could also use skaffold --kube-context
