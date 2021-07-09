@@ -113,26 +113,35 @@ deploy:
 # =========
 # Profiles - https://skaffold.dev/docs/environment/profiles/
 #
-# Any build/test/deploy/portFoward sections will completely override the main config
+# patches are JSON Patch overrides of main config (probably more what you want)
+# build/test/deploy/portFoward sections completely replace the entire main config
 #
 # Choose a profile at runtime:
 #
-#   skaffold run -p NAME
+#   skaffold run -p local
+#   skaffold run -p dev
 #
 profiles:
 - name: local
   activation:  # any of these will activate this profile
     #- env: DEBUG=1
     #- kubeContext: minikube
+    # if you're set to docker-desktop and use the command 'dev' then override the default deploy location to use docker-desktop
     - kubeContext: docker-desktop
       command: dev
+  patches:
+    - op: replace
+      path: /deploy/kubeContext
+      value: docker-desktop
 - name: dev
   activation:
     #- env: DEBUG=1
+    # if you're set to your GKE dev cluster and use the command 'dev' then override the default deploy location to use that cluster
     - kubeContext: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2
       command: dev
-  # JSON Patche overrides of main
-  #patches:
-  #  - op: replace
-  #    path: /build/artifacts/0/docker/dockerfile
-  #    value: Dockerfile_dev
+  patches:
+    - op: replace
+      #path: /build/artifacts/0/docker/dockerfile
+      #value: Dockerfile_dev
+      path: /deploy/kubeContext
+      value: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2
