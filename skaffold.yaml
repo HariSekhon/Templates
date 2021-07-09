@@ -26,7 +26,7 @@
 apiVersion: skaffold/v2beta18
 kind: Config
 metadata:
-  name: cfg1
+  name: MYPROJECT  # used to include this config by name, see inheritance just below
 # Inherit another skaffold.yaml
 #requires:
 #   Local include
@@ -38,6 +38,10 @@ metadata:
 #      repo: http://github.com/GoogleContainerTools/skaffold.git
 #      path: getting-started/skaffold.yaml
 #      ref: master
+#      sync: false  # true pulls and resets to remote, don't do this if uncommitted or unpushed changes
+#    activeProfiles:
+#    - name: dev  # profile to active from dependency config
+#      activatedBy: []  # profiles in this config that activate the dependency config. Empty means always activate
 
 build:
   #tagPolicy:
@@ -49,9 +53,27 @@ build:
     #  timezone: "UTC"
   artifacts:
   - image: NAME  # XXX: Edit
+    #context: .  # dir containing artifact sources
+    #sync: infer: ["**/*"]  # file sync local files live without rebuilding, see https://skaffold.dev/docs/pipeline-stages/filesync/
     docker:
+      dockerfile: Dockerfile
+      #target: builder  # which target to build
       buildArgs:
         BUILDKIT_INLINE_CACHE: '1'
+      #cacheFrom:
+      #- myrepo/myimage:mytag
+      noCache: false  # set to true to bust the cache
+      squash: false   # default, don't squash layers into 1
+    #bazel:
+    #  target: //:skaffold_example.tar
+    #  args:
+    #  - "-flag"
+    #  - "--otherflag"
+    #buildpacks:  # see reference doc
+    #jib:
+    #kaniko:
+    #  ...
+    #googleCloudBuild:  # since this doesn't use cloudbuild.yaml, may want to call gcloud builds submit in custom instead
     #custom:
     #  buildCommand: ./build.sh
     #  dependencies:
@@ -65,9 +87,9 @@ deploy:
   statusCheckDeadlineSeconds: 300  # tune up for pre-cache-load webapps that take a long time to complete rolling restarts
   #
   # XXX: Edit / choose one:
-  kustomize: {}
-    #paths:
-    #  - .
+  kustomize:
+    paths:
+      - .
   # OR
   kubectl:
     manifests:
@@ -91,7 +113,7 @@ deploy:
 # =========
 # Profiles - https://skaffold.dev/docs/environment/profiles/
 #
-# Any build/test/deploy sections will completely override the main config
+# Any build/test/deploy/portFoward sections will completely override the main config
 #
 # Choose a profile at runtime:
 #
