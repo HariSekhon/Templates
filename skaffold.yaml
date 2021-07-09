@@ -121,14 +121,14 @@ deploy:
 #
 profiles:
 - name: local
-  activation:
-    - env: DEBUG=1
+  activation:  # any of these will activate this profile
+    #- env: DEBUG=1
     #- kubeContext: minikube
     - kubeContext: docker-desktop
       command: dev
 - name: dev
   activation:
-    - env: DEBUG=1
+    #- env: DEBUG=1
     - kubeContext: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2
       command: dev
   # JSON Patche overrides of main
