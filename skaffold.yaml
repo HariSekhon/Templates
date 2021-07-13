@@ -90,6 +90,7 @@ deploy:
   kustomize:
     paths:
       - .
+      - ../base
   # OR
   kubectl:
     manifests:
