@@ -89,8 +89,8 @@ deploy:
   # XXX: Edit / choose one:
   kustomize:
     paths:
+      - ../base  # order matters here, latter takes precedence, needed for patchesStrategicMerge to work, see https://github.com/GoogleContainerTools/skaffold/issues/6200
       - .
-      - ../base
   # OR
   kubectl:
     manifests:
