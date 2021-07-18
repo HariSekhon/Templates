@@ -492,7 +492,8 @@ pipeline {
 //
 //This prompt will time out after 1 hour""",
 //            ok: "Deploy",
-//            submitter: "platform-engineering@mycompany.co.uk",  // only allow people in platform engineering group to approve the human gate
+//            // Azure AD security group is referenced by just name, whereas Microsoft 365 email distribution group is referenced by email address
+//            submitter: "platform-engineering",  // only allow people in platform engineering group to approve the human gate
 //            // only do this if you have defined parameters and need to choose which property to store the result in
 //            //submitterParameter: "SUBMITTER"
 //          )
