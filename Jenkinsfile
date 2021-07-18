@@ -636,6 +636,8 @@ pipeline {
 //          reportBuildPolicy: 'ALWAYS',
 //          results: [[path: 'target/allure-results']]
 //        ])
+//        // fancier notification in Slack channel full breakdown than the one liners below, slack-properties.json needs to contain '{ "app": { "bot": { "token": "...", "chat": "#jenkins-alerts-qa", ... } } }'
+//        sh 'java  -DprojectName="$JOB_NAME" -Dconfig.file=slack-properties.json -Denv=staging.mycompany.co.uk -DreportLink="$BUILD_URL" -jar allure-notifications-3.1.1.jar'
 //      }
 
     }
