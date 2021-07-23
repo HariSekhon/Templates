@@ -678,7 +678,7 @@ pipeline {
       //echo "Inferred committers via slackUserIdsFromCommitters to be: ${env.COMMITTERS}"
       echo "Inferred committers since last successful build via git log to be: ${env.GIT_COMMITTERS}"
       slackSend color: 'danger',
-        message: "Git Merge FAILED - ${env.SLACK_MESSAGE} - ${env.GIT_COMMITTERS}" //,
+        message: "Git Merge FAILED - ${env.SLACK_MESSAGE} - @here ${env.GIT_COMMITTERS}" //,  // unfortunately @Hari Sekhon doesn't get activate notification, not sure why, tried <@Hari Sekhon> too
         //botUser: true  // needed if using slackUserIdsFromCommitters() - must set up the Slack Jenkins app manually - see https://plugins.jenkins.io/slack/#bot-user-mode for details
     }
     fixed {
