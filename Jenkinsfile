@@ -684,7 +684,7 @@ pipeline {
     fixed {
       slackSend color: 'good',
         message: "Git Merge Fixed - ${env.SLACK_MESSAGE}" //,
-        //botUser: true
+        //botUser: true  // needs to match the credential - so if Jenkins -> System Configuration -> Slack is using it, needs this or message won't come through
     }
       //slackSend color: 'danger',
       //  message: "Build FAILED - ${env.SLACK_MESSAGE} - ${env.NOTIFY_USERS}"  // unified message with better links to Pipeline, Build # logs and even Allure Report
