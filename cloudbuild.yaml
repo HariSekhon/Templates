@@ -108,7 +108,8 @@ steps:
 #                             B u i l d   I m a g e
 # ============================================================================ #
 # use Docker cloud builder to build image - not available in eu.gcr.io
-- name: gcr.io/cloud-builders/docker
+- id: build-myimage  # optional but useful in the logs, otherwise you just get Step #1, Step #2 prefixes which make it difficult to differentiate which step an error comes from
+  name: gcr.io/cloud-builders/docker
   # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
   args:
     - build
