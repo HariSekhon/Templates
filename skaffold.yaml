@@ -1,0 +1,148 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2021-07-05 15:33:01 +0100 (Mon, 05 Jul 2021)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https://github.com/HariSekhon/templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                                S k a f f o l d
+# ============================================================================ #
+
+# https://skaffold.dev/docs/references/yaml/
+
+# https://skaffold.dev/docs/pipeline-stages/
+
+# can define multiple Configs in here separated by --- and skaffold with execute all of them
+---
+apiVersion: skaffold/v2beta18
+kind: Config
+metadata:
+  name: MYPROJECT  # used to include this config by name, see inheritance just below
+# Inherit another skaffold.yaml
+#requires:
+#   Local include
+#  - configs: ["cfg1", "cfg2"]
+#    path: path/to/other/skaffold.yaml
+#   Remote include
+#  - configs: ["cfg1", "cfg2"]
+#    git:
+#      repo: http://github.com/GoogleContainerTools/skaffold.git
+#      path: getting-started/skaffold.yaml
+#      ref: master
+#      sync: false  # true pulls and resets to remote, don't do this if uncommitted or unpushed changes
+#    activeProfiles:
+#    - name: dev  # profile to active from dependency config
+#      activatedBy: []  # profiles in this config that activate the dependency config. Empty means always activate
+
+build:
+  #tagPolicy:
+    #gitCommit: {}  # default: tag images with git hashref
+    #envTemplate:
+    #  template: "{{.SOME_ENVIRONMENT_VARIABLE}}"
+    #dateTime:
+    #  format: "2006-01-02_15-04-05.999_MST"
+    #  timezone: "UTC"
+  artifacts:
+  - image: NAME  # XXX: Edit
+    #context: .  # dir containing artifact sources
+    #sync: infer: ["**/*"]  # file sync local files live without rebuilding, see https://skaffold.dev/docs/pipeline-stages/filesync/
+    docker:
+      dockerfile: Dockerfile
+      #target: builder  # which target to build
+      buildArgs:
+        BUILDKIT_INLINE_CACHE: '1'
+      #cacheFrom:
+      #- myrepo/myimage:mytag
+      noCache: false  # set to true to bust the cache
+      squash: false   # default, don't squash layers into 1
+    #bazel:
+    #  target: //:skaffold_example.tar
+    #  args:
+    #  - "-flag"
+    #  - "--otherflag"
+    #buildpacks:  # see reference doc
+    #jib:
+    #kaniko:
+    #  ...
+    #googleCloudBuild:  # since this doesn't use cloudbuild.yaml, may want to call gcloud builds submit in custom instead
+    #custom:
+    #  buildCommand: ./build.sh
+    #  dependencies:
+    #    paths:
+    #    - .
+deploy:
+  # prevents .kube/config context switching race condition - see also KUBECONFIG isolation trick in https://github.com/HariSekhon/Kubernetes-configs/blob/master/.envrc
+  # could also use skaffold --kube-context
+  kubeContext: CONTEXT  # XXX: Edit
+  statusCheck: true     # set to false to disable checking 'kubectl rollout status'
+  statusCheckDeadlineSeconds: 300  # tune up for pre-cache-load webapps that take a long time to complete rolling restarts
+  #
+  # XXX: Edit / choose one:
+  kustomize:
+    paths:
+      - ../base  # order matters here, latter takes precedence, needed for patchesStrategicMerge to work, see https://github.com/GoogleContainerTools/skaffold/issues/6200
+      - .
+  # OR
+  kubectl:
+    manifests:
+      - k8s-*
+  # OR
+  helm:
+    releases:
+    - name: my-release
+      artifactOverrides:
+        image: gcr.io/my-project/my-image  # no tag present! Must match build artifacts image name near top
+      imageStrategy:
+        helm: {}
+  #portForward:
+  #- resourceType: deployment
+  #  resourceName: myDep
+  #  namespace: mynamespace
+  #  port: 8080
+  #  #localPort: 9000   # defaults to same port >= 1024
+  #  #address: 0.0.0.0  # default: 127.0.0.1
+
+# =========
+# Profiles - https://skaffold.dev/docs/environment/profiles/
+#
+# patches are JSON Patch overrides of main config (probably more what you want)
+# build/test/deploy/portFoward sections completely replace the entire main config
+#
+# Choose a profile at runtime:
+#
+#   skaffold run -p local
+#   skaffold run -p dev
+#
+profiles:
+- name: local
+  activation:  # any of these will activate this profile
+    #- env: DEBUG=1
+    #- kubeContext: minikube
+    # if you're set to docker-desktop and use the command 'dev' then override the default deploy location to use docker-desktop
+    - kubeContext: docker-desktop
+      command: dev
+  patches:
+    - op: replace
+      path: /deploy/kubeContext
+      value: docker-desktop
+- name: dev
+  activation:
+    #- env: DEBUG=1
+    # if you're set to your GKE dev cluster and use the command 'dev' then override the default deploy location to use that cluster
+    - kubeContext: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2
+      command: dev
+  patches:
+    - op: replace
+      #path: /build/artifacts/0/docker/dockerfile
+      #value: Dockerfile_dev
+      path: /deploy/kubeContext
+      value: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2

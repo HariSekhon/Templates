@@ -20,7 +20,8 @@ def call(){
     milestone ordinal: 90, label: "Milestone: Cloudflare Purge Cache"
     retry(2){
       timeout(time: 1, unit: 'MINUTES') {
-        // script from top level of DevOps Bash tools repo
+        // script from DevOps Bash tools repo
+        // external script needs to exist in the source repo, not the shared library repo
         sh 'cloudflare_purge_cache.sh'
       }
     }

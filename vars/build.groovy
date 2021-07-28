@@ -22,7 +22,8 @@ def call(){
   }
   retry(2){
     timeout(time: 40, unit: 'MINUTES') {
-      // script from top level of DevOps Bash tools repo
+      // script from DevOps Bash tools repo
+      // external script needs to exist in the source repo, not the shared library repo
       sh 'gcp_ci_build.sh'
     }
   }

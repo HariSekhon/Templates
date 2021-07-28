@@ -1,0 +1,62 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2021-07-07 14:14:12 +0100 (Wed, 07 Jul 2021)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https://github.com/HariSekhon/templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                                  M k d o c s
+# ============================================================================ #
+
+# https://www.mkdocs.org/getting-started/
+#
+# https://www.mkdocs.org/user-guide/writing-your-docs/
+
+# Markdown is expected in top-level docs/ dir, with docs/index.md being the home page
+
+# build the site/ dir - containing the html, js, sitemap.xml and mkdocs/search_index.json
+#                     - site/ should be added to .gitignore
+#
+#   run:  mkdocs build
+#
+# or preview in a local server at http://127.0.0.1:8000
+#   run:  mkdocs serve
+
+---
+# only these two are needed
+site_name: NAME  # XXX: Edit
+site_url: https://DOMAIN.COM/  # XXX: Edit
+
+#docs_dir: docs
+#site_dir: site
+#dev_addr: 127.0.0.1:8000
+
+#site_description:
+#site_author:
+#copyright:
+#remote_name: origin
+#remote_branch: gh-pages
+
+#repo_url: https://github.com/ORG/REPO/
+#repo_name: GitHub  # default is inferred from domain of repo_url
+
+#nav:
+#    - Home: index.md
+#    - About: about.md
+
+#theme: readthedocs
+theme:
+  name: mkdocs       # default. alternative: readthedocs
+  highlightjs: true  # default
+  hljs_languages:  # 23 common langs by default, add extras here:
+    - yaml
+    - rust

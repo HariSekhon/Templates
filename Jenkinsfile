@@ -32,7 +32,7 @@
 @Library('namedlibrary@master') _
 
 // more dynamic but $BRANCH_NAME is only available in a Jenkins MultiBranch Pipeline
-//library "unbiased@$BRANCH_NAME"
+//library "namedlibrary@$BRANCH_NAME"
 
 
 pipeline {
@@ -78,9 +78,14 @@ pipeline {
 //      //label 'jenkins-agent' // prefix name for k8s pod - defaults to <pipeline>-<buildnumber>-<randomhash>
 //      //runAsUser <uid>
 //      //runAsGroup <gid>
-//      // use external yaml rather than inline pod spec - better for yaml validation and sharing between pipelines
-//      // https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-pod.yaml
+//      //
+//      // XXX: use external yaml rather than inline pod spec - better for yaml validation and sharing between pipelines
+//      // XXX: See more advanced example including pod scheduling avoiding preemptible nodes here:
+//      //
+//      //    https://github.com/HariSekhon/Kubernetes-templates/blob/master/jenkins-agent-pod.yaml
+//      //
 //      yamlFile 'jenkins-agent-pod.yaml'  // relative to root of repo
+//      // or inline:
 //      //yaml """\
 //      //  apiVersion: v1
 //      //  kind: Pod
@@ -93,17 +98,26 @@ pipeline {
 //      //      - name: gcloud-sdk  # do not name this 'jnlp', without that container this'll never come up properly to execute the build
 //      //        image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
 //      //        tty: true
-//      //      # more containers if you want to run different stages in different containers
-//      //    #  - name: busybox
-//      //    #    image: busybox
-//      //    #    command:
-//      //    #      - cat
-//      //    #    tty: true
-//      //    #  - name: golang
-//      //    #    image: golang:1.10
-//      //    #    command:
-//      //    #      - cat
-//      //    #    tty: true
+//      //        resources:
+//      //          requests:
+//      //            cpu: 300m     # actually takes 800m but overcontend rather than spawning too many nodes for bursty workload
+//      //            memory: 300Mi # uses around 250Mi
+//      //          limits:
+//      //            cpu: "1"
+//      //            memory: 1Gi
+//      //      # more containers if you want to run different stages in different containers eg. to wget -O- | jq ...
+//      //      - name: jq
+//      //        image: stedolan/jq
+//      //        command:
+//      //          - cat
+//      //        tty: true
+//      //        resources:
+//      //          requests:
+//      //            cpu: 100m
+//      //            memory: 50Mi
+//      //          limits:
+//      //            cpu: 500m
+//      //            memory: 500Mi
 //      //    """.stripIndent()
 //     }
 //  }
@@ -165,8 +179,42 @@ pipeline {
 
   //parameters {
   //  // access this using ${params.MyVar} elsewhere in build stages
-  //  string(name: 'MyVar', defaultValue: 'MyString', description: 'blah', trim: true)
+  //  string(
+  //    name: 'MyVar',
+  //    defaultValue: 'MyString',
+  //    description: 'blah',
+  //    trim: true
+  //  )
   //}
+
+//  parameters {
+//    string(
+//      name: 'CLASS',
+//      // unfortunately this description gets collapsed to one line, and even inserting \n doesn't help
+//      description: """
+//Which class tests to run?
+//
+//(can specify .** wildcard suffix for multiple classes,
+//or #mymethod suffix for exact method within class)
+//""",
+//      defaultValue: 'com.domain.test.admin.blah.MyTest',
+//      trim: true
+//    )
+//  }
+
+  // creates a drop-down list prompt in the Jenkins UI with these pre-populated choices - first choice is the default value
+  //parameters {
+  //  choice(
+  //    name: 'PACKAGE',
+  //    description: 'Which tests to run?',
+  //    choices: [
+  //      'com.mydomain.test.admin.**',
+  //      'com.mydomain.test.main.**',
+  //      'com.mydomain.test.tools.**',
+  //    ]
+  //  )
+  //}
+
 
   // ========================================================================== //
   //               E n v i r o n m e n t   &   C r e d e n t i a l s
@@ -179,17 +227,43 @@ pipeline {
   // these will be starred out *** in console log but user scripts can still print these
   // can move this under a stage to limit the scope of their visibility
   environment {
+    // XXX: Edit - useful for scripts to know which environment they're in to make adjustments
+    ENV = 'dev'
+    APP = 'www' // used by scripts eg. ArgoCD app sync commands
+
+    // used by Git branch auto-merges and GitOps K8s image version updates
+    GIT_USERNAME = 'Jenkins'
+    GIT_EMAIL = 'platform-engineering@MYCOMPANY.CO.UK'
+
     // create these credentials as Secret Text in Jenkins UI -> Manage Jenkins -> Manage Credentials -> Jenkins -> Global Credentials -> Add Credentials
     AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
     AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
 
+    CLOUDSDK_CORE_PROJECT = 'mycompany-dev'
+    CLOUDSDK_COMPUTE_REGION = 'europe-west2'
+
+    // use to purge Cloudflare Cache
+    CLOUDFLARE_API_KEY = credentials('cloudflare-api-key')
+
+    // use to trigger deployment sync's for apps as deploy step
+    ARGOCD_SERVER = 'argocd.domain.com'
+    ARGOCD_AUTH_TOKEN = credentials('argocd-auth-token')
+
     // for Run Tests stage
     // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
     // reference this in single quotes to interpolate in the shell
     // XXX: Edit
-    //SELENOID_URL = 'http://x.x.x.x:4444/wd/hub'
+    //SELENIUM_HUB_URL = 'http://x.x.x.x:4444/wd/hub/'
+    // if run on K8s through an ingress (see https://github.com/HariSekhon/Kubernetes-templates/)
+    //SELENIUM_HUB_URL = 'https://x.x.x.x/wd/hub/'
     THREAD_COUNT = 6
+
+    // using this only to dedupe common message suffix for Slack channel notifications in post {}
+    SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}>"
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>)"
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>) - ${params.CLASS}"    // to differentiate Single Class Tests
+    //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>) - ${params.PACKAGE}"  // to differentiate Single Package Tests
   }
 
   // ========================================================================== //
@@ -228,9 +302,9 @@ pipeline {
       //
       // XXX: see vars/ shared library directory in this repo
       //
-			//String gitMergeLock = "Git Merge '$from_branch' to '$to_branch'"
-			//echo "Acquiring Git Merge Lock: $gitMergeLock"
-			//lock(resource: gitMergeLock, inversePrecedence: true) {
+      //String gitMergeLock = "Git Merge '$from_branch' to '$to_branch'"
+      //echo "Acquiring Git Merge Lock: $gitMergeLock"
+      //lock(resource: gitMergeLock, inversePrecedence: true) {
 
         echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
         timeout(time: 1, unit: 'MINUTES') {
@@ -259,6 +333,12 @@ pipeline {
         // execute in container name defined in the kubernetes {} section near the top
         //container('gcloud-sdk') {
 
+        // running container defined in kubernetes jenkins pod {} near top
+        container('jq') {
+          sh "wget -qO- ifconfig.co/json | jq -r '.ip'"
+          sh 'script_using_jq.sh'
+        }
+
         // rewrite build name to include commit id
         script {
           currentBuild.displayName = "$BUILD_DISPLAY_NAME (${GIT_COMMIT.take(8)})"
@@ -280,6 +360,12 @@ pipeline {
       }
     }
 
+    stage('Wait for Selenium Grid to be up') {
+      steps {
+        sh script: "./selenium_hub_wait_ready.sh '$SELENIUM_HUB_URL' 60"
+      }
+    }
+
     // not needed for Kubernetes / Docker agents as they start clean
     stage('Maven Clean') {
       steps {
@@ -287,17 +373,25 @@ pipeline {
       }
     }
 
-    stage('Run Tests') {
+    // alternative quick Pipeline to run just a single package of tests for quicker debugging and testing
+    stage('Run Single Package Tests') {
+      steps {
+        // params.PACKAGE is populated from the parameters { choice { ... } } defined further above which creates a drop-down list prompt in Jenkins UI
+        sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dtest='${params.PACKAGE}' -DthreadCount='$THREAD_COUNT'"
+      }
+    }
+
+    stage('Run Tests in Parallel') {
       parallel {
         stage('Run Desktop Tests') {
           steps {
-            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount=$THREAD_COUNT"
+            sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount='$THREAD_COUNT'"
           }
         }
 
         stage('Run Mobile Tests') {
           steps {
-            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount=$THREAD_COUNT"
+            sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount='$THREAD_COUNT'"
           }
         }
       }
@@ -308,14 +402,14 @@ pipeline {
         steps {
           // continue to Mobile tests regardless of whether this stage fails, will still mark the build to failed though
           catchError (buildResult: 'FAILURE', stageResult: 'FAILURE') {  // set stage to failed too, not just build
-            sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount=$THREAD_COUNT"
+            sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dgroups=com.mydomain.category.interfaces.DesktopTests -DthreadCount='$THREAD_COUNT'"
           }
         }
       }
 
       stage('Run Mobile Tests') {
         steps {
-          sh "mvn test -DselenoidUrl=$SELENOID_URL -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount=$THREAD_COUNT"
+          sh "mvn test -DselenoidUrl='$SELENIUM_HUB_URL' -Dgroups=com.mydomain.category.interfaces.MobileTests -Dmobile=true -DthreadCount='$THREAD_COUNT'"
         }
       }
     }
@@ -398,7 +492,8 @@ pipeline {
 //
 //This prompt will time out after 1 hour""",
 //            ok: "Deploy",
-//            submitter: "platform-engineering@mycompany.co.uk",  // only allow people in platform engineering group to approve the human gate
+//            // Azure AD security group is referenced by just name, whereas Microsoft 365 email distribution group is referenced by email address
+//            submitter: "platform-engineering",  // only allow users in platform engineering group to Approve the human gate. Warning: users outside this group can still hit Abort!
 //            // only do this if you have defined parameters and need to choose which property to store the result in
 //            //submitterParameter: "SUBMITTER"
 //          )
@@ -448,9 +543,14 @@ pipeline {
           // push artifacts and/or deploy to production
           timeout(time: 15, unit: 'MINUTES') {
             sh 'make deploy'
-            // or
+            // OR
             // - this autoloads kubeconfig from GKE using GCP serviceaccount credential key
             sh './gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
+            // OR
+            sh '''
+              argocd app sync "$APP" --grpc-web --force
+              argocd app wait "$APP" --grpc-web --timeout 600
+            '''
           }
         }
       }
@@ -477,11 +577,17 @@ pipeline {
       when { branch '*/production' }
 
       echo 'Deploying Production release...'
+      // EITHER
       withKubeConfig([credentialsId:kubeconfig, contextName:prod]){
         sh 'kubectl apply -f manifests/'
       }
-      // EITHER OR
+      // OR - using external scripts ties this to the source repo
       sh 'path/to/gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
+      // OR
+      sh '''
+        argocd app sync "$APP" --grpc-web --force
+        argocd app wait "$APP" --grpc-web --timeout 600
+      '''
     }
 
     // see https://jenkins.io/blog/2017/09/25/declarative-1/
@@ -531,6 +637,8 @@ pipeline {
 //          reportBuildPolicy: 'ALWAYS',
 //          results: [[path: 'target/allure-results']]
 //        ])
+//        // fancier notification in Slack channel full breakdown than the one liners below, slack-properties.json needs to contain '{ "app": { "bot": { "token": "...", "chat": "#jenkins-alerts-qa", ... } } }'
+//        sh 'java  -DprojectName="$JOB_NAME" -Dconfig.file=slack-properties.json -Denv=staging.mycompany.co.uk -DreportLink="$BUILD_URL" -jar allure-notifications-3.1.1.jar'
 //      }
 
     }
@@ -546,8 +654,9 @@ pipeline {
       // https://www.jenkins.io/doc/pipeline/steps/slack/
       //
       //slackSend color: 'good',
-      //  //message: "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"      // Classic UI
-      //  message: "Build Fixed - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
+      //  //message: "Build Fixed - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"        // Classic UI
+      //  //message: "Build Fixed - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
+      //  message: "Build FAILED - ${env.SLACK_MESSAGE}"  // unified message with better links to Pipeline, Build # logs and even Allure Report
     }
     failure {
       echo 'FAILURE!'
@@ -555,9 +664,33 @@ pipeline {
 
       // https://www.jenkins.io/doc/pipeline/steps/slack/
       //
+      // Get all users who have committed since the last successful build into an environment variable to add to the slack message
+      script {
+      //  // should return true in the UI, otherwise probably missing users:read and users:read.email permission
+      //  // didn't return any users, probably because the Git email addresses don't match the Slack users email addresses
+      //  //def userIds = slackUserIdsFromCommitters(botUser: true)
+      //  //def committers = userIds.collect { "<@$it>" }.join(' ')
+      //  //env.COMMITTERS = "$committers"
+      //  //
+        // GIT_PREVIOUS_SUCCESSFUL_COMMIT env var is not 100% reliable, sometimes it goes back too far, generating a long list of committers
+        env.GIT_COMMITTERS = sh(script:"git log --format='@%an' \"${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}..${env.GIT_COMMIT}\" | grep -Fv -e '[bot]' -e Jenkins | sort -u | tr '\\n' ' '", returnStdout: true, label: 'Get Committers').trim()
+      }
+      //echo "Inferred committers via slackUserIdsFromCommitters to be: ${env.COMMITTERS}"
+      echo "Inferred committers since last successful build via git log to be: ${env.GIT_COMMITTERS}"
+      slackSend color: 'danger',
+        message: "Git Merge FAILED - ${env.SLACK_MESSAGE} - @here ${env.GIT_COMMITTERS}" //,  // unfortunately @Hari Sekhon doesn't get activate notification, not sure why, tried <@Hari Sekhon> too
+        //botUser: true  // needed if using slackUserIdsFromCommitters() - must set up the Slack Jenkins app manually - see https://plugins.jenkins.io/slack/#bot-user-mode for details
+    }
+    fixed {
+      slackSend color: 'good',
+        message: "Git Merge Fixed - ${env.SLACK_MESSAGE}" //,
+        //botUser: true  // needs to match the credential - so if Jenkins -> System Configuration -> Slack is using it, needs this or message won't come through
+    }
       //slackSend color: 'danger',
-      //  //message: "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"      // Classic UI
-      //  message: "Build FAILED - Job '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
+      //  message: "Build FAILED - ${env.SLACK_MESSAGE} - ${env.NOTIFY_USERS}"  // unified message with better links to Pipeline, Build # logs and even Allure Report
+      //  // Older
+      //  //message: "Build FAILED - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"        // Classic UI
+      //  //message: "Build FAILED - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
     }
     unsuccessful {
     }
