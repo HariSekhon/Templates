@@ -90,7 +90,7 @@ steps:
   entrypoint: 'bash'
   args:
     - -c
-    - docker pull ${_REGISTRY}/${_IMAGE_NAME}:latest || exit 0
+    - docker pull ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest || exit 0
 #
 - id: pull-image-cache-hashref
   name: gcr.io/cloud-builders/docker
@@ -98,7 +98,7 @@ steps:
   entrypoint: 'bash'
   args:
     - -c
-    - docker pull ${_REGISTRY}/${_IMAGE_NAME}:${_IMAGE_VERSION} || exit 0
+    - docker pull ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION} || exit 0
 # ============================================================================ #
 #                             B u i l d   I m a g e
 # ============================================================================ #
