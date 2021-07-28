@@ -49,6 +49,8 @@ def call (project, environ, credential) {
             }
             retry(2){
               timeout(time: 40, unit: 'MINUTES') {
+                // script from DevOps Bash tools repo
+                // external script needs to exist in the source repo, not the shared library repo
                 sh 'gcp_ci_build.sh'
               }
             }
@@ -61,6 +63,8 @@ def call (project, environ, credential) {
             lock(resource: "Deploy K8s Apps - '" + "${environ}".capitalize() + "' Environment", inversePrecedence: true){
               retry(2){
                 timeout(time: 20, unit: 'MINUTES') {
+                  // script from DevOps Bash tools repo
+                  // external script needs to exist in the source repo, not the shared library repo
                   sh 'gcp_ci_k8s_deploy.sh'
                 }
               }

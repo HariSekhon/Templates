@@ -1,7 +1,7 @@
 Code & Config Templates
 =======================
 
-[![Travis CI](https://img.shields.io/travis/harisekhon/templates/master?logo=travis&label=Travis%20CI)](https://travis-ci.org/HariSekhon/Templates)
+[![Travis CI](https://img.shields.io/badge/TravisCI-legacy-lightgrey?logo=travis&label=Travis%20CI)](https://github.com/HariSekhon/Templates/blob/master/.travis.yml)
 [![CI Builds Overview](https://img.shields.io/badge/CI%20Builds-Overview%20Page-blue?logo=circleci)](https://bitbucket.org/harisekhon/devops-bash-tools/src/master/STATUS.md)
 [![Repo on Azure DevOps](https://img.shields.io/badge/repo-Azure%20DevOps-0078D7?logo=azure%20devops)](https://dev.azure.com/harisekhon/GitHub/_git/Templates)
 [![Repo on GitHub](https://img.shields.io/badge/repo-GitHub-2088FF?logo=github)](https://github.com/HariSekhon/Templates)
@@ -15,10 +15,10 @@ Code & Config Templates
 Code & DevOps Config templates for many popular programming languages and DevOps tools including:
 
 - [Kubernetes](https://kubernetes.io/) - templates for every major k8s object eg.
-[deployment.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/deployment.yaml),
-[statefulset.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/statefulset.yaml),
-[service.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/service.yaml),
-[ingress.yaml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/ingress.yaml), [kustomization.yml](https://github.com/HariSekhon/Kubernetes-templates/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-templates)
+[deployment.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/deployment.yaml),
+[statefulset.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/statefulset.yaml),
+[service.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/service.yaml),
+[ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
 - [Terraform](https://www.terraform.io/) -
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
@@ -27,7 +27,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - [Docker](https://www.docker.com/) - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
 - [AWS](https://aws.amazon.com/) - various templates
 - [GCP](https://cloud.google.com/) - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
-- [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Templates/blob/master/Jenkinsfile) and [vars/](https://github.com/HariSekhon/Templates/tree/master/vars) Shared Library
+- [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Templates/blob/master/Jenkinsfile) (advanced) and [vars/](https://github.com/HariSekhon/Templates/tree/master/vars) Shared Library
 - [Vagrant](https://www.vagrantup.com/) - [Vagrantfile](https://github.com/HariSekhon/Templates/blob/master/Vagrantfile)
 - [Make](https://www.gnu.org/software/make/) - [Makefile](https://github.com/HariSekhon/Templates/blob/master/Makefile)
 - [Maven](https://maven.apache.org/) - [pom.xml](https://github.com/HariSekhon/Templates/blob/master/pom.xml)
@@ -106,9 +106,9 @@ new tf
 
 * [SQL Scripts](https://github.com/HariSekhon/SQL-scripts) - 100+ SQL Scripts - PostgreSQL, MySQL, AWS Athena, Google BigQuery
 
-* [Kubernetes templates](https://github.com/HariSekhon/Kubernetes-templates) - Kubernetes YAML templates - Best Practices, Tips & Tricks are baked right into the templates for future deployments
+* [Kubernetes configs](https://github.com/HariSekhon/Kubernetes-configs) - Kubernetes YAML configs - Best Practices, Tips & Tricks are baked right into the templates for future deployments
 
-* [DevOps Python Tools](https://github.com/harisekhon/devops-python-tools) - 80+ DevOps CLI tools for AWS, Hadoop, HBase, Spark, Log Anonymizer, Ambari Blueprints, AWS CloudFormation, Linux, Docker, Spark Data Converters & Validators (Avro / Parquet / JSON / CSV / INI / XML / YAML), Elasticsearch, Solr, Travis CI, Pig, IPython
+* [DevOps Python Tools](https://github.com/harisekhon/devops-python-tools) - 80+ DevOps CLI tools for AWS, GCP, Hadoop, HBase, Spark, Log Anonymizer, Ambari Blueprints, AWS CloudFormation, Linux, Docker, Spark Data Converters & Validators (Avro / Parquet / JSON / CSV / INI / XML / YAML), Elasticsearch, Solr, Travis CI, Pig, IPython
 
 * [The Advanced Nagios Plugins Collection](https://github.com/harisekhon/nagios-plugins) - 450+ programs for Nagios monitoring your Hadoop & NoSQL clusters. Covers every Hadoop vendor's management API and every major NoSQL technology (HBase, Cassandra, MongoDB, Elasticsearch, Solr, Riak, Redis etc.) as well as message queues (Kafka, RabbitMQ), continuous integration (Jenkins, Travis CI) and traditional infrastructure (SSL, Whois, DNS, Linux)
 
