@@ -42,6 +42,8 @@
 #
 #   --substitutions=_IMAGE_NAME="myapp",_IMAGE_VERSION:"1.1"
 #
+#options:
+#  dynamic_substitutions: true  # required for composing substitutions from other substitutions
 substitutions:
   # XXX: set image and tag
   _IMAGE_NAME: myapp
@@ -61,6 +63,9 @@ substitutions:
   # GKE details
   #_CLOUDSDK_CONTAINER_CLUSTER: mycluster
   #_CLOUDSDK_COMPUTE_ZONE: europe-west1-b
+  #
+  # would massively shorten commands, but doesn't work unfortunately
+  #_IMAGE: ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
 
 timeout: 3660s
 
@@ -68,8 +73,8 @@ timeout: 3660s
 images:
 - ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
 # the above pushed all tags to GCR without specifying tags explicitly like this:
-#- gcr.io/${_PROJECT}/${_IMAGE_NAME}:latest
-#- gcr.io/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
+#- ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest
+#- ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
 
 steps:
 # Debug build environment, find we run inside $PWD of /workspace where our local $PWD was unpacked
@@ -92,7 +97,7 @@ steps:
     - -c
     - docker pull ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest || exit 0
 #
-- id: pull-image-cache-hashref
+- id: pull-image-cache-version
   name: gcr.io/cloud-builders/docker
   waitFor: [ '-' ]  # don't wait for any other steps
   entrypoint: 'bash'
