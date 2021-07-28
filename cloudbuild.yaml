@@ -42,8 +42,8 @@
 #
 #   --substitutions=_IMAGE_NAME="myapp",_IMAGE_VERSION:"1.1"
 #
-#options:
-#  dynamic_substitutions: true  # required for composing substitutions from other substitutions
+options:
+  dynamic_substitutions: true  # required for composing substitutions from other substitutions + eval'ing them to values in steps shell commands
 substitutions:
   # XXX: set image and tag
   _IMAGE_NAME: myapp
@@ -64,17 +64,17 @@ substitutions:
   #_CLOUDSDK_CONTAINER_CLUSTER: mycluster
   #_CLOUDSDK_COMPUTE_ZONE: europe-west1-b
   #
-  # would massively shorten commands, but doesn't work unfortunately
-  #_IMAGE: ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
+  # XXX: massively shortens step commands
+  _IMAGE: ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
 
 timeout: 3660s
 
 # push this image to GCR - doing it this way instead of docker push links the image artifact in GCP Console's Cloud Build UI
 images:
-- ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
+- ${_IMAGE}
 # the above pushed all tags to GCR without specifying tags explicitly like this:
-#- ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest
-#- ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
+#- ${_IMAGE}:latest
+#- ${_IMAGE}:${_IMAGE_VERSION}
 
 steps:
 # Debug build environment, find we run inside $PWD of /workspace where our local $PWD was unpacked
@@ -95,7 +95,7 @@ steps:
   entrypoint: 'bash'
   args:
     - -c
-    - docker pull ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest || exit 0
+    - docker pull ${_IMAGE}:latest || exit 0
 #
 - id: pull-image-cache-version
   name: gcr.io/cloud-builders/docker
@@ -103,7 +103,7 @@ steps:
   entrypoint: 'bash'
   args:
     - -c
-    - docker pull ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION} || exit 0
+    - docker pull ${_IMAGE}:${_IMAGE_VERSION} || exit 0
 # ============================================================================ #
 #                             B u i l d   I m a g e
 # ============================================================================ #
@@ -115,12 +115,12 @@ steps:
     - build
     # extra variables available ifor builds invoked by triggers:
     # https://cloud.google.com/cloud-build/docs/configuring-builds/substitute-variable-values
-    - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest
-    - --tag=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
+    - --tag=${_IMAGE}:latest
+    - --tag=${_IMAGE}:${_IMAGE_VERSION}
     # use all cached layers where possible (will pull, better for seldomly rebuilt images, kaniko cache is better for frequent as it's local)
     - --build-arg=BUILDKIT_INLINE_CACHE=1
-    - --cache-from=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:latest
-    - --cache-from=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
+    - --cache-from=${_IMAGE}:latest
+    - --cache-from=${_IMAGE}:${_IMAGE_VERSION}
     # Specifying a different Dockerfile path is tricky - requires /workspace prefix and cannot be quoted or have a space between args otherwise ends up with this error trying to lstat blank or quote as first dir component:
     #
     #   failed to solve with frontend dockerfile.v0: failed to read dockerfile: error from sender: failed to resolve : lstat  : no such file or directory
@@ -131,24 +131,24 @@ steps:
     - .
   # or use kaniko builder to cache
   #name: '${_REGISTRY}/kaniko-project/executor:latest'
-  #- --destination=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}
+  #- --destination=${_IMAGE}:${_IMAGE_VERSION}
   #- --cache=true
   #- --cache-ttl=6h
   timeout: 3600s
 
 # check the newly created image with a test command
-- name: '${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}'
+- name: '${_IMAGE}:${_IMAGE_VERSION}'
   args:
     - test
   timeout: 60s
 
 #- name: '${_REGISTRY}/cloud-builders/docker'
-#  args: ['push', '${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}']
+#  args: ['push', '${_IMAGE}:${_IMAGE_VERSION}']
 
 # CI/CD - deploy to GKE
 #
 #- name: '${_REGISTRY}/cloud-builders/kubectl'
-#  args: ['set', 'image', 'deployment/my-deployment', 'my-container=${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}:${_IMAGE_VERSION}']
+#  args: ['set', 'image', 'deployment/my-deployment', 'my-container=${_IMAGE}:${_IMAGE_VERSION}']
 #  env:
 #  - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
 #  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
