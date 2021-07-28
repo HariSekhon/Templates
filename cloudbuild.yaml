@@ -38,12 +38,20 @@
 # - tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
 # - $PWD is unpacked to /workspace inside the docker images being run to create builds
 
+options:
+  dynamic_substitutions: true  # required for composing substitutions from other substitutions + eval'ing them to values in steps shell commands
+
+  # workaround for substitutions only used to construct other substitution variables, avoiding this type of error:
+  #
+  #   ERROR: (gcloud.builds.submit) INVALID_ARGUMENT: generic::invalid_argument: key "_IMAGE_NAME" in the substitution data is not matched in the template;key "_PROJECT" in the substitution data is not matched in the template;key "_REGISTRY" in the substitution data is not matched in the template
+  #
+  # but this disables all variable misuse protections, so better to just fabricate a usage of the construction variables instead, see images section below
+  #substitution_option: ALLOW_LOOSE
+
 # variables - can override these on the CLI via:
 #
 #   --substitutions=_IMAGE_NAME="myapp",_IMAGE_VERSION:"1.1"
 #
-options:
-  dynamic_substitutions: true  # required for composing substitutions from other substitutions + eval'ing them to values in steps shell commands
 substitutions:
   # XXX: set image and tag
   _IMAGE_NAME: myapp
@@ -71,7 +79,9 @@ timeout: 3660s
 
 # push this image to GCR - doing it this way instead of docker push links the image artifact in GCP Console's Cloud Build UI
 images:
-- ${_IMAGE}
+# XXX: fabricated usage of substitution variables to avoid error described above at 'substitution_option: ALLOW_LOOSE'
+#- ${_IMAGE}
+- ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
 # the above pushed all tags to GCR without specifying tags explicitly like this:
 #- ${_IMAGE}:latest
 #- ${_IMAGE}:${_IMAGE_VERSION}
