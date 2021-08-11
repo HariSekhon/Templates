@@ -57,3 +57,18 @@ test: bash-tools
 .PHONY: tests
 tests: test
 	@:
+
+# ============================================================================ #
+#                 S k a f f o l d   f o r   K u b e r n e t e s
+# ============================================================================ #
+
+#.PHONY: *
+
+run:
+	skaffold run --label skaffold.dev/run-id="static"
+
+dev:
+	skaffold dev --cleanup=false --label skaffold.dev/run-id="static"
+
+delete:
+	skaffold delete
