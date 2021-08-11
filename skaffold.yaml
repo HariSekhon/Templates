@@ -21,6 +21,8 @@
 
 # https://skaffold.dev/docs/pipeline-stages/
 
+# run: skaffold dev --cleanup=false --label skaffold.dev/run-id="static"
+
 # can define multiple Configs in here separated by --- and skaffold with execute all of them
 ---
 apiVersion: skaffold/v2beta18
