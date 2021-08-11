@@ -56,7 +56,7 @@ substitutions:
   # XXX: set image and tag
   _IMAGE_NAME: myapp
   # requires string, not float
-  _IMAGE_VERSION: "1.0"  # updating this will bust the cache because we only pre-pull exact version which will fail, skip, then build from scratch
+  _IMAGE_VERSION: "1.0"  # updating this may not bust the cache because we pre-pull both exact version and latest tags, you'd need to comment out latest pull in first step for a proper cache bust behaviour
   #_REGISTRY: eu.gcr.io
   _REGISTRY: gcr.io
   # XXX: if you hardcode _PROJECT to a shared project where you keep all your company images, then
