@@ -430,13 +430,19 @@ pipeline {
         // forbids older builds from starting
         // XXX: do not wrap milestone in a retry (stage/multi-steps/whole pipeline) because it will fail retry even for the same ordinal number
         milestone(ordinal: 50, label: "Milestone: Build")
+
         // convenient in Blue Ocean to see the environment quickly in a separate expand box
-        timeout(time: 1, unit: 'MINUTES') {
-          sh script: 'env | sort', label: 'Environment'
-        }
+        //timeout(time: 1, unit: 'MINUTES') {
+        //  sh script: 'env | sort', label: 'Environment'
+        //}
+        printEnv()  // func in vars/ shared library
+
         //echo "${params.MyVar}"
         echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
         echo 'Building...'
+
+        cloudbuild(timeout_minutes=40)  // func in vars/ shared library
+
         timeout(time: 60, unit: 'MINUTES') {
           sh 'make'
           // or
@@ -459,6 +465,42 @@ pipeline {
         // archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
       }
     }
+
+
+    stage('Download Kustomize') {
+      steps {
+        downloadKustomize()  // func in vars/ shared library
+      }
+    }
+
+    stage('Git Kubernetes Image Version Update') {
+      steps {
+        // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
+        sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
+          sh '''
+            set -eu
+            git config --global user.name "Jenkins"
+            git config --global user.email "platform-engineering@MYCOMPANY.co.uk"
+            mkdir -pv ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+            ssh-add -l || :
+            #cat >> ~/.ssh/config <<EOF
+#Host *
+#  LogLevel DEBUG3
+#EOF
+            #export GIT_TRACE=1
+            #export GIT_TRACE_SETUP=1
+            git clone git@github.com:MYORG/kubernetes
+            cd kubernetes/myapp/dev
+            kustomize edit set image eu.gcr.io/$CLOUDSDK_CORE_PROJECT/myapp:$GIT_COMMIT
+            git add .
+            git commit -m "updated MYAPP image version to build $GIT_COMMIT"
+            git push
+          '''
+        }
+      }
+    }
+
 
     stage('Test') {
       //options {
@@ -547,13 +589,23 @@ pipeline {
             // - this autoloads kubeconfig from GKE using GCP serviceaccount credential key
             sh './gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
             // OR
-            sh '''
-              argocd app sync "$APP" --grpc-web --force
-              argocd app wait "$APP" --grpc-web --timeout 600
-            '''
+            // ArgoCD Deploy, see below
           }
         }
       }
+    }
+
+    stage('Deploy') {
+      steps {
+        label 'ArgoCD Deploy'
+        container('argocd') {
+          sh '''
+            argocd app sync "$APP" --grpc-web --force
+            argocd app wait "$APP" --grpc-web --timeout 600
+          '''
+        }
+      }
+    }
 
     stage('Deploy Canary') {
       // XXX: remember to escape backslashes (double backslash)
@@ -588,6 +640,12 @@ pipeline {
         argocd app sync "$APP" --grpc-web --force
         argocd app wait "$APP" --grpc-web --timeout 600
       '''
+    }
+
+    stage('Cloudflare Cache Purge') {
+      steps {
+        CloudflarePurgeCache()  // func in vars/ shared library
+      }
     }
 
     // see https://jenkins.io/blog/2017/09/25/declarative-1/
