@@ -591,20 +591,8 @@ pipeline {
             // - this autoloads kubeconfig from GKE using GCP serviceaccount credential key
             sh './gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
             // OR
-            // ArgoCD Deploy, see below
+            argoDeploy("$APP")  // func in vars/ shared library
           }
-        }
-      }
-    }
-
-    stage('Deploy') {
-      steps {
-        label 'ArgoCD Deploy'
-        container('argocd') {
-          sh '''
-            argocd app sync "$APP" --grpc-web --force
-            argocd app wait "$APP" --grpc-web --timeout 600
-          '''
         }
       }
     }
