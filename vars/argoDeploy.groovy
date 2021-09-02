@@ -13,6 +13,8 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
+// Requires ARGOCD_SERVER and ARGOCD_AUTH_TOKEN environment variables to be set, see top level Jenkinsfile
+
 def call(app, timeout_seconds=600){
   label 'ArgoCD Deploy'
   container('argocd') {  // container name must match what is defined in jenkins-agent-pod.yaml
