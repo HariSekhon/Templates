@@ -15,13 +15,13 @@
 
 // Requires ARGOCD_SERVER and ARGOCD_AUTH_TOKEN environment variables to be set, see top level Jenkinsfile
 
-def call(app, timeout_seconds=600){
+def call(app, timeoutSeconds=600){
   label 'ArgoCD Deploy'
   container('argocd') {  // container name must match what is defined in jenkins-agent-pod.yaml
-    timeout(time: timeout_seconds, unit: 'SECONDS') {
+    timeout(time: timeoutSeconds, unit: 'SECONDS') {
       sh """
         argocd app sync "$app" --grpc-web --force
-        argocd app wait "$app" --grpc-web --timeout "$timeout_seconds"
+        argocd app wait "$app" --grpc-web --timeout "$timeoutSeconds"
       """
     }
   }
