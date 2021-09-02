@@ -473,15 +473,16 @@ pipeline {
       }
     }
 
+    // GitOps for ArgoCD
     stage('Git Kubernetes Image Version Update') {
       steps {
         // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
         // ignoreMissing: false (default) doesn't work and there is no issue tracker on the github project page to report this :-/
         sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
-          sh '''
+          sh """
             set -eu
-            git config --global user.name "Jenkins"
-            git config --global user.email "platform-engineering@MYCOMPANY.co.uk"
+            git config --global user.name  "$GIT_USERNAME"
+            git config --global user.email "$GIT_EMAIL"
             mkdir -pv ~/.ssh
             ssh-keyscan github.com >> ~/.ssh/known_hosts
             ssh-add -l || :
@@ -493,11 +494,11 @@ pipeline {
             #export GIT_TRACE_SETUP=1
             git clone git@github.com:MYORG/kubernetes
             cd kubernetes/myapp/dev
-            kustomize edit set image eu.gcr.io/$CLOUDSDK_CORE_PROJECT/myapp:$GIT_COMMIT
+            kustomize edit set image eu.gcr.io/\$CLOUDSDK_CORE_PROJECT/myapp:\$GIT_COMMIT
             git add .
-            git commit -m "updated MYAPP image version to build $GIT_COMMIT"
+            git commit -m "updated MYAPP image version to build \$GIT_COMMIT"
             git push
-          '''
+          """
         }
       }
     }
