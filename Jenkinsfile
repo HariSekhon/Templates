@@ -607,8 +607,6 @@ pipeline {
       withKubeConfig([credentialsId:kubeconfig, contextName:canary]){
         sh 'kubectl apply -f manifests/'
       }
-      // EITHER OR
-      sh 'path/to/gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
     }
 
     stage('Deploy Production') {
@@ -626,10 +624,7 @@ pipeline {
       // OR - using external scripts ties this to the source repo
       sh 'path/to/gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
       // OR
-      sh '''
-        argocd app sync "$APP" --grpc-web --force
-        argocd app wait "$APP" --grpc-web --timeout 600
-      '''
+      argoDeploy("$APP")  // func in vars/ shared library
     }
 
     stage('Cloudflare Cache Purge') {
