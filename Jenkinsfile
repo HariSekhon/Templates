@@ -490,6 +490,7 @@ pipeline {
             #cat >> ~/.ssh/config <<EOF
 #Host *
 #  LogLevel DEBUG3
+#  #CheckHostIP no  # used ssh-keyscan instead
 #EOF
             #export GIT_TRACE=1
             #export GIT_TRACE_SETUP=1
