@@ -17,9 +17,6 @@ def call(timeout_minutes=40){
   echo "Building from branch '${env.GIT_BRANCH}' for '" + "${env.ENVIRONMENT}".capitalize() + "' Environment"
   milestone ordinal: 10, label: "Milestone: Build"
   echo "Running Job '${env.JOB_NAME}' Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
-  timeout(time: 1, unit: 'MINUTES') {
-    sh script: 'env | sort', label: 'Environment'
-  }
   retry(2){
     timeout(time: $timeout_minutes, unit: 'MINUTES') {
       echo 'Running GCP CloudBuild'
