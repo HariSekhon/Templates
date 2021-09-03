@@ -23,8 +23,8 @@ def call(timeout_minutes=40){
   retry(2){
     timeout(time: $timeout_minutes, unit: 'MINUTES') {
       echo 'Running GCP CloudBuild'
-      sh '''
-        set -eu
+      sh '''#!/bin/bash
+        set -euo pipefail
         echo "$GCP_SERVICEACCOUNT_KEY" | base64 --decode > credentials.json
         gcloud auth activate-service-account --key-file=credentials.json
         rm -f credentials.json
