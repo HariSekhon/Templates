@@ -242,6 +242,7 @@ pipeline {
 
     CLOUDSDK_CORE_PROJECT = 'mycompany-dev'
     CLOUDSDK_COMPUTE_REGION = 'europe-west2'
+    GCR_REGISTRY = 'eu.gcr.io'
 
     // use to purge Cloudflare Cache
     CLOUDFLARE_API_KEY = credentials('cloudflare-api-key')
@@ -494,9 +495,9 @@ pipeline {
             #export GIT_TRACE_SETUP=1
             git clone git@github.com:MYORG/kubernetes
             cd kubernetes/myapp/dev
-            kustomize edit set image eu.gcr.io/\$CLOUDSDK_CORE_PROJECT/myapp:\$GIT_COMMIT
+            kustomize edit set image "$GCR_REGISTRY/$CLOUDSDK_CORE_PROJECT/myapp:$GIT_COMMIT"
             git add .
-            git commit -m "updated MYAPP image version to build \$GIT_COMMIT"
+            git commit -m "updated MYAPP image version to build $GIT_COMMIT"
             git push
           """
         }
