@@ -480,8 +480,8 @@ pipeline {
         // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
         // ignoreMissing: false (default) doesn't work and there is no issue tracker on the github project page to report this :-/
         sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
-          sh """
-            set -eu
+          sh """#!/bin/bash
+            set -euo pipefail
             git config --global user.name  "$GIT_USERNAME"
             git config --global user.email "$GIT_EMAIL"
             mkdir -pv ~/.ssh
