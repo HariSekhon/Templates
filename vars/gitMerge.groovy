@@ -26,10 +26,28 @@ def call(from_branch, to_branch){
       // XXX: define this SSH private key in Jenkins -> Manage Jenkins -> Credentials as SSH username with private key
       sshagent (credentials: ['github-ssh-key']) {
         retry(2) {
-          // this path needs to be in the triggering repo, which is often not the same as the Shared Library repo this code is found in
-          // script from DevOps Bash tools repo
-          // external script needs to exist in the source repo, not the shared library repo
-          sh "git_merge_branch.sh '$from_branch' '$to_branch'"
+          sh """#!/bin/bash
+                set -euxo pipefail
+
+                # needed to check in
+                git config user.name "Jenkins"
+                git config user.email "platform-engineering@MYDOMAIN.CO.UK"  # XXX: change this
+
+                git status
+
+                mkdir -pv ~/.ssh
+
+                # needed for git pull to work
+                ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+                git fetch
+
+                git checkout "$to_branch" --force
+                git pull --no-edit
+                git merge "origin/$from_branch" --no-edit
+
+                git push
+            """
         }
       }
     }
