@@ -23,7 +23,7 @@ def call(){
 This prompt will time out after 1 hour""",
       ok: "Deploy",
       // only allow people in this group to approve deployments to production
-      submitter: "platform-engineering@mycompany.co.uk",
+      submitter: "platform-engineering@mydomain.co.uk",  // XXX: set this
     )
   }
 }
