@@ -13,6 +13,11 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
+// Implementing this is as simple as this 2 line Jenkinsfile:
+//
+// @Library('jenkins@staging') _   // shared library is configured with name 'jenkins' under Jenkins -> Configure System, branch to source from is 'staging'
+// gitMergePipeline('staging', 'dev')
+
 def call(from_branch, to_branch){
 
     pipeline {
