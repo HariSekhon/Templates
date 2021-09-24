@@ -31,7 +31,7 @@ def call(from_branch, to_branch){
 
                 # needed to check in
                 git config user.name "Jenkins"
-                git config user.email "platform-engineering@MYDOMAIN.CO.UK"  # XXX: change this
+                git config user.email "platform-engineering@mydomain.co.uk"  # XXX: set this
 
                 git status
 
