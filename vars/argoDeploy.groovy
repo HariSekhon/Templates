@@ -13,20 +13,26 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
-// Requires ARGOCD_SERVER and ARGOCD_AUTH_TOKEN environment variables to be set, see top level Jenkinsfile
+// Required Environment Variables to be set in environment{} section of Jenkinsfile, see top level Jenkinsfile template
+//
+//    APP
+//    ENVIRONMENT
+//    ARGOCD_SERVER
+//    ARGOCD_AUTH_TOKEN
+//
 
-def call(app, timeoutSeconds=600){
+def call(timeoutSeconds=600){
   milestone ordinal: 30, label: "Milestone: Argo Deploy"
-  echo "Deploying app '$app' via ArgoCD"
-  String deploymentLock = "Deploy ArgoCD app '$app' - " + "${env.ENVIRONMENT}".capitalize() + " Environment"
+  echo "Deploying app '$APP' via ArgoCD"
+  String deploymentLock = "Deploy ArgoCD app '$APP' - " + "$ENVIRONMENT".capitalize() + " Environment"
   lock(resource: deploymentLock, inversePrecedence: true){
     label 'ArgoCD Deploy'
     container('argocd') {
       timeout(time: timeoutSeconds, unit: 'SECONDS') {
         sh """#!/bin/bash
           set -euo pipefail
-          argocd app sync "$app" --grpc-web --force
-          argocd app wait "$app" --grpc-web --timeout "$timeoutSeconds"
+          argocd app sync "$APP" --grpc-web --force
+          argocd app wait "$APP" --grpc-web --timeout "$timeoutSeconds"
         """
       }
     }
