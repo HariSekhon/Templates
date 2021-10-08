@@ -15,10 +15,11 @@
 
 // Required Environment Variables to be set in environment{} section of Jenkinsfile, see top level Jenkinsfile template
 //
-//      CLOUDSDK_CORE_PROJECT
-//      GCP_SERVICEACCOUNT_KEY
-//      GCR_REGISTRY
-//      DOCKER_IMAGE
+//    CLOUDSDK_CORE_PROJECT
+//    GCP_SERVICEACCOUNT_KEY
+//    GCR_REGISTRY
+//    DOCKER_IMAGE
+//    GIT_COMMIT - provided automatically by Jenkins
 
 def call(timeout_seconds=3600){
   echo "Building from branch '${env.GIT_BRANCH}' for '" + "${env.ENVIRONMENT}".capitalize() + "' Environment"
