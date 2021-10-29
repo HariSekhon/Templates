@@ -25,6 +25,10 @@
 //    DOCKER_IMAGE
 //    GIT_COMMIT - provided automatically by Jenkins
 //
+// Should be wrapped in an sshagent block like this:
+//
+//    sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) { ... }
+//
 // Could be adapted to take these as parameters if multiple GitOps updates were done in a single pipeline, but more likely those should be separate pipelines
 
 def call(timeoutSeconds=120){
@@ -66,7 +70,7 @@ def call(timeoutSeconds=120){
           kustomize edit set image "$DOCKER_IMAGE:$GIT_COMMIT"
           git add -A
           if ! git diff-index --quiet HEAD; then
-            git commit -m "updated WWW $ENVIRONMENT app image version to build $GIT_COMMIT"
+            git commit -m "updated $APP $ENVIRONMENT app image version to build $GIT_COMMIT"
           fi
           git push
         """
