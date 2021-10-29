@@ -488,7 +488,7 @@ pipeline {
             gitOpsK8sUpdate()  // func in vars/ shared library
           }
 
-          argoDeploy("$APP")  // func in vars/ shared library
+          argoDeploy()  // func in vars/ shared library
         }
       }
     }
@@ -581,7 +581,7 @@ pipeline {
             // - this autoloads kubeconfig from GKE using GCP serviceaccount credential key
             sh './gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
             // OR
-            argoDeploy("$APP")  // func in vars/ shared library
+            argoDeploy()  // func in vars/ shared library
           }
         }
       }
@@ -614,7 +614,7 @@ pipeline {
       // OR - using external scripts ties this to the source repo
       sh 'path/to/gcp_ci_deploy_k8s.sh'  // https://github.com/HariSekhon/DevOps-Bash-tools
       // OR
-      argoDeploy("$APP")  // func in vars/ shared library
+      argoDeploy()  // func in vars/ shared library
     }
 
     stage('Cloudflare Cache Purge') {
