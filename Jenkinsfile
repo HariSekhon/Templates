@@ -474,33 +474,21 @@ pipeline {
       }
     }
 
-    // GitOps for ArgoCD
-    stage('Git Kubernetes Image Version Update') {
-      steps {
-        // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
-        // ignoreMissing: false (default) doesn't work and there is no issue tracker on the github project page to report this :-/
-        sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
-          sh """#!/bin/bash
-            set -euo pipefail
-            git config --global user.name  "$GIT_USERNAME"
-            git config --global user.email "$GIT_EMAIL"
-            mkdir -pv ~/.ssh
-            ssh-keyscan github.com >> ~/.ssh/known_hosts
-            ssh-add -l || :
-            #cat >> ~/.ssh/config <<EOF
-#Host *
-#  LogLevel DEBUG3
-#  #CheckHostIP no  # used ssh-keyscan instead
-#EOF
-            #export GIT_TRACE=1
-            #export GIT_TRACE_SETUP=1
-            git clone git@github.com:MYORG/kubernetes
-            cd kubernetes/myapp/dev
-            kustomize edit set image "$GCR_REGISTRY/$CLOUDSDK_CORE_PROJECT/myapp:$GIT_COMMIT"
-            git add .
-            git commit -m "updated MYAPP image version to build $GIT_COMMIT"
-            git push
-          """
+    // ArgoCD GitOps Deployment
+    stage('ArgoCD Deploy') {
+      // XXX: lock to serialize GitOps K8s image update and ArgoCD deployment to ensure accurate deployment rollout status for each build before allowing another Git change, otherwise ArgoCD could quickly release the newer change, masking a breakage in a previous build not rolling out properly
+      lock(resource: "ArgoCD Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}", inversePrecedence: true) {
+        steps {
+          // forbids older deploys from starting
+          milestone(ordinal: 100, label: "Milestone: ArgoCD Deploy")
+
+          // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
+          // ignoreMissing: false (default) doesn't work and there is no issue tracker on the github project page to report this :-/
+          sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
+            gitOpsK8sUpdate()  // func in vars/ shared library
+          }
+
+          argoDeploy("$APP")  // func in vars/ shared library
         }
       }
     }
