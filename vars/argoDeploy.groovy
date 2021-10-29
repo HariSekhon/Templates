@@ -13,7 +13,7 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
-// Requires ARGOCD_SERVER and ARGOCD_AUTH_TOKEN environment variables to be set, see top level Jenkinsfile
+// Requires APP< ARGOCD_SERVER and ARGOCD_AUTH_TOKEN environment variables to be set, see top level Jenkinsfile
 
 def call(timeoutSeconds=600){
   milestone ordinal: 30, label: "Milestone: Argo Deploy"
