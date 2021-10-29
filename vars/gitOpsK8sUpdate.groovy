@@ -38,6 +38,7 @@ def call(timeoutSeconds=120){
           git config --global user.name  "$GIT_USERNAME"
           git config --global user.email "$GIT_EMAIL"
           mkdir -pv ~/.ssh
+          #ssh-add -l || :
 
           # convenient but not secure
           #ssh-keyscan github.com >> ~/.ssh/known_hosts
@@ -46,11 +47,19 @@ def call(timeoutSeconds=120){
           #ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts
           # or
           #export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
+          # or
+          #cat >> ~/.ssh/config <<EOF
+#Host *
+#  LogLevel DEBUG3
+#  #CheckHostIP no  # used ssh-keyscan instead
+#EOF
           #
           # copy from ssh-keyscan above and then hardcode here for better security:
           #echo "[ssh.github.com]:443 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" >> ~/.ssh/known_hosts
           echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" >> ~/.ssh/known_hosts
 
+          #export GIT_TRACE=1
+          #export GIT_TRACE_SETUP=1
           git clone --branch "$ENVIRONMENT" "$GITOPS_REPO" repo
           cd "repo/$APP/$ENVIRONMENT"
           #kustomize edit set image "$GCR_REGISTRY/$GCR_PROJECT/$APP:$GIT_COMMIT"
