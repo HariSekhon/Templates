@@ -13,22 +13,30 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
-def call(timeout_minutes=40){
+// Required Environment Variables to be set in environment{} section of Jenkinsfile, see top level Jenkinsfile template
+//
+//    CLOUDSDK_CORE_PROJECT
+//    GCP_SERVICEACCOUNT_KEY
+//    GCR_REGISTRY
+//    DOCKER_IMAGE
+//    GIT_COMMIT - provided automatically by Jenkins
+
+def call(timeout_seconds=3600){
   echo "Building from branch '${env.GIT_BRANCH}' for '" + "${env.ENVIRONMENT}".capitalize() + "' Environment"
   milestone ordinal: 10, label: "Milestone: Build"
   echo "Running Job '${env.JOB_NAME}' Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
   retry(2){
-    timeout(time: $timeout_minutes, unit: 'MINUTES') {
+    timeout(time: $timeout_seconds, unit: 'SECONDS') {
       echo 'Running GCP CloudBuild'
-      sh '''#!/bin/bash
+      sh """#!/bin/bash
         set -euo pipefail
-        echo "$GCP_SERVICEACCOUNT_KEY" | base64 --decode > credentials.json
+        echo "\$GCP_SERVICEACCOUNT_KEY" | base64 --decode > credentials.json
         gcloud auth activate-service-account --key-file=credentials.json
         rm -f credentials.json
-        if [ -z "$(gcloud container images list-tags "$K8_IMAGE" --filter="tags:$GIT_COMMIT" --format=text)" ]; then
-          gcloud builds submit --project="$CLOUDSDK_CORE_PROJECT" --substitutions _REGISTRY="$GCR_REGISTRY",_IMAGE_VERSION="$GIT_COMMIT" --timeout=3600
+        if [ -z "$(gcloud container images list-tags "\$DOCKER_IMAGE" --filter="tags:\$GIT_COMMIT" --format=text)" ]; then
+          gcloud builds submit --project="\$CLOUDSDK_CORE_PROJECT" --substitutions _REGISTRY="\$GCR_REGISTRY",_IMAGE_VERSION="\$GIT_COMMIT" --timeout=$timeout_seconds
         fi
-      '''
+      """
     }
   }
 }

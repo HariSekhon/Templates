@@ -316,6 +316,8 @@ pipeline {
         lock(resource: 'Git Merge Staging to Dev', inversePrecedence: true) {
           milestone ordinal: 20, label: "Milestone: Git Merge"
           timeout(time: 5, unit: 'MINUTES') {
+            // provides credential as env vars to use as per normal eg. git clone https://$GIT_USER:$GIT_TOKEN@github.com/...
+            //withCredentials([usernamePassword(credentialsId: 'jenkins-user-token-for-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
             // requires SSH Agent plugin + restart
             sshagent (credentials: ['jenkins-ssh-key-for-github']) {
               retry(2) {
@@ -711,7 +713,7 @@ pipeline {
       //echo "Inferred committers via slackUserIdsFromCommitters to be: ${env.COMMITTERS}"
       echo "Inferred committers since last successful build via git log to be: ${env.GIT_COMMITTERS}"
       slackSend color: 'danger',
-        message: "Git Merge FAILED - ${env.SLACK_MESSAGE} - @here ${env.GIT_COMMITTERS}" //,  // unfortunately @Hari Sekhon doesn't get activate notification, not sure why, tried <@Hari Sekhon> too
+        message: "Git Merge FAILED - ${env.SLACK_MESSAGE} - @here ${env.GIT_COMMITTERS}" //,  // unfortunately @Hari Sekhon doesn't get activate notification the way @here does, nor does <@Hari Sekhon>
         //botUser: true  // needed if using slackUserIdsFromCommitters() - must set up the Slack Jenkins app manually - see https://plugins.jenkins.io/slack/#bot-user-mode for details
     }
     fixed {
