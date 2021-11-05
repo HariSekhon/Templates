@@ -480,7 +480,7 @@ pipeline {
     stage('ArgoCD Deploy') {
       // XXX: lock to serialize GitOps K8s image update and ArgoCD deployment to ensure accurate deployment rollout status for each build before allowing another Git change, otherwise ArgoCD could quickly release the newer change, masking a breakage in a previous build not rolling out properly
       steps {
-        lock(resource: "ArgoCD Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}", inversePrecedence: true) {
+        lock(resource: "ArgoCD Deploy - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
           // forbids older deploys from starting
           milestone(ordinal: 100, label: "Milestone: ArgoCD Deploy")
 
@@ -564,14 +564,14 @@ pipeline {
       //
       // see vars/ directory in this repo
       //
-      // String deploymentLock = "Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}"
+      // String deploymentLock = "Deploy - App: $APP, Environment: $ENVIRONMENT"
       // echo "Acquiring Deployment Lock: $deploymentLock"
       // lock(resource: deploymentLock, inversePrecedence: true) {
 
       // discard other deploys once this one has been chosen
       // use Lockable Resources plugin to limit deploy concurrency to 1
       // inversePrecedence: true makes Jenkins use the most recent deployment first, which when combined with Milestone, discards older deploys
-      lock(resource: "Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}", inversePrecedence: true) {
+      lock(resource: "Deploy - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
         steps {
           // forbids older deploys from starting
           milestone(ordinal: 100, label: "Milestone: Deploy")
