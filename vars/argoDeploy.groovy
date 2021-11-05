@@ -24,7 +24,7 @@
 def call(timeoutSeconds=600){
   milestone ordinal: 100, label: "Milestone: Argo Deploy"
   echo "Deploying app '$APP' via ArgoCD"
-  String deploymentLock = "Deploy ArgoCD app '${env.APP}' - " + "${env.ENVIRONMENT}".capitalize() + " Environment"
+  String deploymentLock = "Deploying ArgoCD - App '$APP', Environment: " + "$ENVIRONMENT".capitalize()
   lock(resource: deploymentLock, inversePrecedence: true){
     label 'ArgoCD Deploy'
     container('argocd') {
