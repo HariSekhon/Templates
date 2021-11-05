@@ -479,8 +479,8 @@ pipeline {
     // ArgoCD GitOps Deployment
     stage('ArgoCD Deploy') {
       // XXX: lock to serialize GitOps K8s image update and ArgoCD deployment to ensure accurate deployment rollout status for each build before allowing another Git change, otherwise ArgoCD could quickly release the newer change, masking a breakage in a previous build not rolling out properly
-      lock(resource: "ArgoCD Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}", inversePrecedence: true) {
-        steps {
+      steps {
+        lock(resource: "ArgoCD Deploy - App: ${env.APP}, Environment: ${env.ENVIRONMENT}", inversePrecedence: true) {
           // forbids older deploys from starting
           milestone(ordinal: 100, label: "Milestone: ArgoCD Deploy")
 
