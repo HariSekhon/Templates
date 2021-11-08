@@ -17,7 +17,7 @@ def call(){
   String cloudflareCachePurgeLock = "Cloudflare Purge Cache - '" + "${env.ENVIRONMENT}".capitalize() + "' Environment"
   echo "Acquiring Cloudflare Cache Purge Lock: $cloudflareCachePurgeLock"
   lock(resource: cloudflareCachePurgeLock, inversePrecedence: true){
-    milestone ordinal: 90, label: "Milestone: Cloudflare Purge Cache"
+    milestone ordinal: 110, label: "Milestone: Cloudflare Purge Cache"
     retry(2){
       timeout(time: 1, unit: 'MINUTES') {
         // script from DevOps Bash tools repo
