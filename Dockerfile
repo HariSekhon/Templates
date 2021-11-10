@@ -22,6 +22,12 @@ ARG NAME_VERSION
 
 ENV PATH $PATH:/NAME/bin
 
+# stops Python generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# flush stdout immediately for more real-time container logging
+ENV PYTHONUNBUFFERED 1
+
 LABEL Description="NAME", \
       "NAME Version"="$NAME_VERSION"
 
