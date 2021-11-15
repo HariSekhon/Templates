@@ -86,8 +86,9 @@ Instantly creates and opens all standard files for a Terraform deployment in you
 - [provider.tf](https://github.com/HariSekhon/Terraform-templates/blob/master/provider.tf)
 - [backend.tf](https://github.com/HariSekhon/Terraform-templates/blob/master/backend.tf)
 - [variables.tf](https://github.com/HariSekhon/Terraform-templates/blob/master/variables.tf)
+- [versions.tf](https://github.com/HariSekhon/Terraform-templates/blob/master/versions.tf)
 - [terraform.tfvars](https://github.com/HariSekhon/Terraform-templates/blob/master/terraform.tfvars)
-- `main.tf`
+- [main.tf](https://github.com/HariSekhon/Terraform-templates/blob/master/main.tf)
 
 all heavily commented to get a new Terraform environment up and running quickly - with links to things like AWS / GCP regions, Terraform backend providers, state locking etc.
 
