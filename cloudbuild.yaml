@@ -63,7 +63,9 @@ substitutions:
   #_REGISTRY: gcr.io
 
   # Google Artifact Registry (new):
-  _REGISTRY: europe-docker.pkg.dev
+  _REGISTRY: europe-docker.pkg.dev     # multi-region
+  #_REGISTRY: us-docker.pkg.dev        # multi-region
+  #_REGISTRY: <region>-docker.pkg.dev  # regional
   _REPOSITORY: myapp  # XXX: Edit
 
   # XXX: if you hardcode _PROJECT to a shared project where you keep all your company images, then
