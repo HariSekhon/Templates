@@ -57,8 +57,15 @@ substitutions:
   _IMAGE_NAME: myapp
   # requires string, not float
   _IMAGE_VERSION: "1.0"  # updating this may not bust the cache because we pre-pull both exact version and latest tags, you'd need to comment out latest pull in first step for a proper cache bust behaviour
+
+  # Google Container Registry (legacy)
   #_REGISTRY: eu.gcr.io
-  _REGISTRY: gcr.io
+  #_REGISTRY: gcr.io
+
+  # Google Artifact Registry (new):
+  _REGISTRY: europe-docker.pkg.dev
+  _REPOSITORY: myapp  # XXX: Edit
+
   # XXX: if you hardcode _PROJECT to a shared project where you keep all your company images, then
   #      you'll need to switch your GCloud SDK core.project to submit to that project to get the right GCS permissions to store the image
   #
@@ -71,9 +78,14 @@ substitutions:
   # GKE details
   #_CLOUDSDK_CONTAINER_CLUSTER: mycluster
   #_CLOUDSDK_COMPUTE_ZONE: europe-west1-b
-  #
+
   # XXX: massively shortens step commands
-  _IMAGE: ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
+  #
+  # For GCR:
+  #_IMAGE: ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
+  #
+  # For Artifact Registry:
+  _IMAGE: ${_REGISTRY}/${_PROJECT}/${_REPOSITORY}/${_IMAGE_NAME}
 
 timeout: 3660s
 
