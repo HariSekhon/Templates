@@ -18,17 +18,39 @@
 
 version: 2.1
 jobs:
-  build:
-    # technically a docker image is a better choice than machine
-    # but we want to introduce some native environment variation
-    # between build systems in order to test the repo's build automation is robust
-    machine:
+  mybuild:
+
+    #macos: # VM with Xcode version 11.3
+    # xcode: "11.3.0"
+    # XXX: Edit to use either the docker or machine section depending on whether you need to build a docker image
+
+    machine: # VM - use to build docker images
       image: default
-      #image: ubuntu-1604:201903-01
+      #image: ubuntu-2004:202010-01  # Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
+      #
       # set to an actual docker image when running locally using circle_ci_job.sh
       # docker image must have git installed to do the checkout
       # so using harisekhon/dev:ubuntu instead of base ubuntu image
       #image: harisekhon/dev:ubuntu
+
+    docker:
+      - image: buildpack-deps:trusty
+        auth:
+          username: harisekhon
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+      - image: postgres:9.4.1
+        auth:
+          username: harisekhon
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        #
+        # for the secondary or service container run in a common
+        # network where ports exposed on the primary container are
+        # available on localhost.
+        environment: # Specifies the POSTGRES_USER authentication
+         # environment variable, see circleci.com/docs/2.0/env-vars/
+         # for instructions about using environment variables.
+          POSTGRES_USER: root
+
     steps:
       - checkout
       - run: setup/ci_bootstrap.sh
