@@ -17,13 +17,21 @@
 # https://circleci.com/docs/2.0/configuration-reference
 
 version: 2.1
+
+orbs:
+  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
+  # https://circleci.com/developer/orbs/orb/circleci/python
+  python: circleci/python@1.2
+
 jobs:
   mybuild:
 
-    #macos: # VM with Xcode version 11.3
-    # xcode: "11.3.0"
     # XXX: Edit to use either the docker or machine section depending on whether you need to build a docker image
 
+    #macos: # VM with Xcode version 11.3
+    # xcode: "11.3.0"
+
+    # XXX: OR
     machine: # VM - use to build docker images
       image: default
       #image: ubuntu-2004:202010-01  # Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
@@ -33,8 +41,10 @@ jobs:
       # so using harisekhon/dev:ubuntu instead of base ubuntu image
       #image: harisekhon/dev:ubuntu
 
-    docker:
+    # XXX: OR
+    docker:  # first container listed is where step commands run
       - image: buildpack-deps:trusty
+			#- image: cimg/python:3.8
         auth:
           username: harisekhon
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
@@ -60,3 +70,70 @@ jobs:
       - run: sudo sysctl net.ipv4.ip_forward=1
       - run: sudo service docker restart
       - run: make test
+      #
+      # from circleci/python orb
+      #
+			#- python/install-packages:
+			#  pkg-manager: pip
+		      # app-dir: ~/project/mydir  # path to requirements.txt
+          # pip-dependency-file: dev-requirements.txt  # name of requirements.txt file
+      #
+      # call custom command
+      #
+      #- mycommand:
+      #    myarg: "test2"
+      #
+      #- save_cache:
+      #    key: mykey-{{ .Environment.CIRCLE_SHA1 }}
+      #    paths:
+      #      - ~/.cache  # pip
+      #      - ~/.cpan
+      #      - ~/.cpanm
+      #      - ~/.gem
+      #      - ~/.m2
+      #      - ~/.ivy
+      #      - ~/.ivy2
+      #      - ~/.gradle
+      #      - ~/.sbt
+      #      - pytools_checks
+      #
+      #- restore_cache:
+      #    key: mykey-{{ .Environment.CIRCLE_SHA1 }}
+
+      # save only for the duration of the workflow for downstream jobs
+      #- persist_to_workspace:
+      #    root: workspace  # absolute or relative to path from working dir
+      #    paths:
+      #      - echo-output  # relative to root
+      #
+      # restore from workflow workspace
+      #- attach_workspace:
+      #    at: /tmp/workspace  # absolute or relative path from working_dir
+
+      #- store_artifacts: # See circleci.com/docs/2.0/artifacts/ for more details.
+      #    path: /tmp/artifact-1
+      #    destination: artifact-file
+
+# command with parameters (can be reused across steps and jobs)
+commands:
+  mycommand:  # XXX: Edit section
+    description: "My description"
+    parameters:
+      myarg:
+        type: string
+        default: "test"
+    steps:
+      - run: echo << parameters.myarg >>
+
+# defines jobs run order
+workflows:
+  myworkflow:  # XXX: Edit section
+    jobs:
+      - mybuild1
+      # mybuild2 + build3 will run concurrently
+      - mybuild2:
+          requires:
+           - mybuild1  # start only after mybuild1 completees successfully
+      - mybuild3:
+          requires:
+           - mybuild1  # start only after mybuild1 completees successfully
