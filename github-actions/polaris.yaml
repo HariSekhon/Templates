@@ -35,4 +35,17 @@ jobs:
         uses: fairwindsops/polaris@master
         with:
           #version: 4.0.7
+          #
+          # audit may fail on repos with JSON patches:
+          #
+          #   https://github.com/FairwindsOps/polaris/issues/667
+          #
+          #   and can't exclude files:
+          #
+          #     https://github.com/FairwindsOps/polaris/issues/670
+          #
+          # see Polaris kubernetes as the better workaround in the repo:
+          #
+          #   https://github.com/HariSekhon/Kubernetes-configs
+          #
           args: polaris audit --audit-path . -f pretty --only-show-failed-tests
