@@ -18,10 +18,11 @@
 
 version: 2.1
 
-orbs:
-  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
-  # https://circleci.com/developer/orbs/orb/circleci/python
-  python: circleci/python@1.2
+# XXX: consider avoiding Orbs for reuse CLI commands that port between CI/CD systems
+#orbs:
+#  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
+#  # https://circleci.com/developer/orbs/orb/circleci/python
+#  python: circleci/python@1.2
 
 jobs:
   mybuild:
@@ -86,6 +87,7 @@ jobs:
       #- save_cache:
       #    key: mykey-{{ .Environment.CIRCLE_SHA1 }}
       #    paths:
+      #      - ~/go
       #      - ~/.cache  # pip
       #      - ~/.cpan
       #      - ~/.cpanm
