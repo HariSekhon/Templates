@@ -41,8 +41,7 @@ def call(docker_images=["$DOCKER_IMAGE"], timeoutSeconds=120){
     retry(2){
       timeout(time: timeoutSeconds, unit: 'SECONDS'){
         sh """#!/bin/bash
-          set -x
-          set -euo pipefail
+          set -euxo pipefail
           git config --global user.name  "$GIT_USERNAME"
           git config --global user.email "$GIT_EMAIL"
           mkdir -pv ~/.ssh
