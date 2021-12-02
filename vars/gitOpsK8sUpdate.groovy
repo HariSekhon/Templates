@@ -31,13 +31,17 @@
 //
 // Could be adapted to take these as parameters if multiple GitOps updates were done in a single pipeline, but more likely those should be separate pipelines
 
-def call(timeoutSeconds=120){
+def call(docker_images=["$DOCKER_IMAGE"], timeoutSeconds=120){
+  if(!docker_images){
+    throw new Exception("first arg of gitOpsK8sUpdate (docker_images) is null or empty, please define in the calling pipeline")
+  }
   String gitOpsLock = "GitOps Kubernetes Image Update - App: '$APP', Environment: '" + "$ENVIRONMENT".capitalize() + "'"
   echo "Acquiring Lock: $gitOpsLock"
   lock(resource: gitOpsLock, inversePrecedence: true){
     retry(2){
       timeout(time: timeoutSeconds, unit: 'SECONDS'){
         sh """#!/bin/bash
+          set -x
           set -euo pipefail
           git config --global user.name  "$GIT_USERNAME"
           git config --global user.email "$GIT_EMAIL"
@@ -67,7 +71,9 @@ def call(timeoutSeconds=120){
           git clone --branch "$ENVIRONMENT" "$GITOPS_REPO" repo
           cd "repo/$APP/$ENVIRONMENT"
           #kustomize edit set image "$GCR_REGISTRY/$GCR_PROJECT/$APP:$GIT_COMMIT"
-          kustomize edit set image "$DOCKER_IMAGE:$GIT_COMMIT"
+          #kustomize edit set image "$DOCKER_IMAGE:$GIT_COMMIT"
+          ${docker_images.collect{"kustomize edit set image $it:$GIT_COMMIT"}.join("\n")}
+          git diff
           git add -A
           if ! git diff-index --quiet HEAD; then
             git commit -m "updated $APP $ENVIRONMENT app image version to build $GIT_COMMIT"
