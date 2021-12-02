@@ -33,7 +33,7 @@
 
 def call(dockerImages=["$DOCKER_IMAGE"], timeoutSeconds=120){
   if (!dockerImages){
-    throw new IllegalArgumentException("first arg of gitOpsK8sUpdate (docker_images) is null or empty, please define in the calling pipeline")
+    throw new IllegalArgumentException("first arg of gitOpsK8sUpdate (dockerImages) is null or empty, please define in the calling pipeline")
   }
   String gitOpsLock = "GitOps Kubernetes Image Update - App: '$APP', Environment: '" + "$ENVIRONMENT".capitalize() + "'"
   echo "Acquiring Lock: $gitOpsLock"
