@@ -24,8 +24,50 @@ version: 2.1
 #  # https://circleci.com/developer/orbs/orb/circleci/python
 #  python: circleci/python@1.2
 
+# defines jobs run order and triggers
+workflows:
+  myworkflow:  # XXX: Edit section
+    #triggers:  # without this runs on every push
+    jobs:
+      # concurrent by default unless has 'requires' dependency
+      - mybuild1
+      # mybuild2 + build3 will run concurrently
+      - mybuild2:
+          requires:
+           - mybuild1  # start only after mybuild1 completees successfully
+      - mybuild3:
+          requires:
+           - mybuild1  # start only after mybuild1 completees successfully
+      - human_gate:
+          type: approval
+          requires:
+            - mybuild1
+      - mydeploy:
+          requires:
+            - human_gate
+          filters:  # AND'd
+            branches:  # requires entire branch to match
+              only:  # only branches matching the below regex filters will run
+                - dev
+                - /pre-prod(?:-.+)?$/
+              ignore: /pr-.*/
+            tags:
+              only: /^v.*/
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"  # step format (*/2) and range format (1-5) are not supported as of 2.1
+          filters:
+            branches:
+              only:
+                - main
+
 jobs:
   mybuild:
+    parameters:
+      myparam:
+        type: string
+        default: myvalue
 
     # XXX: Edit to use either the docker or machine section depending on whether you need to build a docker image
 
@@ -45,7 +87,7 @@ jobs:
     # XXX: OR
     docker:  # first container listed is where step commands run
       - image: buildpack-deps:trusty
-			#- image: cimg/python:3.8
+      #- image: cimg/python:3.8
         auth:
           username: harisekhon
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
@@ -71,12 +113,13 @@ jobs:
       - run: sudo sysctl net.ipv4.ip_forward=1
       - run: sudo service docker restart
       - run: make test
+      - run: echo myparam = << parameters.myparam >>
       #
       # from circleci/python orb
       #
-			#- python/install-packages:
-			#  pkg-manager: pip
-		      # app-dir: ~/project/mydir  # path to requirements.txt
+      #- python/install-packages:
+      #  pkg-manager: pip
+          # app-dir: ~/project/mydir  # path to requirements.txt
           # pip-dependency-file: dev-requirements.txt  # name of requirements.txt file
       #
       # call custom command
@@ -126,16 +169,3 @@ commands:
         default: "test"
     steps:
       - run: echo << parameters.myarg >>
-
-# defines jobs run order
-workflows:
-  myworkflow:  # XXX: Edit section
-    jobs:
-      - mybuild1
-      # mybuild2 + build3 will run concurrently
-      - mybuild2:
-          requires:
-           - mybuild1  # start only after mybuild1 completees successfully
-      - mybuild3:
-          requires:
-           - mybuild1  # start only after mybuild1 completees successfully
