@@ -106,6 +106,12 @@ jobs:
 
     steps:
       - checkout
+      - run:
+        name: Setup Environment Variables    # BASH_ENV gets sourced automatically by subsequent bash shells across run steps
+        command: |
+          echo 'export PATH=$GOPATH/bin:$PATH' >> $BASH_ENV
+          echo 'export GIT_SHA1=$CIRCLE_SHA1' >> $BASH_ENV
+          echo 'export GIT_COMMIT=$CIRCLE_SHA1' >> $BASH_ENV  # port for Jenkins standard env var, used by various scripts
       - run: setup/ci_bootstrap.sh
       - run: make init
       - run: make
