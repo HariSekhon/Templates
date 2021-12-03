@@ -71,7 +71,7 @@ def call(dockerImages=["$DOCKER_IMAGE"], timeoutSeconds=120){
           cd "repo/$APP/$ENVIRONMENT"
           #kustomize edit set image "$GCR_REGISTRY/$GCR_PROJECT/$APP:$GIT_COMMIT"
           #kustomize edit set image "$DOCKER_IMAGE:$GIT_COMMIT"
-          ${ dockerImages.collect{"kustomize edit set image $it:$GIT_COMMIT"}.join("\n") }
+          ${ dockerImages.collect{ "kustomize edit set image $it:$GIT_COMMIT" }.join("\n") }
           git diff
           git add -A
           if ! git diff-index --quiet HEAD; then
