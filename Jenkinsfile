@@ -484,10 +484,12 @@ pipeline {
           // forbids older deploys from starting
           milestone(ordinal: 100, label: "Milestone: ArgoCD Deploy")
 
-          // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
-          // ignoreMissing: false (default) doesn't work and there is no issue tracker on the github project page to report this :-/
-          sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
-            gitOpsK8sUpdate()  // func in vars/ shared library
+          container('git-kustomize') {
+            // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
+            // ignoreMissing: false (default) doesn't work and there is no issue tracker on the github project page to report this :-/
+            sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
+              gitOpsK8sUpdate(['mydockerimage'])  // func in vars/ shared library
+            }
           }
 
           argoDeploy()  // func in vars/ shared library
