@@ -27,7 +27,8 @@
 //
 // Should be wrapped in an sshagent block like this:
 //
-//    sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) { ... }
+//    container('git-kustomize') {
+//      sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) { ... }
 //
 // Could be adapted to take these as parameters if multiple GitOps updates were done in a single pipeline, but more likely those should be separate pipelines
 
