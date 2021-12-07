@@ -470,11 +470,12 @@ pipeline {
     }
 
 
-    stage('Download Kustomize') {
-      steps {
-        downloadKustomize()  // func in vars/ shared library
-      }
-    }
+    // no longer needed if pulling git-kustomize docker image in jenkins-pod.yaml
+    //stage('Download Kustomize') {
+    //  steps {
+    //    downloadKustomize()  // func in vars/ shared library
+    //  }
+    //}
 
     // ArgoCD GitOps Deployment
     stage('ArgoCD Deploy') {
