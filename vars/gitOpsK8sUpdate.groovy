@@ -42,6 +42,7 @@ def call(dockerImages=["$DOCKER_IMAGE"], timeoutSeconds=120){
       timeout(time: timeoutSeconds, unit: 'SECONDS'){
         sh """#!/bin/bash
           set -euxo pipefail
+          export SSH_AUTH_SOCK="${env.SSH_AUTH_SOCK}"  # workaround for https://issues.jenkins.io/browse/JENKINS-42582
           git config --global user.name  "$GIT_USERNAME"
           git config --global user.email "$GIT_EMAIL"
           mkdir -pv ~/.ssh
