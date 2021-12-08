@@ -12,10 +12,11 @@
 
 #FROM scatch
 #FROM busybox:latest
-#FROM ubuntu:14.04
-#FROM debian:jessie
-#FROM centos:6
+#FROM ubuntu:20.04
+#FROM debian:10  # aka buster
+#FROM centos:8
 FROM alpine:latest
+#FROM --platform=linux/amd64 amazonlinux:2  # pin current version - safer than 'latest' which may upgrade and break build unexpectedly
 MAINTAINER Hari Sekhon (https://www.linkedin.com/in/harisekhon)
 
 ARG NAME_VERSION
@@ -35,27 +36,42 @@ WORKDIR /
 
 #COPY NAME.repo /etc/yum.repos.d
 
-RUN \
+# ===============
+# Alpine
+RUN set -eux && \
     apk add --no-cache bash git make
 
-RUN \
-    apk add --no-cache wget && \
-    wget ...
-    apk del wget
+RUN bash -c ' \
+    set -euxo pipefail && \
+    apk add --no-cache curl wget && \
+    wget ... && \
+    curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
+    apk del curl wget \
+    '
 
+# ===============
+# CentOS
 #RUN curl http://URL/NAME.repo /etc/yum.repos.d/NAME.repo && \
-RUN \
-    yum install -y && \
-    yum remove -y && \
+RUN set -euxo pipefail && \
+    yum install -y curl && \
+    curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
+    yum remove -y curl && \
     yum autoremove -y && \
     yum clean all
 
-RUN \
+# ===============
+# Debian / Ubuntu
+RUN bash -c ' \
+    set -euxo pipefail && \
     apt-get update && \
-    apt-get install -y && \
-    apt-get purge -y && \
+    apt-get install -y curl && \
+    curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
+    apt-get purge -y curl && \
     apt-get autoremove -y && \
-    apt-get clean
+    apt-get clean && \
+    rm -fr /var/lib/apt/lists \
+    '
+
 
 COPY file.txt /file.txt
 EXPOSE 8080
