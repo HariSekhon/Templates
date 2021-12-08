@@ -19,7 +19,10 @@
 version: 2.1
 
 # XXX: consider avoiding Orbs for reuse CLI commands that port between CI/CD systems
-#orbs:
+orbs:
+  # or use more portable check_bash_syntax.sh in https://github.com/HariSekhon/DevOps-Bash-tools
+  # https://circleci.com/developer/orbs/orb/circleci/shellcheck
+  shellcheck: circleci/shellcheck@2.0.0
 #  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
 #  # https://circleci.com/developer/orbs/orb/circleci/python
 #  python: circleci/python@1.2
@@ -29,8 +32,21 @@ workflows:
   myworkflow:  # XXX: Edit section
     #triggers:  # without this runs on every push
     jobs:
+      - shellcheck/check:
+          #dir: ./my-scripts
+          #exclude: SC2148
       # concurrent by default unless has 'requires' dependency
       - mybuild1
+        requires:
+          - shellcheck/check
+        filters:
+          branches:
+            only:
+              - main
+              - master
+              - dev
+              - staging
+              - production
       # mybuild2 + build3 will run concurrently
       - mybuild2:
           requires:
@@ -75,7 +91,7 @@ jobs:
     # XXX: Edit to use either the docker or machine section depending on whether you need to build a docker image
 
     #macos: # VM with Xcode version 11.3
-    # xcode: "11.3.0"
+    # xcode: 11.3.0
 
     # XXX: OR
     machine: # VM - use to build docker images
@@ -87,8 +103,10 @@ jobs:
       #   Step 1/12 : FROM --platform=linux/amd64 amazonlinux:latest
       #   Unknown flag: platform
       #
-      #image: default
+      #image: default  # old
+      #image: ubuntu-2004:202010-01  # (recommended) Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
       image: ubuntu-2004:202111-01   # Ubuntu 20.04 VM, Docker v20.10.11, Docker Compose v1.29.2
+      docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds
       #
       # set to an actual docker image when running locally using circle_ci_job.sh
       # docker image must have git installed to do the checkout
