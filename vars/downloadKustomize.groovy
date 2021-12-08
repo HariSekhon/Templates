@@ -13,6 +13,10 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
+// There is now a harisekhon/git-kustomize docker image to avoid re-downloading kustomize for every pipeline run and reuse docker image caching
+//
+// See top-level Jenkinsfile and adjacent gitOpsK8sUpdate.groovy
+
 def call(version='4.3.0'){
   timeout(time: 2, unit: 'MINUTES') {
     sh script: """#!/bin/bash
