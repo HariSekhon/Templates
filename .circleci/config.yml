@@ -88,12 +88,12 @@ jobs:
     # XXX: Edit to use either the docker or machine section depending on whether you need to build a docker image
 
     #macos: # VM with Xcode version 11.3
-    # xcode: "11.3.0"
+    # xcode: 11.3.0
 
     # XXX: OR
     machine: # VM - use to build docker images
-      image: default
-      #image: ubuntu-2004:202010-01  # Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
+      #image: default  # old
+      image: ubuntu-2004:202010-01  # (recommended) Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
       docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds
       #
       # set to an actual docker image when running locally using circle_ci_job.sh
