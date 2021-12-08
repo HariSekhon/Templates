@@ -36,6 +36,7 @@ workflows:
           requires:
            - mybuild1  # start only after mybuild1 completees successfully
       - mybuild3:
+          context: my_context_name  # inherits all the env vars set at the context level
           requires:
            - mybuild1  # start only after mybuild1 completees successfully
       - human_gate:
@@ -68,6 +69,8 @@ jobs:
       myparam:
         type: string
         default: myvalue
+    environment:  # job-wide env vars
+      AWS_ACCOUNT_ID: "123456789012"  # store digits over 6 chars as a string to prevent numeric exponential conversion
 
     # XXX: Edit to use either the docker or machine section depending on whether you need to build a docker image
 
@@ -76,8 +79,16 @@ jobs:
 
     # XXX: OR
     machine: # VM - use to build docker images
-      image: default
-      #image: ubuntu-2004:202010-01  # Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
+      #
+      #   https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
+      #
+      # default image gives old Docker 17 which fails to build with error:
+      #
+      #   Step 1/12 : FROM --platform=linux/amd64 amazonlinux:latest
+      #   Unknown flag: platform
+      #
+      #image: default
+      image: ubuntu-2004:202111-01   # Ubuntu 20.04 VM, Docker v20.10.11, Docker Compose v1.29.2
       #
       # set to an actual docker image when running locally using circle_ci_job.sh
       # docker image must have git installed to do the checkout
@@ -91,6 +102,9 @@ jobs:
         auth:
           username: harisekhon
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment:  # environment only for this docker container - base64 encode value if multiline
+          MY_ENV_VAR_1: myvalue1
+          MY_ENV_VAR_2: myvalue2
       - image: postgres:9.4.1
         auth:
           username: harisekhon
@@ -104,14 +118,25 @@ jobs:
          # for instructions about using environment variables.
           POSTGRES_USER: root
 
+    # if running on Alpine, do this to source environment
+    shell: /bin/sh -leo pipefail
+      environment:
+        - BASH_ENV: /etc/profile
+
     steps:
       - checkout
       - run:
         name: Setup Environment Variables    # BASH_ENV gets sourced automatically by subsequent bash shells across run steps
         command: |
-          echo 'export PATH=$GOPATH/bin:$PATH' >> $BASH_ENV
-          echo 'export GIT_SHA1=$CIRCLE_SHA1' >> $BASH_ENV
-          echo 'export GIT_COMMIT=$CIRCLE_SHA1' >> $BASH_ENV  # port for Jenkins standard env var, used by various scripts
+          echo 'export PATH=$GOPATH/bin:$PATH' >> "$BASH_ENV"
+          echo 'export GIT_SHA1=$CIRCLE_SHA1' >> "$BASH_ENV"
+          echo 'export GIT_COMMIT=$CIRCLE_SHA1' >> "$BASH_ENV"  # port for Jenkins standard env var, used by various scripts
+          source "$BASH_ENV"  # if you need these new env vars in the same run step as well as subsequent ones
+      - run:
+          name: local-step-environment
+          command: echo "$MYVAR"
+          environment:
+            MYVAR: test
       - run: setup/ci_bootstrap.sh
       - run: make init
       - run: make
@@ -137,6 +162,7 @@ jobs:
       #    key: mykey-{{ .Environment.CIRCLE_SHA1 }}
       #    paths:
       #      - ~/go
+      #      - ./node_modules
       #      - ~/.cache  # pip
       #      - ~/.cpan
       #      - ~/.cpanm
@@ -150,6 +176,8 @@ jobs:
       #
       #- restore_cache:
       #    key: mykey-{{ .Environment.CIRCLE_SHA1 }}
+      #    keys:
+      #      - myapp-{{ checksum "package-lock.json" }}
 
       # save only for the duration of the workflow for downstream jobs
       #- persist_to_workspace:
