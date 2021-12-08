@@ -114,9 +114,19 @@ jobs:
       #image: harisekhon/dev:ubuntu
 
     # XXX: OR
-    docker:  # first container listed is where step commands run
+    #
+    # CircleCI Docker Images:
+    #
+    #   https://circleci.com/developer/images
+    #
+    #   https://hub.docker.com/u/cimg
+    #
+    docker:  # first container listed is where step commands run - usually you want a language image here
       - image: buildpack-deps:trusty
       #- image: cimg/python:3.8
+      #- image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/myrepo:latest
+        environment:
+          AWS_DEFAULT_REGION: eu-west-2
         auth:
           username: harisekhon
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
