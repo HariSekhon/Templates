@@ -28,6 +28,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - [AWS](https://aws.amazon.com/) - various templates
 - [GCP](https://cloud.google.com/) - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
 - [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Templates/blob/master/Jenkinsfile) (advanced) and [vars/](https://github.com/HariSekhon/Templates/tree/master/vars) Shared Library
+- [Circle CI](https://circleci.com/) - [circleci_config.yml](https://github.com/HariSekhon/Templates/blob/master/circleci_config.yml) (advanced)
 - [Vagrant](https://www.vagrantup.com/) - [Vagrantfile](https://github.com/HariSekhon/Templates/blob/master/Vagrantfile)
 - [Make](https://www.gnu.org/software/make/) - [Makefile](https://github.com/HariSekhon/Templates/blob/master/Makefile)
 - [Maven](https://maven.apache.org/) - [pom.xml](https://github.com/HariSekhon/Templates/blob/master/pom.xml)
@@ -41,7 +42,6 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - [Scala](https://www.scala-lang.org/) - [template.scala](https://github.com/HariSekhon/Templates/blob/master/template.scala)
 - [Bash](https://www.gnu.org/software/bash/) - [template.sh](https://github.com/HariSekhon/Templates/blob/master/template.sh)
 - [Puppet](https://puppet.com/) - [template.pp](https://github.com/HariSekhon/Templates/blob/master/template.pp)
-- [Circle CI](https://circleci.com/) - [circleci_config.yml](https://github.com/HariSekhon/Templates/blob/master/circleci_config.yml)
 - SQL - [template.sql](https://github.com/HariSekhon/Templates/blob/master/template.sql)
 - XML - [template.xml](https://github.com/HariSekhon/Templates/blob/master/template.xml)
 - YAML - [template.yaml](https://github.com/HariSekhon/Templates/blob/master/template.yaml)
