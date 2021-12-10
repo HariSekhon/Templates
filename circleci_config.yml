@@ -114,17 +114,18 @@ jobs:
     # XXX: OR
     #
     # VM - technically a docker image is a better choice than machine due to faster spin-up and less resources (credits/cost)
-    #    - use if:
-    #      - need full OS access
+    #    - use if you need:
+    #      - large RAM instances
+    #      - full OS access (network stack, sysctl etc)
     #      - docker-compose mounts
-    #      - if you want to introduce some native environment variation between build systems in order to test the repo's build automation is robust
-    #      - comes with more pre-installed software, see link below
+    #      - some native environment variation between build systems in order to test the repo's build automation is robust
+    #      - more pre-installed software for convenience:
+    #
+    #           https://circleci.com/docs/2.0/docker-to-machine/#pre-installed-software
     #
     machine:
       #
       #   https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-      #
-      #   https://circleci.com/docs/2.0/docker-to-machine/#pre-installed-software
       #
       # default image gives old Docker 17 which fails to build with error:
       #
