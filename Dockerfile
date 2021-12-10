@@ -46,7 +46,8 @@ RUN bash -c ' \
     apk add --no-cache curl wget && \
     wget ... && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
-    apk del curl wget \
+    apk del curl wget && \
+    rm -fr /etc/apk/cache /var/cache/apk
     '
 
 # ===============
@@ -57,7 +58,8 @@ RUN set -euxo pipefail && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
     yum remove -y curl && \
     yum autoremove -y && \
-    yum clean all
+    yum clean all && \
+    rm -rf /var/cache/yum  # to also free up space taken by orphaned data from disabled or removed repos
 
 # ===============
 # Debian / Ubuntu
@@ -69,7 +71,7 @@ RUN bash -c ' \
     apt-get purge -y curl && \
     apt-get autoremove -y && \
     apt-get clean && \
-    rm -fr /var/lib/apt/lists \
+    rm -fr /var/cache/apt /var/lib/apt/lists \
     '
 
 
