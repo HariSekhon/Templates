@@ -32,8 +32,12 @@ orbs:
 #  # https://circleci.com/developer/orbs/orb/circleci/python
 #  python: circleci/python@1.2
 
-# defines jobs run order and triggers
+# Workflows - defines jobs run order and triggers
+#
+#   https://circleci.com/docs/2.0/workflows/
+#
 workflows:
+  version: 2
   myworkflow:  # XXX: Edit section
     #triggers:  # without this runs on every push
     jobs:
@@ -55,11 +59,11 @@ workflows:
       # mybuild2 + build3 will run concurrently
       - mybuild2:
           requires:
-           - mybuild1  # start only after mybuild1 completees successfully
+           - mybuild1  # start only after mybuild1 completes successfully
       - mybuild3:
           context: my_context_name  # inherits all the env vars set at the context level
           requires:
-           - mybuild1  # start only after mybuild1 completees successfully
+           - mybuild1  # start only after mybuild1 completes successfully
       - human_gate:
           type: approval
           requires:
@@ -106,6 +110,7 @@ jobs:
     resource_class: medium  # default: large. XXX: Edit to balance performance/cost or resources required for build/tests to execute successfully
 
     # XXX: OR
+    # technically a docker image is a better choice than machine due to faster spin-up and less resources (credits/cost) but you may want to introduce some native environment variation between build systems in order to test the repo's build automation is robust
     machine: # VM - use to build docker images
       #
       #   https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
@@ -118,6 +123,9 @@ jobs:
       #image: default  # old
       #image: ubuntu-2004:202010-01  # (recommended) Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
       image: ubuntu-2004:202111-01   # Ubuntu 20.04 VM, Docker v20.10.11, Docker Compose v1.29.2
+      # set to an actual docker image when running locally using circle_ci_job.sh
+      # docker image must have git installed to do the checkout, hence why using harisekhon/ubuntu-dev instead of base ubuntu image
+      #image: harisekhon/dev:ubuntu
       docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds - available on performance and custom plans only
       #
       # set to an actual docker image when running locally using circle_ci_job.sh
@@ -178,13 +186,17 @@ jobs:
 
     steps:
       - checkout
+      #
       # XXX: if primary executor is Docker
       - setup_remote_docker:
         version: 20.10.11  # https://circleci.com/docs/2.0/building-docker-images/#docker-version
         docker_layer_caching: true  # available on performance and custom plans only
-      # set up a specific version of AWS CLI using the AWS Orb if necessary
+      #
+      # Install AWS CLI using orb
+      #
       - aws-cli/install:
           version: 2.4.6  # AWS CLI versions: https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst
+      #
       - run:
         name: Setup Environment Variables    # BASH_ENV gets sourced automatically by subsequent bash shells across run steps
         command: |
@@ -197,6 +209,9 @@ jobs:
           command: echo "$MYVAR"
           environment:
             MYVAR: test
+      #
+      # Custom Build Commands
+      #
       - run: setup/ci_bootstrap.sh
       - run: make init
       - run: make
@@ -205,15 +220,15 @@ jobs:
       - run: sudo service docker restart
       - run: make test
       - run: echo myparam = << parameters.myparam >>
-      #
+
       # from circleci/python orb
       #
       #- python/install-packages:
       #  pkg-manager: pip
           # app-dir: ~/project/mydir  # path to requirements.txt
           # pip-dependency-file: dev-requirements.txt  # name of requirements.txt file
-			#
-			# Install a specific version of NodeJS
+
+      # Install a specific version of NodeJS
       ##
       #- run:
       #    name: "Update Node.js and npm"
@@ -225,27 +240,35 @@ jobs:
       #
       #- mycommand:
       #    myarg: "test2"
+
+      # Caching
       #
-      #- save_cache:
-      #    key: mykey-{{ .Environment.CIRCLE_SHA1 }}
+      #    https://circleci.com/docs/2.0/caching/
+      #
+      #- save_cache:  # Caches dependencies with a cache key
+      #    #key: mykey-{{ .Environment.CIRCLE_SHA1 }}
+      #    key: m2-{{ checksum "pom.xml" }}
       #    paths:
-      #      - ~/go
+      #      - ~/go       # /pkg /src
       #      - ./node_modules
-      #      - ~/.cache  # pip
+      #      - ~/.cache   # /pip
       #      - ~/.cpan
       #      - ~/.cpanm
       #      - ~/.gem
-      #      - ~/.m2
+      #      - ~/.m2      # /repository /wrapper
       #      - ~/.ivy
-      #      - ~/.ivy2
-      #      - ~/.gradle
+      #      - ~/.ivy2    # /cache
+      #      - ~/.gradle  # /caches /wrapper
       #      - ~/.sbt
+      #      - ~/Library/Caches/pip
       #      - pytools_checks
       #
       #- restore_cache:
       #    key: mykey-{{ .Environment.CIRCLE_SHA1 }}
       #    keys:
       #      - myapp-{{ checksum "package-lock.json" }}
+      #      - m2-{{ checksum "pom.xml" }}
+      #      - m2-  # used if checksum match fails, take the next closest match
 
       # save only for the duration of the workflow for downstream jobs
       #- persist_to_workspace:
