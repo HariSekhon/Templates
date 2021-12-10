@@ -20,6 +20,11 @@ version: 2.1
 
 # XXX: consider avoiding Orbs for reuse CLI commands that port between CI/CD systems
 orbs:
+  # XXX: Needed on Docker executor but not on machine VM executor which already had AWS CLI installed
+  orbs:
+    # gives install/setup/some CLI wrapper commands - https://circleci.com/developer/orbs/orb/circleci/aws-cli
+    aws-cli: circleci/aws-cli@2.0.6  # this is the Orb version not the AWS CLI version
+  #
   # or use more portable check_bash_syntax.sh in https://github.com/HariSekhon/DevOps-Bash-tools
   # https://circleci.com/developer/orbs/orb/circleci/shellcheck
   shellcheck: circleci/shellcheck@2.0.0
@@ -93,6 +98,13 @@ jobs:
     #macos: # VM with Xcode version 11.3
     # xcode: 11.3.0
 
+    # Instance Class resource sizing is different between Machine VM and Docker (machine is just under double the RAM)
+    #
+    #   https://circleci.com/docs/2.0/executor-types/#using-machine
+    #   https://circleci.com/docs/2.0/executor-types/#available-docker-resource-classes
+    #
+    resource_class: medium  # default: large. XXX: Edit to balance performance/cost or resources required for build/tests to execute successfully
+
     # XXX: OR
     machine: # VM - use to build docker images
       #
@@ -106,7 +118,7 @@ jobs:
       #image: default  # old
       #image: ubuntu-2004:202010-01  # (recommended) Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
       image: ubuntu-2004:202111-01   # Ubuntu 20.04 VM, Docker v20.10.11, Docker Compose v1.29.2
-      docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds
+      docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds - available on performance and custom plans only
       #
       # set to an actual docker image when running locally using circle_ci_job.sh
       # docker image must have git installed to do the checkout
@@ -122,7 +134,8 @@ jobs:
     #   https://hub.docker.com/u/cimg
     #
     docker:  # first container listed is where step commands run - usually you want a language image here
-      - image: buildpack-deps:trusty
+      #- image: buildpack-deps:trusty  # legacy, replaced by next-gen cimg/base
+      - image: cimg/base:2021.04  # base ubuntu image, small but should already be cached on host so quick to start - see https://circleci.com/docs/2.0/circleci-images/#circleci-base-image
       #- image: cimg/python:3.8
       #- image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/myrepo:latest
         environment:
@@ -130,6 +143,14 @@ jobs:
         auth:
           username: harisekhon
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        # to access private ECR images, either have the standard AWS environment variables available via context/project env vars or specific explicitly like so:
+        aws_auth:
+          # loaded from context or project env vars - see circleci_project_set_env_vars.sh for easy loading for an exported AWS credential CSV in the adjacent DevOps Bash tools repo:
+          #
+          #   https://github.com/HariSekhon/DevOps-Bash-tools
+          #
+          aws_access_key_id: $AWS_ACCESS_KEY_ID  # specify explicitly like this if different jobs use different env vars eg. $AWS_ACCESS_KEY_ID_STAGING vs $AWS_ACCESS_KEY_ID_PRODUCTION
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
         environment:  # environment only for this docker container - base64 encode value if multiline
           MY_ENV_VAR_1: myvalue1
           MY_ENV_VAR_2: myvalue2
@@ -151,8 +172,19 @@ jobs:
       environment:
         - BASH_ENV: /etc/profile
 
+    # speed up builds by using ram instead of disk if thre is enough ram
+    #working_directory: /mnt/ramdisk  # Docker
+    #working_directory: /dev/shm      # VM
+
     steps:
       - checkout
+      # XXX: if primary executor is Docker
+      - setup_remote_docker:
+        version: 20.10.11  # https://circleci.com/docs/2.0/building-docker-images/#docker-version
+        docker_layer_caching: true  # available on performance and custom plans only
+      # set up a specific version of AWS CLI using the AWS Orb if necessary
+      - aws-cli/install:
+          version: 2.4.6  # AWS CLI versions: https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst
       - run:
         name: Setup Environment Variables    # BASH_ENV gets sourced automatically by subsequent bash shells across run steps
         command: |
@@ -180,6 +212,14 @@ jobs:
       #  pkg-manager: pip
           # app-dir: ~/project/mydir  # path to requirements.txt
           # pip-dependency-file: dev-requirements.txt  # name of requirements.txt file
+			#
+			# Install a specific version of NodeJS
+      ##
+      #- run:
+      #    name: "Update Node.js and npm"
+      #    command: |
+      #      curl -sSL "https://nodejs.org/dist/v11.10.0/node-v11.10.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v11.10.0-linux-x64/bin/node
+      #      curl https://www.npmjs.com/install.sh | sudo bash
       #
       # call custom command
       #
