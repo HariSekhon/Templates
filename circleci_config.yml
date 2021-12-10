@@ -16,6 +16,8 @@
 
 # https://circleci.com/docs/2.0/configuration-reference
 
+# place at .circleci/config.yml at the top for your git repo
+
 version: 2.1
 
 # XXX: consider avoiding Orbs for reuse CLI commands that port between CI/CD systems
