@@ -47,9 +47,9 @@ workflows:
           #dir: ./my-scripts
           #exclude: SC2148
       # concurrent by default unless has 'requires' dependency
-      - mybuild1
-        requires:
-          - shellcheck/check
+      - mybuild1:
+          requires:
+            - shellcheck/check
         filters:
           branches:
             only:
