@@ -128,7 +128,7 @@ jobs:
       # set to an actual docker image when running locally using circle_ci_job.sh
       # docker image must have git installed to do the checkout, hence why using harisekhon/ubuntu-dev instead of base ubuntu image
       #image: harisekhon/dev:ubuntu
-      docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds - available on performance and custom plans only
+      docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds - available on performance and custom plans only - ignored on free plan with a notice
       #
       # set to an actual docker image when running locally using circle_ci_job.sh
       # docker image must have git installed to do the checkout
@@ -192,7 +192,7 @@ jobs:
       # XXX: if primary executor is Docker
       - setup_remote_docker:
           version: 20.10.11  # https://circleci.com/docs/2.0/building-docker-images/#docker-version
-          docker_layer_caching: true  # available on performance and custom plans only
+          docker_layer_caching: true  # available on performance and custom plans only - ignored on free plan with a notice
       #
       # Install AWS CLI using orb
       #
