@@ -149,7 +149,7 @@ jobs:
       #- image: cimg/python:3.8
       #- image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/myrepo:latest
         environment:
-          AWS_DEFAULT_REGION: eu-west-2
+          AWS_DEFAULT_REGION: eu-west-2  # CircleCI jobs runs in us-east-1, so this may not be efficient to push/pull docker images
         auth:
           username: harisekhon
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
