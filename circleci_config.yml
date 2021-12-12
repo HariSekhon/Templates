@@ -191,8 +191,8 @@ jobs:
       #
       # XXX: if primary executor is Docker
       - setup_remote_docker:
-        version: 20.10.11  # https://circleci.com/docs/2.0/building-docker-images/#docker-version
-        docker_layer_caching: true  # available on performance and custom plans only
+          version: 20.10.11  # https://circleci.com/docs/2.0/building-docker-images/#docker-version
+          docker_layer_caching: true  # available on performance and custom plans only
       #
       # Install AWS CLI using orb
       #
