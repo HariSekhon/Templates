@@ -47,9 +47,9 @@ workflows:
           #dir: ./my-scripts
           #exclude: SC2148
       # concurrent by default unless has 'requires' dependency
-      - mybuild1
-        requires:
-          - shellcheck/check
+      - mybuild1:
+          requires:
+            - shellcheck/check
         filters:
           branches:
             only:
@@ -138,7 +138,7 @@ jobs:
       # set to an actual docker image when running locally using circle_ci_job.sh
       # docker image must have git installed to do the checkout, hence why using harisekhon/ubuntu-dev instead of base ubuntu image
       #image: harisekhon/dev:ubuntu
-      docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds - available on performance and custom plans only
+      docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds - available on performance and custom plans only - ignored on free plan with a notice
       #
       # set to an actual docker image when running locally using circle_ci_job.sh
       # docker image must have git installed to do the checkout
@@ -159,7 +159,7 @@ jobs:
       #- image: cimg/python:3.8
       #- image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/myrepo:latest
         environment:
-          AWS_DEFAULT_REGION: eu-west-2
+          AWS_DEFAULT_REGION: eu-west-2  # CircleCI jobs runs in us-east-1, so this may not be efficient to push/pull docker images
         auth:
           username: harisekhon
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
@@ -201,8 +201,8 @@ jobs:
       #
       # XXX: if primary executor is Docker
       - setup_remote_docker:
-        version: 20.10.11  # https://circleci.com/docs/2.0/building-docker-images/#docker-version
-        docker_layer_caching: true  # available on performance and custom plans only
+          version: 20.10.11  # https://circleci.com/docs/2.0/building-docker-images/#docker-version
+          docker_layer_caching: true  # available on performance and custom plans only - ignored on free plan with a notice
       #
       # Install AWS CLI using orb
       #
