@@ -99,11 +99,6 @@ jobs:
     environment:  # job-wide env vars
       AWS_ACCOUNT_ID: "123456789012"  # store digits over 6 chars as a string to prevent numeric exponential conversion
 
-    # XXX: Edit to use either the docker or machine section depending on whether you need to build a docker image
-
-    #macos: # VM with Xcode version 11.3
-    # xcode: 11.3.0
-
     # Instance Class resource sizing is different between Machine VM and Docker (machine is just under double the RAM)
     #
     #   https://circleci.com/docs/2.0/executor-types/#using-machine
@@ -111,11 +106,23 @@ jobs:
     #
     resource_class: medium  # default: large. XXX: Edit to balance performance/cost or resources required for build/tests to execute successfully
 
-    # XXX: OR
+    # XXX: Choose to run job on a VM (machine) or docker container (docker container boots faster and uses less resources/credits)
+
+    # Self-hosted runners
     #
+    # XXX: must not have a machine: or docker: section in this case, will use whatever the launch-agent container image is as the executor
+    #
+    #machine: true
+    #resource_class: <namespace>/<resource>
+    #resource_class: harisekhon/docker-runner  # XXX: for self-hosted runners on Docker or Kubernetes
+    #resource_class: harisekhon/k8s-runner
+
+    #macos: # VM with Xcode version 11.3
+    # xcode: 11.3.0
+
     # VM - technically a docker image is a better choice than machine due to faster spin-up and less resources (credits/cost)
     #    - use if you need:
-    #      - large RAM instances
+    #      - larger RAM (can go to roughly double)
     #      - full OS access (network stack, sysctl etc)
     #      - docker-compose mounts
     #      - some native environment variation between build systems in order to test the repo's build automation is robust
@@ -231,7 +238,7 @@ jobs:
       - run: setup/ci_bootstrap.sh
       - run: make init
       - run: make
-      # to allow docker networking to work
+      # to allow docker networking to work if using 'machine' executor (VM)
       - run: sudo sysctl net.ipv4.ip_forward=1
       - run: sudo service docker restart
       - run: make test
