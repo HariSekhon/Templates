@@ -33,6 +33,12 @@ orbs:
 #  # https://circleci.com/developer/orbs/orb/circleci/python
 #  python: circleci/python@1.2
 
+# pipeline-level parameters can be set in the CircleCI UI to enable/disable some workflows or steps in a job within a workflow
+parameters:
+  mybuild:
+    type: boolean
+    default: false
+
 # Workflows - defines jobs run order and triggers
 #
 #   https://circleci.com/docs/2.0/workflows/
@@ -228,6 +234,15 @@ jobs:
     #working_directory: /dev/shm      # VM
 
     steps:
+      # wrap all steps to make the job essentially optionally triggered at runtime via a pipeline parameter in the UI or API
+      #- run:
+      #    name: dummy # because CircleCI can't interpolate to no steps when 'when' condition is false
+      #    command: ":"
+      #- when:
+      #  condition: << pipeline.parameters.mybuild >>
+      #  steps:
+      #    - checkout
+      #    - ...
       - checkout
       #
       # XXX: if primary executor is Docker
