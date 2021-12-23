@@ -89,13 +89,30 @@ workflows:
             branches:
               only:
                 - main
+  matrix-tests:
+    jobs:
+      - node_versions:
+          matrix:
+            parameters:
+              version:
+                - 13.11.0
+                - 12.16.0
+                - 10.19.0
 
 jobs:
   mybuild:
     parameters:
       myparam:
-        type: string
+        type: string  # string, boolean, integer, enum
         default: myvalue
+      os:
+        default: "linux"
+        description: The target Operating System for the heroku binary. Must be one of "linux", "darwin", "win32".
+        type: enum
+        enum: ["linux", "darwin", "win32"]
+      myenvvar:
+        type: env_var_name  # checks value will be a valid environment variable
+        default: AWS_ACCESS_KEY
     environment:  # job-wide env vars
       AWS_ACCOUNT_ID: "123456789012"  # store digits over 6 chars as a string to prevent numeric exponential conversion
 
@@ -245,6 +262,14 @@ jobs:
       - run: sudo service docker restart
       - run: make test
       - run: echo myparam = << parameters.myparam >>
+      - run:
+          name: post_cleanup
+          command: echo 'runs no matter if the earlier steps failed, eg. for cleanup'
+          when: always  # default: on_success, use 'on_fail' for a recovery step or custom notifications
+      - run:
+          name: Upload CodeCov.io Data
+          command: bash <(curl -s https://codecov.io/bash) -F unittests
+          when: always # Uploads code coverage results, pass or fail
 
       # from circleci/python orb
       #
@@ -319,3 +344,16 @@ commands:
         default: "test"
     steps:
       - run: echo << parameters.myarg >>
+
+executors:
+  node-docker: # declares a reusable executor
+    parameters:
+      version:
+        description: "version tag"
+        default: "lts"
+        type: string
+    docker:
+      - image: cimg/node:<<parameters.version>>
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
