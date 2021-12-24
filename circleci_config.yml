@@ -23,9 +23,8 @@ version: 2.1
 # XXX: consider avoiding Orbs for reuse CLI commands that port between CI/CD systems
 orbs:
   # XXX: Needed on Docker executor but not on machine VM executor which already had AWS CLI installed
-  orbs:
-    # gives install/setup/some CLI wrapper commands - https://circleci.com/developer/orbs/orb/circleci/aws-cli
-    aws-cli: circleci/aws-cli@2.0.6  # this is the Orb version not the AWS CLI version
+  # gives install/setup/some CLI wrapper commands - https://circleci.com/developer/orbs/orb/circleci/aws-cli
+  aws-cli: circleci/aws-cli@2.0.6  # this is the Orb version not the AWS CLI version
   #
   # or use more portable check_bash_syntax.sh in https://github.com/HariSekhon/DevOps-Bash-tools
   # https://circleci.com/developer/orbs/orb/circleci/shellcheck
@@ -33,6 +32,12 @@ orbs:
 #  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
 #  # https://circleci.com/developer/orbs/orb/circleci/python
 #  python: circleci/python@1.2
+
+# pipeline-level parameters can be set in the CircleCI UI to enable/disable some workflows or steps in a job within a workflow
+parameters:
+  mybuild:
+    type: boolean
+    default: false
 
 # Workflows - defines jobs run order and triggers
 #
@@ -43,64 +48,88 @@ workflows:
   myworkflow:  # XXX: Edit section
     #triggers:  # without this runs on every push
     jobs:
-      - shellcheck/check:
+      - shellcheck/check #:
           #dir: ./my-scripts
           #exclude: SC2148
       # concurrent by default unless has 'requires' dependency
       - mybuild1:
           requires:
             - shellcheck/check
-        filters:
-          branches:
-            only:
-              - main
-              - master
-              - dev
-              - staging
-              - production
-      # mybuild2 + build3 will run concurrently
-      - mybuild2:
-          requires:
-           - mybuild1  # start only after mybuild1 completes successfully
-      - mybuild3:
-          context: my_context_name  # inherits all the env vars set at the context level
-          requires:
-           - mybuild1  # start only after mybuild1 completes successfully
-      - human_gate:
-          type: approval
-          requires:
-            - mybuild1
-      - mydeploy:
-          requires:
-            - human_gate
-          filters:  # AND'd
-            branches:  # requires entire branch to match
-              only:  # only branches matching the below regex filters will run
-                - dev
-                - /pre-prod(?:-.+)?$/
-              ignore: /pr-.*/
-            tags:
-              only: /^v.*/
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"  # step format (*/2) and range format (1-5) are not supported as of 2.1
           filters:
             branches:
               only:
                 - main
-  matrix-tests:
-    jobs:
-      - node_versions:
-          matrix:
-            parameters:
-              version:
-                - 13.11.0
-                - 12.16.0
-                - 10.19.0
+                - master
+                - dev
+                - staging
+                - production
+      # mybuild2 + build3 will run concurrently
+      #- mybuild2:
+      #    requires:
+      #     - mybuild1  # start only after mybuild1 completes successfully
+      #- mybuild3:
+      #    context: my_context_name  # inherits all the env vars set at the context level
+      #    requires:
+      #     - mybuild1  # start only after mybuild1 completes successfully
+      #    # expands to 9 jobs that runs all 3 versions on all 3 platforms
+      #    matrix:
+      #      parameters:
+      #        version: ["0.1", "0.2", "0.3"]
+      #        platform: ["macos", "windows", "linux"]
+      - human_gate:
+          type: approval
+          requires:
+            - mybuild1
+      #- mydeploy:
+      #    requires:
+      #      - human_gate
+      #    filters:  # AND'd
+      #      branches:  # requires entire branch to match
+      #        only:  # only branches matching the below regex filters will run
+      #          - dev
+      #          - /pre-prod(?:-.+)?$/
+      #        ignore: /pr-.*/
+      #      tags:
+      #        only: /^v.*/
+  #nightly:
+  #  jobs:
+  #    - mybuild1
+  #  triggers:
+  #    - schedule:
+  #        cron: "0 0 * * *"  # step format (*/2) and range format (1-5) are not supported as of 2.1
+  #        filters:
+  #          #tags:
+  #          #  only:
+  #          #    -
+  #          #  ignore:
+  #          #    -
+  #          branches:
+  #            only:
+  #              - main
+  #              - master
+  #            #ignore:
+  #            #  - dev
+  #            #  - staging
+  #matrix-tests:
+  #  jobs:
+  #    - node_versions:
+  #        matrix:
+  #          parameters:
+  #            version:
+  #              - 13.11.0
+  #              - 12.16.0
+  #              - 10.19.0
+
+executors:
+  my-executor:  # definition can be reused by multiple jobs
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
 
 jobs:
-  mybuild:
+  mybuild1:
     parameters:
       myparam:
         type: string  # string, boolean, integer, enum
@@ -113,6 +142,8 @@ jobs:
       myenvvar:
         type: env_var_name  # checks value will be a valid environment variable
         default: AWS_ACCESS_KEY
+    executor: my-executor  # reuse executor definition instead of defining machine/docker/macos/resource_class repeatedly for each job
+    circleci_ip_ranges: true  # use the well known IPs - requires paid plan
     environment:  # job-wide env vars
       AWS_ACCOUNT_ID: "123456789012"  # store digits over 6 chars as a string to prevent numeric exponential conversion
 
@@ -120,6 +151,7 @@ jobs:
     #
     #   https://circleci.com/docs/2.0/executor-types/#using-machine
     #   https://circleci.com/docs/2.0/executor-types/#available-docker-resource-classes
+    #   https://circleci.com/docs/2.0/configuration-reference/#resourceclass
     #
     resource_class: medium  # default: large. XXX: Edit to balance performance/cost or resources required for build/tests to execute successfully
 
@@ -147,28 +179,28 @@ jobs:
     #
     #           https://circleci.com/docs/2.0/docker-to-machine/#pre-installed-software
     #
-    machine:
-      #
-      #   https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
-      #
-      # default image gives old Docker 17 which fails to build with error:
-      #
-      #   Step 1/12 : FROM --platform=linux/amd64 amazonlinux:latest
-      #   Unknown flag: platform
-      #
-      #image: default  # old
-      #image: ubuntu-2004:202010-01  # (recommended) Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
-      image: ubuntu-2004:202111-01   # Ubuntu 20.04 VM, Docker v20.10.11, Docker Compose v1.29.2
-      # set to an actual docker image when running locally using circle_ci_job.sh
-      # docker image must have git installed to do the checkout, hence why using harisekhon/ubuntu-dev instead of base ubuntu image
-      #image: harisekhon/dev:ubuntu
-      # XXX: don't use Docker Layer Caching - CircleCI charges 200 credits per job for it, costing 20 minutes of build time charges to save 3-5 minutes of actual Docker building in-job. OMG.
-      #docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds - available on performance and custom plans only - ignored on free plan with a notice
-      #
-      # set to an actual docker image when running locally using circle_ci_job.sh
-      # docker image must have git installed to do the checkout
-      # so using harisekhon/dev:ubuntu instead of base ubuntu image
-      #image: harisekhon/dev:ubuntu
+    #machine:
+    #  #
+    #  #   https://circleci.com/docs/2.0/configuration-reference/#available-machine-images
+    #  #
+    #  # default image gives old Docker 17 which fails to build with error:
+    #  #
+    #  #   Step 1/12 : FROM --platform=linux/amd64 amazonlinux:latest
+    #  #   Unknown flag: platform
+    #  #
+    #  #image: default  # old
+    #  #image: ubuntu-2004:202010-01  # (recommended) Ubuntu 20.04 VM with Docker 19.03.13 and docker-compose 1.27.4
+    #  image: ubuntu-2004:202111-01   # Ubuntu 20.04 VM, Docker v20.10.11, Docker Compose v1.29.2
+    #  # set to an actual docker image when running locally using circle_ci_job.sh
+    #  # docker image must have git installed to do the checkout, hence why using harisekhon/ubuntu-dev instead of base ubuntu image
+    #  #image: harisekhon/dev:ubuntu
+    #  # XXX: don't use Docker Layer Caching - CircleCI charges 200 credits per job for it, costing 20 minutes of build time charges to save 3-5 minutes of actual Docker building in-job. OMG.
+    #  #docker_layer_caching: true  # default: false - retains docker image layers cache for 3 days to speed up builds - available on performance and custom plans only - ignored on free plan with a notice
+    #  #
+    #  # set to an actual docker image when running locally using circle_ci_job.sh
+    #  # docker image must have git installed to do the checkout
+    #  # so using harisekhon/dev:ubuntu instead of base ubuntu image
+    #  #image: harisekhon/dev:ubuntu
 
     # XXX: OR
     #
@@ -183,7 +215,7 @@ jobs:
       - image: cimg/base:2021.04  # base ubuntu image, small but should already be cached on host so quick to start - see https://circleci.com/docs/2.0/circleci-images/#circleci-base-image
       #- image: cimg/python:3.8
       #- image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/myrepo:latest
-        environment:
+        environment:  # environment only for this docker container - base64 encode value if multiline
           AWS_DEFAULT_REGION: eu-west-2  # CircleCI jobs runs in us-east-1, so this may not be efficient to push/pull docker images
         auth:
           username: harisekhon
@@ -196,9 +228,6 @@ jobs:
           #
           aws_access_key_id: $AWS_ACCESS_KEY_ID  # specify explicitly like this if different jobs use different env vars eg. $AWS_ACCESS_KEY_ID_STAGING vs $AWS_ACCESS_KEY_ID_PRODUCTION
           aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
-        environment:  # environment only for this docker container - base64 encode value if multiline
-          MY_ENV_VAR_1: myvalue1
-          MY_ENV_VAR_2: myvalue2
       - image: postgres:9.4.1
         auth:
           username: harisekhon
@@ -213,15 +242,24 @@ jobs:
           POSTGRES_USER: root
 
     # if running on Alpine, do this to source environment
-    shell: /bin/sh -leo pipefail
-      environment:
-        - BASH_ENV: /etc/profile
+    #shell: /bin/sh -leo pipefail
+    #environment:
+    #  - BASH_ENV: /etc/profile
 
     # speed up builds by using ram instead of disk if thre is enough ram
     #working_directory: /mnt/ramdisk  # Docker
     #working_directory: /dev/shm      # VM
 
     steps:
+      # wrap all steps to make the job essentially optionally triggered at runtime via a pipeline parameter in the UI or API
+      #- run:
+      #    name: dummy # because CircleCI can't interpolate to no steps when 'when' condition is false
+      #    command: ":"
+      #- when:
+      #  condition: << pipeline.parameters.mybuild >>
+      #  steps:
+      #    - checkout
+      #    - ...
       - checkout
       #
       # XXX: if primary executor is Docker
@@ -236,12 +274,12 @@ jobs:
           version: 2.4.6  # AWS CLI versions: https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst
       #
       - run:
-        name: Setup Environment Variables    # BASH_ENV gets sourced automatically by subsequent bash shells across run steps
-        command: |
-          echo 'export PATH=$GOPATH/bin:$PATH' >> "$BASH_ENV"
-          echo 'export GIT_SHA1=$CIRCLE_SHA1' >> "$BASH_ENV"
-          echo 'export GIT_COMMIT=$CIRCLE_SHA1' >> "$BASH_ENV"  # port for Jenkins standard env var, used by various scripts
-          source "$BASH_ENV"  # if you need these new env vars in the same run step as well as subsequent ones
+          name: Setup Environment Variables    # BASH_ENV gets sourced automatically by subsequent bash shells across run steps
+          command: |
+            echo 'export PATH=$GOPATH/bin:$PATH' >> "$BASH_ENV"
+            echo 'export GIT_SHA1=$CIRCLE_SHA1' >> "$BASH_ENV"
+            echo 'export GIT_COMMIT=$CIRCLE_SHA1' >> "$BASH_ENV"  # port for Jenkins standard env var, used by various scripts
+            source "$BASH_ENV"  # if you need these new env vars in the same run step as well as subsequent ones
       - run:
           name: local-step-environment
           command: echo "$MYVAR"

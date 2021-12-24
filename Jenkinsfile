@@ -251,6 +251,8 @@ pipeline {
     ARGOCD_SERVER = 'argocd.domain.com'
     ARGOCD_AUTH_TOKEN = credentials('argocd-auth-token')
 
+    TF_IN_AUTOMATION = 1  // changes output to suppress CLI suggestions
+
     // for Run Tests stage
     // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
     // reference this in single quotes to interpolate in the shell
@@ -469,6 +471,35 @@ pipeline {
       }
     }
 
+    stage('Test') {
+      //options {
+      //  retry(2)
+      //}
+      steps {
+        milestone(ordinal: 70, label: "Milestone: Test")
+        echo 'Testing...'
+        timeout(time: 60, unit: 'MINUTES') {
+          sh 'make test'
+          // junit '**/target/*.xml'
+        }
+      }
+    }
+
+    // lock multiple stages into 1 concurrent execution using a parent stage
+    stage('Parent') {
+      options {
+      lock('something')
+      }
+      stages {
+      stage('one') {
+        ...
+      }
+      stage('two') {
+        ...
+      }
+      }
+    }
+
 
     // no longer needed if pulling git-kustomize docker image in jenkins-pod.yaml
     //stage('Download Kustomize') {
@@ -499,16 +530,39 @@ pipeline {
     }
 
 
-    stage('Test') {
-      //options {
-      //  retry(2)
-      //}
+    stage('Terraform Init') {
       steps {
-        milestone(ordinal: 70, label: "Milestone: Test")
-        echo 'Testing...'
-        timeout(time: 60, unit: 'MINUTES') {
-          sh 'make test'
-          // junit '**/target/*.xml'
+        // forbids older inits from starting
+        milestone(ordinal: 10, label: "Milestone: Terraform Init")
+
+        container('terraform') {
+          steps {
+            //dir ("components/${COMPONENT}") {
+            ansiColor('xterm') {
+              sh '''
+                terraform workspace new "$ENV" || echo "Workspace already exists:"
+                terraform workspace select "$ENV"
+                terraform plan -input=false'
+              '''
+            }
+          }
+        }
+      }
+    }
+
+
+    stage('Terraform Plan') {
+      steps {
+        // forbids older plans from starting
+        milestone(ordinal: 50, label: "Milestone: Terraform Plan")
+
+        container('terraform') {
+          steps {
+            //dir ("components/${COMPONENT}") {
+            ansiColor('xterm') {
+              sh 'terraform plan -out=plan.zip -input=false'  // -var-file=base.tfvars -var-file="$ENV.tfvars"
+            }
+          }
         }
       }
     }
@@ -540,20 +594,25 @@ pipeline {
 //      }
 //    }
 
-    // lock multiple stages into 1 concurrent execution using a parent stage
-    stage('Parent') {
-      options {
-      lock('something')
-      }
-      stages {
-      stage('one') {
-        ...
-      }
-      stage('two') {
-        ...
-      }
+    stage('Terraform Apply') {
+      steps {
+        lock(resource: "Terraform - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
+          // forbids older applys from starting
+          milestone(ordinal: 100, label: "Milestone: Terraform Apply")
+
+          container('terraform') {
+            steps {
+              //dir ("components/${COMPONENT}") {
+              ansiColor('xterm') {
+                // for test environments, add a param to trigger -destroy switch
+                sh 'terraform apply plan.zip -input=false -auto-approve'
+              }
+            }
+          }
+        }
       }
     }
+
 
     stage('Deploy') {
       //when { branch pattern: '^.*/production$', comparator: 'REGEXP' }
