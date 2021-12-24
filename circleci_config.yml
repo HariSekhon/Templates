@@ -120,14 +120,6 @@ workflows:
   #              - 12.16.0
   #              - 10.19.0
 
-executors:
-  my-executor:  # definition can be reused by multiple jobs
-    docker:
-      - image: circleci/ruby:2.5.1-node-browsers
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD
-
 jobs:
   mybuild1:
     parameters:
@@ -384,13 +376,14 @@ commands:
       - run: echo << parameters.myarg >>
 
 executors:
-  node-docker: # declares a reusable executor
+  my-executor:  # definition can be reused by multiple jobs
     parameters:
       version:
         description: "version tag"
         default: "lts"
         type: string
     docker:
+      #- image: circleci/ruby:2.5.1-node-browsers
       - image: cimg/node:<<parameters.version>>
         auth:
           username: mydockerhub-user
