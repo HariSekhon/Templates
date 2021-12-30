@@ -251,7 +251,7 @@ pipeline {
     ARGOCD_SERVER = 'argocd.domain.com'
     ARGOCD_AUTH_TOKEN = credentials('argocd-auth-token')
 
-    TF_IN_AUTOMATION = 1  // changes output to suppress CLI suggestions
+    TF_IN_AUTOMATION = 1  // changes output to suppress CLI suggestions for related commands
 
     // for Run Tests stage
     // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
@@ -540,9 +540,9 @@ pipeline {
             //dir ("components/${COMPONENT}") {
             ansiColor('xterm') {
               sh '''
-                terraform workspace new "$ENV" || echo "Workspace already exists:"
+                terraform workspace new "$ENV" || echo "Workspace '$ENV' already exists"
                 terraform workspace select "$ENV"
-                terraform plan -input=false'
+                terraform init -input=false'
               '''
             }
           }
@@ -556,6 +556,7 @@ pipeline {
         // forbids older plans from starting
         milestone(ordinal: 50, label: "Milestone: Terraform Plan")
 
+        // XXX: set Terraform version in the docker image tag in jenkins-agent-pod.yaml
         container('terraform') {
           steps {
             //dir ("components/${COMPONENT}") {
@@ -600,6 +601,7 @@ pipeline {
           // forbids older applys from starting
           milestone(ordinal: 100, label: "Milestone: Terraform Apply")
 
+          // XXX: set Terraform version in the docker image tag in jenkins-agent-pod.yaml
           container('terraform') {
             steps {
               //dir ("components/${COMPONENT}") {
