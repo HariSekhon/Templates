@@ -235,6 +235,7 @@ pipeline {
     GIT_USERNAME = 'Jenkins'
     GIT_EMAIL = 'platform-engineering@MYCOMPANY.CO.UK'
 
+    // XXX: CAREFUL who can create CI/CD commits or PRs with this credentialled pipeline as they could obtain these credentials
     // create these credentials as Secret Text in Jenkins UI -> Manage Jenkins -> Manage Credentials -> Jenkins -> Global Credentials -> Add Credentials
     AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
     AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
@@ -252,6 +253,7 @@ pipeline {
     ARGOCD_AUTH_TOKEN = credentials('argocd-auth-token')
 
     TF_IN_AUTOMATION = 1  // changes output to suppress CLI suggestions for related commands
+    //TF_WORKSPACE = "$ENV"  // run the same automation against multiple environments
 
     // for Run Tests stage
     // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
@@ -539,17 +541,20 @@ pipeline {
           steps {
             //dir ("components/${COMPONENT}") {
             ansiColor('xterm') {
-              sh '''
-                terraform workspace new "$ENV" || echo "Workspace '$ENV' already exists"
-                terraform workspace select "$ENV"
-                terraform init -input=false'
+              // terraform workspace is not supported if using Terraform Cloud
+              // TF_WORKSPACE overrides 'terraform workspace select'
+              sh '''#/usr/bin/env bash -euxo pipefail
+                if [ -n "$TF_WORKSPACE" ]; then
+                    terraform workspace new "$TF_WORKSPACE" || echo "Workspace '$TF_WORKSPACE' already exists or using Terraform Cloud as a backend"
+                    #terraform workspace select "$TF_WORKSPACE"  # TF_WORKSPACE takes precedence over this select
+                fi
+                terraform init -input=false  # -backend-config "bucket=$ACCOUNT-$PROJECT-terraform" -backend-config "key=${ENV}-${PRODUCT}/${COMPONENT}/state.tf"
               '''
             }
           }
         }
       }
     }
-
 
     stage('Terraform Plan') {
       steps {
@@ -561,7 +566,10 @@ pipeline {
           steps {
             //dir ("components/${COMPONENT}") {
             ansiColor('xterm') {
-              sh 'terraform plan -out=plan.zip -input=false'  // -var-file=base.tfvars -var-file="$ENV.tfvars"
+              sh '''#!/usr/bin/env bash -euxo pipefail
+              terraform workspace list || :  # 'workspaces not supported' if using Terraform Cloud as a backend
+              terraform plan -out=plan.zip -input=false  # -var-file=base.tfvars -var-file="$ENV.tfvars"
+              '''
             }
           }
         }
@@ -574,6 +582,7 @@ pipeline {
 //        // https://www.jenkins.io/doc/book/pipeline/syntax/#evaluating-when-before-the-input-directive
 //        beforeInput true  // change order to evaluate when{} first to only prompt if this is on production branch
 //        branch '*/production'
+//        //branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP' }
 //      }
 //      steps {
 //        milestone(ordinal: 85, label: "Milestone: Human Gate")
@@ -596,6 +605,7 @@ pipeline {
 //    }
 
     stage('Terraform Apply') {
+      //when { branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP' }
       steps {
         lock(resource: "Terraform - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
           // forbids older applys from starting
