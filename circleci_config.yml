@@ -20,6 +20,10 @@
 
 version: 2.1
 
+# ============================================================================ #
+#                                    O r b s
+# ============================================================================ #
+
 # XXX: consider avoiding Orbs for reuse CLI commands that port between CI/CD systems
 orbs:
   # XXX: Needed on Docker executor but not on machine VM executor which already had AWS CLI installed
@@ -33,14 +37,28 @@ orbs:
 #  # https://circleci.com/developer/orbs/orb/circleci/python
 #  python: circleci/python@1.2
 
+
+# ============================================================================ #
+#                     P i p e l i n e   P a r a m e t e r s
+# ============================================================================ #
+
 # pipeline-level parameters can be set in the CircleCI UI to enable/disable some workflows or steps in a job within a workflow
+
 parameters:
   mybuild:
     type: boolean
     default: false
+  region:
+    type: string
+    default: eu-west-2
   terraform_version:
     type: string
     default: 1.1.2
+
+
+# ============================================================================ #
+#                               W o r k f l o w s
+# ============================================================================ #
 
 # Workflows - defines jobs run order and triggers
 #
@@ -56,6 +74,7 @@ workflows:
           #exclude: SC2148
       # concurrent by default unless has 'requires' dependency
       - mybuild1:
+          context: mycontext  # inherit all the env vars set at the context level
           requires:
             - shellcheck/check
           filters:
@@ -68,10 +87,11 @@ workflows:
                 - production
       # mybuild2 + build3 will run concurrently
       #- mybuild2:
+      #    context: mycontext
       #    requires:
       #     - mybuild1  # start only after mybuild1 completes successfully
       #- mybuild3:
-      #    context: my_context_name  # inherits all the env vars set at the context level
+      #    context: mycontext
       #    requires:
       #     - mybuild1  # start only after mybuild1 completes successfully
       #    # expands to 9 jobs that runs all 3 versions on all 3 platforms
@@ -84,6 +104,7 @@ workflows:
           requires:
             - mybuild1
       #- mydeploy:
+      #    context: mycontext
       #    requires:
       #      - human_gate
       #    filters:  # AND'd
@@ -142,6 +163,32 @@ workflows:
       #- terraform-destroy:
       #    requires:
       #      - terraform-approve-destroy
+  # use parameterized Commands to Terragrunt plan & apply various modules
+  terragrunt:
+    jobs:
+      - terragrunt-plan:
+          context: mycontext
+          name: terragrunt-plan-mymodule-dev
+          env: dev
+          region: << pipeline.parameters.region >>
+          module: vpc
+      - terragrunt-approve-mymodule-dev:
+          type: approval
+          requires:
+            - terragrunt-plan-mymodule-dev
+      - terragrunt-apply:
+          context: mycontext
+          name: terragrunt-apply-mymodule-dev
+          env: dev
+          region: << pipeline.parameters.region >>
+          module: vpc
+          requires:
+            - terragrunt-approve-mymodule-dev
+
+
+# ============================================================================ #
+#                                    J o b s
+# ============================================================================ #
 
 jobs:
   mybuild1:
@@ -161,6 +208,7 @@ jobs:
     circleci_ip_ranges: true  # use the well known IPs - requires paid plan - see circleci_ip_ranges.sh in DevOps Bash tools to retrieve current list for firewall rules etc.
     environment:  # job-wide env vars
       AWS_ACCOUNT_ID: "123456789012"  # store digits over 6 chars as a string to prevent numeric exponential conversion
+      TERRAFORM_IN_AUTOMATION: 1      # simplifies output slightly, avoids further CLI suggestions
 
     # Instance Class resource sizing is different between Machine VM and Docker (machine is just under double the RAM)
     #
@@ -168,7 +216,7 @@ jobs:
     #   https://circleci.com/docs/2.0/executor-types/#available-docker-resource-classes
     #   https://circleci.com/docs/2.0/configuration-reference/#resourceclass
     #
-    resource_class: medium  # default: large. XXX: Edit to balance performance/cost or resources required for build/tests to execute successfully
+    resource_class: medium  # set to 'small' for Terraform/Terragrunt jobs. Default: large. XXX: Edit to balance performance/cost or resources required for build/tests to execute successfully
 
     # XXX: Choose to run job on a VM (machine) or docker container (docker container boots faster and uses less resources/credits)
 
@@ -386,11 +434,14 @@ jobs:
       #- store_artifacts: # See circleci.com/docs/2.0/artifacts/ for more details.
       #    path: /tmp/artifact-1
       #    destination: artifact-file
-  # =========================
+  # ============================================================================ #
   # Simple Terraform Jobs
   terraform-plan:
     working_directory: /tmp/project
     executor: terraform
+    resource_class: small
+    environment:
+      TERRAFORM_IN_AUTOMATION: 1
     steps:
       - checkout
       - run:
@@ -404,6 +455,9 @@ jobs:
             - .
   terraform-apply:
     executor: terraform
+    resource_class: small
+    environment:
+      TERRAFORM_IN_AUTOMATION: 1
     steps:
       - attach_workspace:
           at: .
@@ -417,6 +471,9 @@ jobs:
             - .
   terraform-plan-destroy:
     executor: terraform
+    resource_class: small
+    environment:
+      TERRAFORM_IN_AUTOMATION: 1
     steps:
       - attach_workspace:
           at: .
@@ -430,6 +487,9 @@ jobs:
             - .
   terraform-destroy:
     executor: terraform
+    resource_class: small
+    environment:
+      TERRAFORM_IN_AUTOMATION: 1
     steps:
       - attach_workspace:
           at: .
@@ -437,8 +497,61 @@ jobs:
           name: terraform destroy
           command: |
             terraform apply destroy-plan.zip -input=false -auto-approve
-  # =========================
+  # ============================================================================ #
+  # Generalized Terragrunt jobs that can be reused by different workflows
+  terragrunt-plan:
+    executor: terragrunt
+    resource_class: small
+    parameters:
+      env:
+        description: The deployment environment (eg. dev, staging, production)
+        type: string
+      region:
+        description: The cloud region to deploy to eg. eu-west-2
+        type: string
+      module:
+        description: The module to deploy
+        type: string
+      terraform-args:
+        type: string
+        default: ""
+    environment:
+      TERRAFORM_IN_AUTOMATION: 1
+      TERRAGRUNT_WORKING_DIR: ./<<parameters.env>>/<<parameters.region>>/<<parameters.module>>
+    steps:
+      - checkout
+      - terragrunt-plan:
+          terraform-args: <<parameters.terraform-args>>
+  terragrunt-apply:
+    executor: terragrunt
+    resource_class: small
+    parameters:
+      env:
+        description: The deployment environment (eg. dev, staging, production)
+        type: string
+      region:
+        description: The cloud region to deploy to eg. eu-west-2
+        type: string
+      module:
+        description: The module to deploy
+        type: string
+      terraform-args:
+        type: string
+        default: ""
+    environment:
+      TERRAFORM_IN_AUTOMATION: 1
+      TERRAGRUNT_WORKING_DIR: ./<<parameters.env>>/<<parameters.region>>/<<parameters.module>>
+    steps:
+      - checkout
+      - terragrunt-plan:
+          terraform-args: <<parameters.terraform-args>>
+      - terragrunt-apply:
+          terraform-args: <<parameters.terraform-args>>
 
+
+# ============================================================================ #
+#                                C o m m a n d s
+# ============================================================================ #
 
 # command with parameters (can be reused across steps and jobs)
 commands:
@@ -451,11 +564,53 @@ commands:
     steps:
       - run: echo << parameters.myarg >>
 
+  # ==========================
+  # Re-use terragrunt commands for various environment/module calls
+  terragrunt-plan:
+    parameters:
+      terraform-args:
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: Terragrunt Plan
+          command: |
+            terragrunt plan \
+            --terragrunt-non-interactive \
+            --terragrunt-working-dir ${TERRAGRUNT_WORKING_DIR} \
+            -input=false \
+            <<parameters.terraform-args>>
+  terragrunt-apply:
+    parameters:
+      terraform-args:
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: Terragrunt Apply
+          command: |
+            terragrunt apply \
+            --terragrunt-non-interactive \
+            --terragrunt-working-dir ${TERRAGRUNT_WORKING_DIR} \
+            -input=false \
+            -auto-approve \
+            <<parameters.terraform-args>>
+  terragrunt-destroy:
+    steps:
+      - run:
+          name: Terragrunt Destroy
+          command: terragrunt destroy --terragrunt-non-interactive --terragrunt-working-dir ${TERRAGRUNT_WORKING_DIR}
+
+
+# ============================================================================ #
+#                               E x e c u t o r s
+# ============================================================================ #
+
 executors:
   my-executor:  # definition can be reused by multiple jobs
     parameters:
       version:
-        description: "version tag"
+        description: "docker version tag"
         default: "lts"
         type: string
     docker:
@@ -464,8 +619,23 @@ executors:
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+
   terraform:
+    parameters:
+      version:
+        description: "hashicorp/terraform docker version tag"
+        default: << pipeline.parameters.terraform_version >>
+        type: string
     docker:
       # more important to control terraform version and terraform:light isn't any smaller anyway
       #- image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:<< pipeline.parameters.terraform_version >>
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:<< parameters.version >>
+
+  terragrunt:
+    parameters:
+      version:
+        description: "alpine/terragrunt docker version tag"
+        default: << pipeline.parameters.terraform_version >>
+        type: string
+    docker:
+      - image: alpine/terragrunt:<< parameters.version >>
