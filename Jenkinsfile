@@ -531,6 +531,9 @@ pipeline {
       }
     }
 
+  // ========================================================================== //
+  //           T e r r a f o r m   /   T e r r a g r u n t   S t a g e s
+  // ========================================================================== //
 
     stage('Terraform Init') {
       steps {
@@ -549,6 +552,30 @@ pipeline {
                     #terraform workspace select "$TF_WORKSPACE"  # TF_WORKSPACE takes precedence over this select
                 fi
                 terraform init -input=false  # -backend-config "bucket=$ACCOUNT-$PROJECT-terraform" -backend-config "key=${ENV}-${PRODUCT}/${COMPONENT}/state.tf"
+              '''
+            }
+          }
+        }
+      }
+    }
+
+    stage('Terragrunt Init') {
+      steps {
+        // forbids older inits from starting
+        milestone(ordinal: 10, label: "Milestone: Terragrunt Init")  // protects duplication by reusing the same milestone between Terraform / Terragrunt in case you leave both in
+
+        container('terragrunt') {
+          steps {
+            //dir ("components/${COMPONENT}") {
+            ansiColor('xterm') {
+              // terraform workspace is not supported if using Terraform Cloud
+              // TF_WORKSPACE overrides 'terraform workspace select'
+              sh '''#/usr/bin/env bash -euxo pipefail
+                if [ -n "$TF_WORKSPACE" ]; then
+                    terragrunt workspace new "$TF_WORKSPACE" || echo "Workspace '$TF_WORKSPACE' already exists or using Terraform Cloud as a backend"
+                    #terragrunt workspace select "$TF_WORKSPACE"  # TF_WORKSPACE takes precedence over this select
+                fi
+                terragrunt init --terragrunt-non-interactive -input=false  # -backend-config "bucket=$ACCOUNT-$PROJECT-terraform" -backend-config "key=${ENV}-${PRODUCT}/${COMPONENT}/state.tf"
               '''
             }
           }
@@ -576,33 +603,63 @@ pipeline {
       }
     }
 
-//    stage('Human Gate') {
-//      when {
-//        // TODO: test with and without
-//        // https://www.jenkins.io/doc/book/pipeline/syntax/#evaluating-when-before-the-input-directive
-//        beforeInput true  // change order to evaluate when{} first to only prompt if this is on production branch
-//        branch '*/production'
-//        //branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP' }
-//      }
-//      steps {
-//        milestone(ordinal: 85, label: "Milestone: Human Gate")
-//        // by default input applies after options{} but before agent{} or when{}
-//        // https://www.jenkins.io/doc/book/pipeline/syntax/#input
-//        //input "Proceed to deployment?"
-//        timeout(time: 1, unit: 'HOURS') {
-//          input (
-//            message: "Are you sure you want to release this build to production?
-//
-//This prompt will time out after 1 hour""",
-//            ok: "Deploy",
-//            // Azure AD security group is referenced by just name, whereas Microsoft 365 email distribution group is referenced by email address
-//            submitter: "platform-engineering",  // only allow users in platform engineering group to Approve the human gate. Warning: users outside this group can still hit Abort!
-//            // only do this if you have defined parameters and need to choose which property to store the result in
-//            //submitterParameter: "SUBMITTER"
-//          )
-//        }
-//      }
-//    }
+    stage('Terragrunt Plan') {
+      steps {
+        // forbids older plans from starting
+        milestone(ordinal: 50, label: "Milestone: Terragrunt Plan")  // protects duplication by reusing the same milestone between Terraform / Terragrunt in case you leave both in
+
+        // XXX: set Terragrunt version in the docker image tag in jenkins-agent-pod.yaml
+        container('terragrunt') {
+          steps {
+            //dir ("components/${COMPONENT}") {
+            ansiColor('xterm') {
+              sh '''#!/usr/bin/env bash -euxo pipefail
+              terragrunt workspace list || :  # 'workspaces not supported' if using Terraform Cloud as a backend
+              terragrunt plan --terragrunt-non-interactive -out=plan.zip -input=false  # -var-file=base.tfvars -var-file="$ENV.tfvars"
+              '''
+            }
+          }
+        }
+      }
+    }
+
+  // ========================================================================== //
+  //                            H u m a n   G a t e
+  // ========================================================================== //
+
+    // Should apply to any production release or Terraform / Terragrunt apply for safety
+
+    stage('Human Gate') {
+      when {
+        // TODO: test with and without
+        // https://www.jenkins.io/doc/book/pipeline/syntax/#evaluating-when-before-the-input-directive
+        beforeInput true  // change order to evaluate when{} first to only prompt if this is on production branch
+        branch '*/production'
+        //branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP' }
+      }
+      steps {
+        milestone(ordinal: 85, label: "Milestone: Human Gate")
+        // by default input applies after options{} but before agent{} or when{}
+        // https://www.jenkins.io/doc/book/pipeline/syntax/#input
+        //input "Proceed to deployment?"
+        timeout(time: 1, unit: 'HOURS') {
+          input (
+            message: '''Are you sure you want to release this build to production?
+
+This prompt will time out after 1 hour''',
+            ok: "Deploy",
+            // Azure AD security group is referenced by just name, whereas Microsoft 365 email distribution group is referenced by email address
+            submitter: "platform-engineering",  // only allow users in platform engineering group to Approve the human gate. Warning: users outside this group can still hit Abort!
+            // only do this if you have defined parameters and need to choose which property to store the result in
+            //submitterParameter: "SUBMITTER"
+          )
+        }
+      }
+    }
+
+  // ========================================================================== //
+  //           Terraform / Terragrunt Apply or Production Deployments
+  // ========================================================================== //
 
     stage('Terraform Apply') {
       //when { branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP' }
@@ -618,6 +675,27 @@ pipeline {
               ansiColor('xterm') {
                 // for test environments, add a param to trigger -destroy switch
                 sh 'terraform apply plan.zip -input=false -auto-approve'
+              }
+            }
+          }
+        }
+      }
+    }
+
+    stage('Terragrunt Apply') {
+      //when { branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP' }
+      steps {
+        lock(resource: "Terraform - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {  // use same lock between Terraform / Terragrunt for safety
+          // forbids older applys from starting
+          milestone(ordinal: 100, label: "Milestone: Terragrunt Apply")  // protects duplication by reusing the same milestone between Terraform / Terragrunt in case you leave both in
+
+          // XXX: set Terragrunt version in the docker image tag in jenkins-agent-pod.yaml
+          container('terragrunt') {
+            steps {
+              //dir ("components/${COMPONENT}") {
+              ansiColor('xterm') {
+                // for test environments, add a param to trigger -destroy switch
+                sh 'terragrunt apply plan.zip --terragrunt-non-interactive -input=false -auto-approve'
               }
             }
           }
