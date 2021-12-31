@@ -390,10 +390,7 @@ jobs:
   # Simple Terraform Jobs
   terraform-plan:
     working_directory: /tmp/project
-    docker:
-      # more important to control terraform version and terraform:light isn't any smaller anyway
-      #- image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:<< pipeline.parameters.terraform_version >>
+    executor: terraform
     steps:
       - checkout
       - run:
@@ -406,9 +403,7 @@ jobs:
           paths:
             - .
   terraform-apply:
-    docker:
-      #- image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:<< pipeline.parameters.terraform_version >>
+    executor: terraform
     steps:
       - attach_workspace:
           at: .
@@ -421,9 +416,7 @@ jobs:
           paths:
             - .
   terraform-plan-destroy:
-    docker:
-      #- image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:<< pipeline.parameters.terraform_version >>
+    executor: terraform
     steps:
       - attach_workspace:
           at: .
@@ -436,9 +429,7 @@ jobs:
           paths:
             - .
   terraform-destroy:
-    docker:
-      #- image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:<< pipeline.parameters.terraform_version >>
+    executor: terraform
     steps:
       - attach_workspace:
           at: .
@@ -473,3 +464,8 @@ executors:
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+  terraform:
+    docker:
+      # more important to control terraform version and terraform:light isn't any smaller anyway
+      #- image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:<< pipeline.parameters.terraform_version >>
