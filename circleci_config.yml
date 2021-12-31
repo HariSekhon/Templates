@@ -575,14 +575,18 @@ commands:
         default: ""
     steps:
       - run:
-          name: Terragrunt Plan
+          name: Terragrunt Init & Plan
           command: |
+            set -eux
+            terragrunt init \
+              --terragrunt-non-interactive
+              -input=false
             terragrunt plan \
-            --terragrunt-non-interactive \
-            --terragrunt-working-dir ${TERRAGRUNT_WORKING_DIR} \
-            -input=false \
-            -out terragrunt-plan.zip \
-            <<parameters.terraform-args>>
+              --terragrunt-non-interactive \
+              --terragrunt-working-dir ${TERRAGRUNT_WORKING_DIR} \
+              -input=false \
+              -out terragrunt-plan.zip \
+              <<parameters.terraform-args>>
   terragrunt-apply:
     parameters:
       terraform-args:
