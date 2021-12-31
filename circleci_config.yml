@@ -581,6 +581,7 @@ commands:
             --terragrunt-non-interactive \
             --terragrunt-working-dir ${TERRAGRUNT_WORKING_DIR} \
             -input=false \
+            -out terragrunt-plan.zip \
             <<parameters.terraform-args>>
   terragrunt-apply:
     parameters:
@@ -591,7 +592,7 @@ commands:
       - run:
           name: Terragrunt Apply
           command: |
-            terragrunt apply \
+            terragrunt apply terragrunt-plan.zip \
             --terragrunt-non-interactive \
             --terragrunt-working-dir ${TERRAGRUNT_WORKING_DIR} \
             -input=false \
