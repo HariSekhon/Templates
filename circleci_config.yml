@@ -434,6 +434,7 @@ jobs:
       #- store_artifacts: # See circleci.com/docs/2.0/artifacts/ for more details.
       #    path: /tmp/artifact-1
       #    destination: artifact-file
+
   # ============================================================================ #
   # Simple Terraform Jobs
   terraform-plan:
@@ -445,7 +446,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: terraform init & plan
+          name: Terraform Init & Plan
           command: |
             terraform init -input=false
             terraform plan -out plan.zip -input=false # -var-file variables.tfvars
@@ -462,7 +463,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: terraform apply
+          name: Terraform Apply
           command: |
             terraform apply plan.zip -input=false -auto-approve
       - persist_to_workspace:
@@ -478,7 +479,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: terraform create destroy plan
+          name: Terraform create destroy plan
           command: |
             terraform plan -destroy -out destroy-plan.zip -input=false # -var-file variables.tfvars
       - persist_to_workspace:
@@ -494,9 +495,10 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: terraform destroy
+          name: Terraform Destroy
           command: |
             terraform apply destroy-plan.zip -input=false -auto-approve
+
   # ============================================================================ #
   # Generalized Terragrunt jobs that can be reused by different workflows
   terragrunt-plan:
