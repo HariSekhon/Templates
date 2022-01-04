@@ -29,7 +29,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # flush stdout immediately for more real-time container logging
 ENV PYTHONUNBUFFERED 1
 
-LABEL Description="NAME", \
+LABEL Description="NAME" \
       "NAME Version"="$NAME_VERSION"
 
 WORKDIR /
@@ -47,7 +47,7 @@ RUN bash -c ' \
     wget ... && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
     apk del curl wget && \
-    rm -fr /etc/apk/cache /var/cache/apk
+    rm -fr /etc/apk/cache /var/cache/apk \
     '
 
 # ===============
@@ -74,12 +74,14 @@ RUN bash -c ' \
     rm -fr /var/cache/apt /var/lib/apt/lists \
     '
 
+COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
+RUN trivy rootfs --no-progress / && rm /usr/local/bin/trivy  # checks everything on the filesystem, catching intermediate image vulnerabilities
 
 COPY file.txt /file.txt
 EXPOSE 8080
 
+#CMD "shell command"
 CMD ["/some/command","arg1"]
-CMD "shell command"
 ENTRYPOINT ["/entrypoint.sh"]
 
 # ============================================================================ #
