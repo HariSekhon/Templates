@@ -240,6 +240,7 @@ pipeline {
     AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
     AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
+    GITHUB_TOKEN           = credentials('github-token')  # user/token credential, will create env vars $GITHUB_TOKEN_USR and $GITHUB_TOKEN_PSW
 
     CLOUDSDK_CORE_PROJECT = 'mycompany-dev'
     CLOUDSDK_COMPUTE_REGION = 'europe-west2'
@@ -247,6 +248,15 @@ pipeline {
 
     // use to purge Cloudflare Cache
     CLOUDFLARE_API_KEY = credentials('cloudflare-api-key')
+
+    // GCR
+    DOCKER_IMAGE = "$GCR_REGISTRY/$GCR_PROJECT/$APP"
+    // GitHub Container Registry
+    GHCR_REGISTRY = 'ghcr.io/harisekhon'
+    DOCKER_IMAGE = "$GHCR_REGISTRY/$APP"
+    // DockerHub
+    //DOCKER_IMAGE = "harisekhon/$APP"
+    DOCKER_TAG = "$GIT_COMMIT" // or "$GIT_BRANCH" which can be set to a semver git tag
 
     // use to trigger deployment sync's for apps as deploy step
     ARGOCD_SERVER = 'argocd.domain.com'
@@ -475,6 +485,56 @@ pipeline {
         // archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
       }
     }
+
+    // ========================================================================== //
+    //                         D o c k e r   B u i l d s
+    // ========================================================================== //
+
+    // GitHub Container Registry
+    stage('GHCR Login') {
+      agent 'docker'
+      steps {
+        milestone(ordinal: 60, label: "Milestone: GHCR Login")
+        timeout(time: 1, unit: 'MINUTES') {
+          sh """#!/usr/bin/env bash
+            docker login ghrc.io -u "$GITHUB_TOKEN_USR" --password-stdin <<< "$GITHUB_TOKEN_PSW"
+          """
+        }
+      }
+    }
+    stage('Docker Build') {
+      agent 'docker'
+      steps {
+        milestone(ordinal: 61, label: "Milestone: Docker Build")
+        timeout(time: 60, unit: 'MINUTES') {
+          sh "docker build -t '$DOCKER_IMAGE':'$DOCKER_TAG'"
+        }
+      }
+    }
+    // ========================================================================== //
+    // Container Vulnerability Scanning before Docker Push
+    //
+    stage('Trivy') {
+      steps {
+        milestone(ordinal: 62, label: "Milestone: Trivy")
+        echo 'Trivy'
+        timeout(time: 10, unit: 'MINUTES') {
+          sh "trivy --no-progress --exit-code 1 --severity HIGH,CRITICAL '$DOCKER_IMAGE':'$DOCKER_TAG'"
+          // informational to see all issues
+          sh "trivy --no-progress '$DOCKER_IMAGE':'$DOCKER_TAG'"
+        }
+      }
+    }
+    stage('Docker Push') {
+      agent 'docker'
+      steps {
+        milestone(ordinal: 63, label: "Milestone: Docker Push")
+        timeout(time: 15, unit: 'MINUTES') {
+          sh "docker push '$DOCKER_IMAGE':'$DOCKER_TAG'"
+        }
+      }
+    }
+    // ========================================================================== //
 
     stage('Test') {
       //options {
@@ -850,6 +910,7 @@ This prompt will time out after 1 hour''',
 //        ])
 //        // fancier notification in Slack channel full breakdown than the one liners below, slack-properties.json needs to contain '{ "app": { "bot": { "token": "...", "chat": "#jenkins-alerts-qa", ... } } }'
 //        sh 'java  -DprojectName="$JOB_NAME" -Dconfig.file=slack-properties.json -Denv=staging.mycompany.co.uk -DreportLink="$BUILD_URL" -jar allure-notifications-3.1.1.jar'
+//        sh 'docker logout'
 //      }
 
     }
