@@ -497,7 +497,7 @@ pipeline {
         milestone(ordinal: 60, label: "Milestone: GHCR Login")
         timeout(time: 1, unit: 'MINUTES') {
           sh """#!/usr/bin/env bash
-            docker login ghrc.io -u "$GITHUB_TOKEN_USR" --password-stdin <<< "$GITHUB_TOKEN_PSW"
+            docker login ghrc.io -u '$GITHUB_TOKEN_USR' --password-stdin <<< '$GITHUB_TOKEN_PSW'
           """
         }
       }
