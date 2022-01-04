@@ -300,7 +300,10 @@ pipeline {
       // XXX: only works on a Multi-branch pipeline and causes Stage skip in normal Pipeline builds
       //      usually this will be something like origin/staging - use the Environment step to show the BRANCH_NAME / GIT_BRANCH
       //when { branch pattern: '^.*/staging$', comparator: 'REGEXP' }
-      when { branch '*/staging' }
+      when {
+        beforeAgent true  // don't spin up a K8s pod if we don't need to execute
+        branch '*/staging'
+      }
 
       steps {
       // XXX: move to Shared Libary to use Groovy to define lock in a String and add an informational Acquiring Lock message to make it more obvious when a build is waiting on a lock before progressing, otherwise they just look like they're hanging
@@ -631,6 +634,7 @@ pipeline {
 
     stage('Human Gate') {
       when {
+        beforeAgent true  // don't spin up a K8s pod if we don't need to execute
         // TODO: test with and without
         // https://www.jenkins.io/doc/book/pipeline/syntax/#evaluating-when-before-the-input-directive
         beforeInput true  // change order to evaluate when{} first to only prompt if this is on production branch
@@ -662,7 +666,10 @@ This prompt will time out after 1 hour''',
   // ========================================================================== //
 
     stage('Terraform Apply') {
-      //when { branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP' }
+      //when {
+      //  beforeAgent true  // don't spin up a K8s pod if we don't need to execute
+      //  branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP'
+      //}
       steps {
         lock(resource: "Terraform - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
           // forbids older applys from starting
@@ -683,7 +690,10 @@ This prompt will time out after 1 hour''',
     }
 
     stage('Terragrunt Apply') {
-      //when { branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP' }
+      //when {
+      //  beforeAgent true  // don't spin up a K8s pod if we don't need to execute
+      //  branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP'
+      //}
       steps {
         lock(resource: "Terraform - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {  // use same lock between Terraform / Terragrunt for safety
           // forbids older applys from starting
@@ -708,6 +718,12 @@ This prompt will time out after 1 hour''',
       //when { branch pattern: '^.*/production$', comparator: 'REGEXP' }
       //when { branch pattern: '*/production' }
       //when { branch '*/production' }
+      //when { environment name: 'DEPLOY_TO', value: 'production' }
+      //when { allOf { branch 'master'; environment name: 'DEPLOY_TO', value: 'production' } }
+      //when {
+      //  beforeAgent true  // don't spin up a K8s pod if we don't need to execute
+      //  branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP'
+      //}
 
       // prompt to deploy - use in separate stage Human Gate instead
       //input "Deploy?"
@@ -745,6 +761,10 @@ This prompt will time out after 1 hour''',
       // XXX: remember to escape backslashes (double backslash)
       //when { branch pattern: '^*/staging$', comparator: 'REGEXP' }
       when { branch '*/staging' }
+      //when {
+      //  beforeAgent true  // don't spin up a K8s pod if we don't need to execute
+      //  branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP'
+      //}
 
       echo 'Deploying Canary release...'
       // uses a Jenkins credential containing an uploaded .kube/config
@@ -759,6 +779,10 @@ This prompt will time out after 1 hour''',
       //when { branch pattern: '^.*/production$', comparator: 'REGEXP' }
       // path glob by default
       when { branch '*/production' }
+      //when {
+      //  beforeAgent true  // don't spin up a K8s pod if we don't need to execute
+      //  branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP'
+      //}
 
       echo 'Deploying Production release...'
       // EITHER
