@@ -17,7 +17,7 @@
 #FROM centos:8
 FROM alpine:latest
 #FROM --platform=linux/amd64 amazonlinux:2  # pin current version - safer than 'latest' which may upgrade and break build unexpectedly
-MAINTAINER Hari Sekhon (https://www.linkedin.com/in/harisekhon)
+MAINTAINER Hari Sekhon (https://www.linkedin.com/in/HariSekhon)
 
 ARG NAME_VERSION
 
@@ -30,7 +30,13 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 LABEL Description="NAME" \
-      "NAME Version"="$NAME_VERSION"
+      "NAME Version"="$NAME_VERSION" \
+      org.opencontainers.image.description="NAME" \
+      org.opencontainers.image.version="$NAME_VERSION" \
+      org.opencontainers.image.authors="Hari Sekhon (https://www.linkedin.com/in/HariSekhon)" \
+      org.opencontainers.image.url="https://ghcr.io/HariSekhon/REPO" \
+      org.opencontainers.image.source="https://github.com/HariSekhon/REPO"
+      # on GHCR the image source label links to the GitHub repo so it appears in repo's packages and uses its README - then set the package to public
 
 WORKDIR /
 
