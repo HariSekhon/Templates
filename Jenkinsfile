@@ -42,7 +42,7 @@ pipeline {
   // ========================================================================== //
 
   // agent setting is required otherwise build won't ever run
-  // run pipeline any agent
+  // run pipeline on any agent
   agent any
   // can override this on a per stage basis, but leaving this as "any" will incur some overhead on the Jenkins master in that case, better to switch whole pipeline to a remote agent if you can, unless you want to parallelize the stages among different agents, which might be especially useful for on-demand cloud agents run in Kubernetes
   // putting agents{} sections in stage will also have options applied to the agent eg. timeout includes agent provisioning time
@@ -492,7 +492,7 @@ pipeline {
 
     // GitHub Container Registry
     stage('GHCR Login') {
-      agent 'docker'
+      agent { label 'docker-builder' }
       steps {
         milestone(ordinal: 60, label: "Milestone: GHCR Login")
         timeout(time: 1, unit: 'MINUTES') {
@@ -503,7 +503,7 @@ pipeline {
       }
     }
     stage('Docker Build') {
-      agent 'docker'
+      agent { label 'docker-builder' }
       steps {
         milestone(ordinal: 61, label: "Milestone: Docker Build")
         timeout(time: 60, unit: 'MINUTES') {
@@ -526,7 +526,7 @@ pipeline {
       }
     }
     stage('Docker Push') {
-      agent 'docker'
+      agent { label 'docker-builder' }
       steps {
         milestone(ordinal: 63, label: "Milestone: Docker Push")
         timeout(time: 15, unit: 'MINUTES') {
