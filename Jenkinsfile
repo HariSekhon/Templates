@@ -122,6 +122,10 @@ pipeline {
 //     }
 //  }
 
+  //tools {
+  //  jdk 'my-jdk'  // configure specific JDK versions under Global Tool Configuration
+  //}
+
   // ========================================================================== //
   //                                 O p t i o n s
   // ========================================================================== //
@@ -274,6 +278,13 @@ pipeline {
     //SELENIUM_HUB_URL = 'https://x.x.x.x/wd/hub/'
     THREAD_COUNT = 6
 
+    // Instrumentation for Observability
+    //PROMETHEUS_NAMESPACE = 'default'
+    //PROMETHEUS_ENDPOINT = 'prometheus'
+    //COLLECTING_METRICS_PERIOD_IN_SECONDS = '120'
+    //COLLECT_DISK_USAGE = 'true'  // for cloud agents set to false to avoid scanning virtually unlimited storage, or install 'CloudBees Disk Usage Simple' plugin to provide this info (done in jenkins-values.yaml in my Kubernetes repo)
+
+
     // using this only to dedupe common message suffix for Slack channel notifications in post {}
     SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}>"
     //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>)"
@@ -387,7 +398,21 @@ pipeline {
     }
 
     // not needed for Kubernetes / Docker agents as they start clean
+    stage('Groovy version') {
+      steps {
+        // first install the Groovy plugin, then in Global Tool Configuration set up a Groovy version with this name '3.0.9' to select here - if already installed, just untick "Install automatically" and point GROOVY_HOME to the installation path
+        //withGroovy(tool: '3.0.9', jdk: 'some-specific-jdk-tool-name'){
+        withGroovy(tool: '3.0.9'){
+          sh "groovy --version"
+        }
+      }
+    }
+
+    // not needed for Kubernetes / Docker agents as they start clean
     stage('Maven Clean') {
+      //tools {
+      //  jdk 'my-jdk'  // configure specific JDK versions under Global Tool Configuration
+      //}
       steps {
         sh "mvn clean"
       }
