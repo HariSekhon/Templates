@@ -21,13 +21,12 @@ def call(timeoutMinutes=10){
       ansiColor('xterm') {
         // aquasec/tfsec image is based on Alpine, doesn't have bash
         //sh '''#!/usr/bin/env bash -euxo pipefail
-        sh '''#!/bin/sh -eux
-        tfsec --update
-        tfsec --version
-        tfsec --run-statistics  # nice summary table
-        tfsec --soft-fail       # don't error
-        tfsec                   # full details and error out if issues found
-        '''
+        //sh '''#!/bin/sh -eux
+        sh 'tfsec --update'
+        sh 'tfsec --version'
+        sh' tfsec --run-statistics'  // nice summary table
+        sh 'tfsec --soft-fail'       // don't error
+        sh 'tfsec'                   // full details and error out if issues found
       }
     }
   }
