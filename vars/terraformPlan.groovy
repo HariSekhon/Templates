@@ -25,10 +25,11 @@ def call(timeoutMinutes=10){
       ansiColor('xterm') {
         // terraform docker image doesn't have bash
         //sh '''#/usr/bin/env bash -euxo pipefail
-        sh '''#/bin/sh -eux
-        terraform workspace list || :  # 'workspaces not supported' if using Terraform Cloud as a backend
-        terraform plan -out=plan.zip -input=false  # -var-file=base.tfvars -var-file="$ENV.tfvars"
-        '''
+        //sh '''#/bin/sh -eux
+        sh label: 'Workspace List',
+          script: 'terraform workspace list || : ' // 'workspaces not supported' if using Terraform Cloud as a backend
+        sh label: 'Terraform Plan',
+          script: 'terraform plan -out=plan.zip -input=false'  // # -var-file=base.tfvars -var-file="$ENV.tfvars"
       }
     }
   }
