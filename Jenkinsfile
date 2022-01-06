@@ -661,8 +661,7 @@ pipeline {
 
     stage('Liquibase Status'){
       steps {
-        sh 'liquibase --version'
-        sh 'liquibase status --url="$JDBC_URL" --changeLogFile=myapp.xml --username="$MYCREDS_USR" --password="$MYCREDS_PSW"'
+        liquibaseStatus()  // func in vars/ shared library
       }
     }
 
@@ -755,7 +754,7 @@ This prompt will time out after 1 hour''',
 
     stage('Liquibase Update'){
       steps {
-        sh 'liquibase update --url="$JDBC_URL" --changeLogFile=myapp.xml --username="$MYCREDS_USR" --password="$MYCREDS_PSW"'
+        liquibaseUpdate()  // func in vars/ shared library
       }
     }
 
