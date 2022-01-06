@@ -18,6 +18,7 @@ def call(timeoutMinutes=10){
   // forbids older inits from starting
   milestone(ordinal: 10, label: "Milestone: Terragrunt Init")  // protects duplication by reusing the same milestone between Terraform / Terragrunt in case you leave both in
 
+  // XXX: set Terragrunt version in the docker image tag in jenkins-agent-pod.yaml
   container('terragrunt') {
     steps {
       //dir ("components/${COMPONENT}") {
