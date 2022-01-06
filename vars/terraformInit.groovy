@@ -18,6 +18,7 @@ def call(timeoutMinutes=10){
   // forbids older inits from starting
   milestone(ordinal: 10, label: "Milestone: Terraform Init")
 
+  // XXX: set Terraform version in the docker image tag in jenkins-agent-pod.yaml
   container('terraform') {
     steps {
       //dir ("components/${COMPONENT}") {
