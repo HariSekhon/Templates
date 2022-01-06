@@ -25,10 +25,11 @@ def call(timeoutMinutes=10){
       ansiColor('xterm') {
         // alpine/terragrunt docker image doesn't have bash
         //sh '''#/usr/bin/env bash -euxo pipefail
-        sh '''#/bin/sh -eux
-        terragrunt workspace list || :  # 'workspaces not supported' if using Terraform Cloud as a backend
-        terragrunt plan --terragrunt-non-interactive -out=plan.zip -input=false  # -var-file=base.tfvars -var-file="$ENV.tfvars"
-        '''
+        //sh '''#/bin/sh -eux
+        sh label: 'Workspace List',
+           script: 'terragrunt workspace list || :'  // # 'workspaces not supported' if using Terraform Cloud as a backend
+        sh label: 'Terragrunt Plan',
+           script: 'terragrunt plan --terragrunt-non-interactive -out=plan.zip -input=false'  // # -var-file=base.tfvars -var-file="$ENV.tfvars"
       }
     }
   }
