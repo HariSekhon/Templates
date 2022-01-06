@@ -22,14 +22,24 @@ on: # [push]
   push:
     branches:
       - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 10 30 * *'
+    - cron:  '30 0 * * 1'
 
 jobs:
   build:
     #name: build
     timeout-minutes: 10
+    # for code scanning to create security alerts (see https://github.com/HariSekhon/Terraform/blob/master/.github/workflows/tfsec.yaml)
+    #permissions:
+    #  actions: read
+    #  contents: read
+    #  security-events: write
 # =============== choose one of =====================
     runs-on: ubuntu-latest
     container: centos
