@@ -600,26 +600,7 @@ pipeline {
     //  }
     //}
 
-    // ArgoCD GitOps Deployment
-    stage('ArgoCD Deploy') {
-      // XXX: lock to serialize GitOps K8s image update and ArgoCD deployment to ensure accurate deployment rollout status for each build before allowing another Git change, otherwise ArgoCD could quickly release the newer change, masking a breakage in a previous build not rolling out properly
-      steps {
-        lock(resource: "ArgoCD Deploy - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
-          // forbids older deploys from starting
-          milestone(ordinal: 100, label: "Milestone: ArgoCD Deploy")
-
-          container('git-kustomize') {
-            // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
-            // ignoreMissing: false (default) doesn't work and there is no issue tracker on the github project page to report this :-/
-            sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
-              gitOpsK8sUpdate(['mydockerimage'])  // func in vars/ shared library
-            }
-          }
-
-          argoDeploy()  // func in vars/ shared library
-        }
-      }
-    }
+    // Jenkins Deploys are further down after Human Gate - for ArgoCD GitOps human gate doesn't apply
 
   // ========================================================================== //
   //           T e r r a f o r m   /   T e r r a g r u n t   S t a g e s
@@ -655,6 +636,8 @@ pipeline {
       }
     }
 
+    // Terraform / Terragrunt Apply is further down after Human Gate
+
   // ========================================================================== //
   //                             L i q u i b a s e
   // ========================================================================== //
@@ -664,6 +647,8 @@ pipeline {
         liquibaseStatus()  // func in vars/ shared library
       }
     }
+
+    // Liquibase Update is further down after Human Gate
 
   // ========================================================================== //
   //                            H u m a n   G a t e
@@ -724,12 +709,42 @@ This prompt will time out after 1 hour''',
       }
     }
 
+  // ========================================================================== //
+  //                             L i q u i b a s e
+  // ========================================================================== //
+
     stage('Liquibase Update'){
       steps {
         liquibaseUpdate()  // func in vars/ shared library
       }
     }
 
+  // ========================================================================== //
+  //                               D e p l o y s
+  // ========================================================================== //
+
+  // Deploys are intentionally below Human Gate
+
+    // ArgoCD GitOps Deployment
+    stage('ArgoCD Deploy') {
+      // XXX: lock to serialize GitOps K8s image update and ArgoCD deployment to ensure accurate deployment rollout status for each build before allowing another Git change, otherwise ArgoCD could quickly release the newer change, masking a breakage in a previous build not rolling out properly
+      steps {
+        lock(resource: "ArgoCD Deploy - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
+          // forbids older deploys from starting
+          milestone(ordinal: 100, label: "Milestone: ArgoCD Deploy")
+
+          container('git-kustomize') {
+            // credential needs to match the ID field, not the name, otherwise it'll fail with "FATAL: [ssh-agent] Could not find specified credentials" but continue with a blank ssh agent loaded in the environment causing SSH / Git clone failures later on
+            // ignoreMissing: false (default) doesn't work and there is no issue tracker on the github project page to report this :-/
+            sshagent (credentials: ['my-ssh-key'], ignoreMissing: false) {
+              gitOpsK8sUpdate(['mydockerimage'])  // func in vars/ shared library
+            }
+          }
+
+          argoDeploy()  // func in vars/ shared library
+        }
+      }
+    }
 
     stage('Deploy') {
       //when { branch pattern: '^.*/production$', comparator: 'REGEXP' }
