@@ -24,7 +24,10 @@ def call(timeoutMinutes=10){
       ansiColor('xterm') {
         // terraform workspace is not supported if using Terraform Cloud
         // TF_WORKSPACE overrides 'terraform workspace select'
-        sh '''#/usr/bin/env bash -euxo pipefail
+        //
+        // alpine/terragrunt docker image doesn't have bash
+        //sh '''#/usr/bin/env bash -euxo pipefail
+        sh '''#/bin/sh -eux
           if [ -n "$TF_WORKSPACE" ]; then
               terragrunt workspace new "$TF_WORKSPACE" || echo "Workspace '$TF_WORKSPACE' already exists or using Terraform Cloud as a backend"
               #terragrunt workspace select "$TF_WORKSPACE"  # TF_WORKSPACE takes precedence over this select
