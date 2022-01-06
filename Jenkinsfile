@@ -680,7 +680,9 @@ pipeline {
           steps {
             //dir ("components/${COMPONENT}") {
             ansiColor('xterm') {
-              sh '''#!/usr/bin/env bash -euxo pipefail
+              // aquasec/tfsec image is based on Alpine, doesn't have bash
+              //sh '''#!/usr/bin/env bash -euxo pipefail
+              sh '''#!/bin/sh -eux
               tfsec --update
               tfsec --version
               tfsec --run-statistics  # nice summary table
