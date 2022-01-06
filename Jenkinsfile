@@ -710,21 +710,7 @@ This prompt will time out after 1 hour''',
       //  branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP'
       //}
       steps {
-        lock(resource: "Terraform - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
-          // forbids older applys from starting
-          milestone(ordinal: 100, label: "Milestone: Terraform Apply")
-
-          // XXX: set Terraform version in the docker image tag in jenkins-agent-pod.yaml
-          container('terraform') {
-            steps {
-              //dir ("components/${COMPONENT}") {
-              ansiColor('xterm') {
-                // for test environments, add a param to trigger -destroy switch
-                sh 'terraform apply plan.zip -input=false -auto-approve'
-              }
-            }
-          }
-        }
+        terraformApply()  // func in vars/ shared librar
       }
     }
 
