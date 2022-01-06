@@ -155,6 +155,9 @@ pipeline {
     // enable build status feedback to GitLab
     //gitLabConnection('Gitlab')
     //gitlabCommitStatus(name: "Jenkins build $BUILD_DISPLAY_NAME")
+
+    // requires ansicolor plugin
+    ansiColor('xterm')
   }
 
   // https://www.jenkins.io/doc/book/pipeline/syntax/#cron-syntax
