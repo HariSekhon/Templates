@@ -20,15 +20,17 @@ def call(timeoutMinutes=10){
 
   // XXX: set Terraform version in the docker image tag in jenkins-agent-pod.yaml
   container('terraform') {
-    //dir ("components/${COMPONENT}") {
-    ansiColor('xterm') {
-      // terraform docker image doesn't have bash
-      //sh '''#/usr/bin/env bash -euxo pipefail
-      //sh '''#/bin/sh -eux
-      sh label: 'Workspace List',
-        script: 'terraform workspace list || : ' // 'workspaces not supported' if using Terraform Cloud as a backend
-      sh label: 'Terraform Plan',
-        script: 'terraform plan -out=plan.zip -input=false'  // # -var-file=base.tfvars -var-file="$ENV.tfvars"
+    timeout(time: timeoutMinutes, unit: 'MINUTES') {
+      //dir ("components/${COMPONENT}") {
+      ansiColor('xterm') {
+        // terraform docker image doesn't have bash
+        //sh '''#/usr/bin/env bash -euxo pipefail
+        //sh '''#/bin/sh -eux
+        sh label: 'Workspace List',
+          script: 'terraform workspace list || : ' // 'workspaces not supported' if using Terraform Cloud as a backend
+        sh label: 'Terraform Plan',
+          script: 'terraform plan -out=plan.zip -input=false'  // # -var-file=base.tfvars -var-file="$ENV.tfvars"
+      }
     }
   }
 }
