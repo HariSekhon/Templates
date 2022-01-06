@@ -627,49 +627,13 @@ pipeline {
 
     stage('Terraform Init') {
       steps {
-        // forbids older inits from starting
-        milestone(ordinal: 10, label: "Milestone: Terraform Init")
-
-        container('terraform') {
-          steps {
-            //dir ("components/${COMPONENT}") {
-            ansiColor('xterm') {
-              // terraform workspace is not supported if using Terraform Cloud
-              // TF_WORKSPACE overrides 'terraform workspace select'
-              sh '''#/usr/bin/env bash -euxo pipefail
-                if [ -n "$TF_WORKSPACE" ]; then
-                    terraform workspace new "$TF_WORKSPACE" || echo "Workspace '$TF_WORKSPACE' already exists or using Terraform Cloud as a backend"
-                    #terraform workspace select "$TF_WORKSPACE"  # TF_WORKSPACE takes precedence over this select
-                fi
-                terraform init -input=false  # -backend-config "bucket=$ACCOUNT-$PROJECT-terraform" -backend-config "key=${ENV}-${PRODUCT}/${COMPONENT}/state.tf"
-              '''
-            }
-          }
-        }
+        terraformInit()  // func in vars/ shared library
       }
     }
 
     stage('Terragrunt Init') {
       steps {
-        // forbids older inits from starting
-        milestone(ordinal: 10, label: "Milestone: Terragrunt Init")  // protects duplication by reusing the same milestone between Terraform / Terragrunt in case you leave both in
-
-        container('terragrunt') {
-          steps {
-            //dir ("components/${COMPONENT}") {
-            ansiColor('xterm') {
-              // terraform workspace is not supported if using Terraform Cloud
-              // TF_WORKSPACE overrides 'terraform workspace select'
-              sh '''#/usr/bin/env bash -euxo pipefail
-                if [ -n "$TF_WORKSPACE" ]; then
-                    terragrunt workspace new "$TF_WORKSPACE" || echo "Workspace '$TF_WORKSPACE' already exists or using Terraform Cloud as a backend"
-                    #terragrunt workspace select "$TF_WORKSPACE"  # TF_WORKSPACE takes precedence over this select
-                fi
-                terragrunt init --terragrunt-non-interactive -input=false  # -backend-config "bucket=$ACCOUNT-$PROJECT-terraform" -backend-config "key=${ENV}-${PRODUCT}/${COMPONENT}/state.tf"
-              '''
-            }
-          }
-        }
+        terragruntInit()  // func in vars/ shared library
       }
     }
 
@@ -681,41 +645,13 @@ pipeline {
 
     stage('Terraform Plan') {
       steps {
-        // forbids older plans from starting
-        milestone(ordinal: 50, label: "Milestone: Terraform Plan")
-
-        // XXX: set Terraform version in the docker image tag in jenkins-agent-pod.yaml
-        container('terraform') {
-          steps {
-            //dir ("components/${COMPONENT}") {
-            ansiColor('xterm') {
-              sh '''#!/usr/bin/env bash -euxo pipefail
-              terraform workspace list || :  # 'workspaces not supported' if using Terraform Cloud as a backend
-              terraform plan -out=plan.zip -input=false  # -var-file=base.tfvars -var-file="$ENV.tfvars"
-              '''
-            }
-          }
-        }
+        terraformPlan()  // func in vars/ shared library
       }
     }
 
     stage('Terragrunt Plan') {
       steps {
-        // forbids older plans from starting
-        milestone(ordinal: 50, label: "Milestone: Terragrunt Plan")  // protects duplication by reusing the same milestone between Terraform / Terragrunt in case you leave both in
-
-        // XXX: set Terragrunt version in the docker image tag in jenkins-agent-pod.yaml
-        container('terragrunt') {
-          steps {
-            //dir ("components/${COMPONENT}") {
-            ansiColor('xterm') {
-              sh '''#!/usr/bin/env bash -euxo pipefail
-              terragrunt workspace list || :  # 'workspaces not supported' if using Terraform Cloud as a backend
-              terragrunt plan --terragrunt-non-interactive -out=plan.zip -input=false  # -var-file=base.tfvars -var-file="$ENV.tfvars"
-              '''
-            }
-          }
-        }
+        terragruntPlan()  // func in vars/ shared library
       }
     }
 
