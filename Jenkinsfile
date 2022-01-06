@@ -548,11 +548,8 @@ pipeline {
     stage('Trivy') {
       steps {
         milestone(ordinal: 62, label: "Milestone: Trivy")
-        timeout(time: 10, unit: 'MINUTES') {
-          sh "trivy --no-progress --exit-code 1 --severity HIGH,CRITICAL '$DOCKER_IMAGE':'$DOCKER_TAG'"
-          // informational to see all issues
-          sh "trivy --no-progress '$DOCKER_IMAGE':'$DOCKER_TAG'"
-        }
+        // Requires DOCKER_IMAGE and DOCKER_TAG to be set in environment{} section of pipeline
+        trivy()  // func in vars/ shared library
       }
     }
     stage('Docker Push') {
