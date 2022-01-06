@@ -25,7 +25,7 @@ def call(timeoutMinutes=10){
         // terraform workspace is not supported if using Terraform Cloud
         // TF_WORKSPACE overrides 'terraform workspace select'
         //
-        // alpine/terragrunt docker image doesn't have bash
+        // terraform docker image doesn't have bash
         //sh '''#/usr/bin/env bash -euxo pipefail
         sh '''#/bin/sh -eux
           if [ -n "$TF_WORKSPACE" ]; then
