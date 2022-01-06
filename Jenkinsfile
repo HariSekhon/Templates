@@ -345,6 +345,7 @@ pipeline {
           milestone ordinal: 20, label: "Milestone: Git Merge"
           timeout(time: 5, unit: 'MINUTES') {
             // provides credential as env vars to use as per normal eg. git clone https://$GIT_USER:$GIT_TOKEN@github.com/...
+            //withCredentials([vaultString(credentialsId: 'my-secret', variable: 'MYSECRET')]) {  // HashiCorp Vault via plugin integration to give new type type of vaultString
             //withCredentials([usernamePassword(credentialsId: 'jenkins-user-token-for-github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
             // requires SSH Agent plugin + restart
             sshagent (credentials: ['jenkins-ssh-key-for-github']) {
