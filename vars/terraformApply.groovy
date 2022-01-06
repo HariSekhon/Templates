@@ -17,7 +17,6 @@
 
 def call(timeoutMinutes=30){
   label 'Terraform Apply'
-  // XXX: set Terraform version in the docker image tag in jenkins-agent-pod.yaml
   lock(resource: "Terraform - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {
     // forbids older applys from starting
     milestone(ordinal: 100, label: "Milestone: Terraform Apply")
