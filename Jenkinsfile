@@ -489,7 +489,7 @@ pipeline {
         echo "Running ${env.JOB_NAME} Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
         echo 'Building...'
 
-        cloudbuild(timeout_minutes=40)  // func in vars/ shared library
+        cloudBuild(timeout_minutes=40)  // func in vars/ shared library
 
         timeout(time: 60, unit: 'MINUTES') {
           sh 'make'
