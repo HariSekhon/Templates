@@ -234,6 +234,8 @@ pipeline {
     // XXX: Edit - useful for scripts to know which environment they're in to make adjustments
     ENV = 'dev'
     APP = 'www' // used by scripts eg. ArgoCD app sync commands
+    //JDBC_URL = 'jdbc:mysql://x.x.x.x:3306/my_db'
+    //JDBC_URL = 'jdbc:postgres://x.x.x.x:5432/my_db'
 
     // used by Git branch auto-merges and GitOps K8s image version updates
     GIT_USERNAME = 'Jenkins'
@@ -244,7 +246,7 @@ pipeline {
     AWS_ACCESS_KEY_ID      = credentials('aws-secret-key-id')
     AWS_SECRET_ACCESS_KEY  = credentials('aws-secret-access-key')
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
-    GITHUB_TOKEN           = credentials('github-token')  # user/token credential, will create env vars $GITHUB_TOKEN_USR and $GITHUB_TOKEN_PSW
+    GITHUB_TOKEN           = credentials('github-token')  // user/token credential, will create env vars $GITHUB_TOKEN_USR and $GITHUB_TOKEN_PSW
 
     CLOUDSDK_CORE_PROJECT = 'mycompany-dev'
     CLOUDSDK_COMPUTE_REGION = 'europe-west2'
@@ -579,15 +581,15 @@ pipeline {
     // lock multiple stages into 1 concurrent execution using a parent stage
     stage('Parent') {
       options {
-      lock('something')
+        lock('something')
       }
       stages {
-      stage('one') {
-        ...
-      }
-      stage('two') {
-        ...
-      }
+        stage('one') {
+          sh '...'
+        }
+        stage('two') {
+          sh '...'
+        }
       }
     }
 
@@ -713,6 +715,17 @@ pipeline {
     }
 
   // ========================================================================== //
+  //                             L i q u i b a s e
+  // ========================================================================== //
+
+    stage('Liquibase Status'){
+      steps {
+        sh 'liquibase --version'
+        sh 'liquibase status --url="$JDBC_URL" --changeLogFile=myapp.xml --username="$MYCREDS_USR" --password="$MYCREDS_PSW"'
+      }
+    }
+
+  // ========================================================================== //
   //                            H u m a n   G a t e
   // ========================================================================== //
 
@@ -796,6 +809,12 @@ This prompt will time out after 1 hour''',
             }
           }
         }
+      }
+    }
+
+    stage('Liquibase Update'){
+      steps {
+        sh 'liquibase update --url="$JDBC_URL" --changeLogFile=myapp.xml --username="$MYCREDS_USR" --password="$MYCREDS_PSW"'
       }
     }
 
@@ -892,12 +911,12 @@ This prompt will time out after 1 hour''',
       parallel {
         stage('stage 1') {
           steps {
-            ...
+            sh '...'
           }
         }
         stage('stage B') {
           steps {
-            ...
+            sh '...'
           }
         }
       }
@@ -978,17 +997,17 @@ This prompt will time out after 1 hour''',
       slackSend color: 'danger',
         message: "Git Merge FAILED - ${env.SLACK_MESSAGE} - @here ${env.GIT_COMMITTERS}" //,  // unfortunately @Hari Sekhon doesn't get activate notification the way @here does, nor does <@Hari Sekhon>
         //botUser: true  // needed if using slackUserIdsFromCommitters() - must set up the Slack Jenkins app manually - see https://plugins.jenkins.io/slack/#bot-user-mode for details
-    }
-    fixed {
-      slackSend color: 'good',
-        message: "Git Merge Fixed - ${env.SLACK_MESSAGE}" //,
-        //botUser: true  // needs to match the credential - so if Jenkins -> System Configuration -> Slack is using it, needs this or message won't come through
-    }
+      //
       //slackSend color: 'danger',
       //  message: "Build FAILED - ${env.SLACK_MESSAGE} - ${env.NOTIFY_USERS}"  // unified message with better links to Pipeline, Build # logs and even Allure Report
       //  // Older
       //  //message: "Build FAILED - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"        // Classic UI
       //  //message: "Build FAILED - Pipeline '${env.JOB_NAME}' Build ${env.BUILD_NUMBER} (<${env.RUN_DISPLAY_URL}|Open>)"  // Blue Ocean
+    }
+    fixed {
+      slackSend color: 'good',
+        message: "Git Merge Fixed - ${env.SLACK_MESSAGE}" //,
+        //botUser: true  // needs to match the credential - so if Jenkins -> System Configuration -> Slack is using it, needs this or message won't come through
     }
     unsuccessful {
     }
