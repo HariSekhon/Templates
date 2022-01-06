@@ -14,7 +14,7 @@
 //
 
 def call(timeoutMinutes=10){
-  label 'Terraform Plan'
+  label 'Terragrunt Plan'
   // forbids older plans from starting
   milestone(ordinal: 50, label: "Milestone: Terragrunt Plan")  // protects duplication by reusing the same milestone between Terraform / Terragrunt in case you leave both in
 
