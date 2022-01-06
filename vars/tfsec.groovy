@@ -13,10 +13,10 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
-def call(timeoutMinutes=10){
+def call(timeoutSeconds=120){
   label 'tfsec'
   container('tfsec') {
-    steps {
+    timeout(time: timeoutSeconds, unit: 'SECONDS') {
       //dir ("components/${COMPONENT}") {
       ansiColor('xterm') {
         // aquasec/tfsec image is based on Alpine, doesn't have bash
