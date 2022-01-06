@@ -710,7 +710,7 @@ This prompt will time out after 1 hour''',
       //  branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP'
       //}
       steps {
-        terraformApply()  // func in vars/ shared librar
+        terraformApply()  // func in vars/ shared library
       }
     }
 
@@ -720,21 +720,7 @@ This prompt will time out after 1 hour''',
       //  branch pattern: '^.*/(main|master|production)$', comparator: 'REGEXP'
       //}
       steps {
-        lock(resource: "Terraform - App: $APP, Environment: $ENVIRONMENT", inversePrecedence: true) {  // use same lock between Terraform / Terragrunt for safety
-          // forbids older applys from starting
-          milestone(ordinal: 100, label: "Milestone: Terragrunt Apply")  // protects duplication by reusing the same milestone between Terraform / Terragrunt in case you leave both in
-
-          // XXX: set Terragrunt version in the docker image tag in jenkins-agent-pod.yaml
-          container('terragrunt') {
-            steps {
-              //dir ("components/${COMPONENT}") {
-              ansiColor('xterm') {
-                // for test environments, add a param to trigger -destroy switch
-                sh 'terragrunt apply plan.zip --terragrunt-non-interactive -input=false -auto-approve'
-              }
-            }
-          }
-        }
+        terragruntApply()  // func in vars/ shared library
       }
     }
 
