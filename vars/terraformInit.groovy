@@ -20,22 +20,24 @@ def call(timeoutMinutes=10){
 
   // XXX: set Terraform version in the docker image tag in jenkins-agent-pod.yaml
   container('terraform') {
-    //dir ("components/${COMPONENT}") {
-    ansiColor('xterm') {
-      // terraform workspace is not supported if using Terraform Cloud
-      // TF_WORKSPACE overrides 'terraform workspace select'
-      //
-      // terraform docker image doesn't have bash
-      //sh '''#/usr/bin/env bash -euxo pipefail
-      sh label: 'Workspace Select',
-         script: '''#/bin/sh -eux
-                   if [ -n "$TF_WORKSPACE" ]; then
-                       terraform workspace new "$TF_WORKSPACE" || echo "Workspace '$TF_WORKSPACE' already exists or using Terraform Cloud as a backend"
-                       #terraform workspace select "$TF_WORKSPACE"  # TF_WORKSPACE takes precedence over this select
-                   fi
-                  '''
-      sh label: 'Terraform Init',
-        script: 'terraform init -input=false  # -backend-config "bucket=$ACCOUNT-$PROJECT-terraform" -backend-config "key=${ENV}-${PRODUCT}/${COMPONENT}/state.tf" '
+    timeout(time: timeoutMinutes, unit: 'MINUTES') {
+      //dir ("components/${COMPONENT}") {
+      ansiColor('xterm') {
+        // terraform workspace is not supported if using Terraform Cloud
+        // TF_WORKSPACE overrides 'terraform workspace select'
+        //
+        // terraform docker image doesn't have bash
+        //sh '''#/usr/bin/env bash -euxo pipefail
+        sh label: 'Workspace Select',
+           script: '''#/bin/sh -eux
+                     if [ -n "$TF_WORKSPACE" ]; then
+                         terraform workspace new "$TF_WORKSPACE" || echo "Workspace '$TF_WORKSPACE' already exists or using Terraform Cloud as a backend"
+                         #terraform workspace select "$TF_WORKSPACE"  # TF_WORKSPACE takes precedence over this select
+                     fi
+                    '''
+        sh label: 'Terraform Init',
+          script: 'terraform init -input=false  # -backend-config "bucket=$ACCOUNT-$PROJECT-terraform" -backend-config "key=${ENV}-${PRODUCT}/${COMPONENT}/state.tf" '
+      }
     }
   }
 }
