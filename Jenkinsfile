@@ -352,7 +352,7 @@ pipeline {
             // requires SSH Agent plugin + restart
             sshagent (credentials: ['jenkins-ssh-key-for-github']) {
               retry(2) {
-                sh 'path/to/git_merge_branch.sh staging dev'  // script in https://github.com/HariSekhon/DevOps-Bash-tools
+                sh 'path/to/git_merge_branch.sh staging dev'  // script in https://github.com/HariSekhon/DevOps-Bash-tools - or see vars/gitMerge*.groovy for native shared libary
               }
             }
           }
@@ -545,7 +545,6 @@ pipeline {
     stage('Trivy') {
       steps {
         milestone(ordinal: 62, label: "Milestone: Trivy")
-        echo 'Trivy'
         timeout(time: 10, unit: 'MINUTES') {
           sh "trivy --no-progress --exit-code 1 --severity HIGH,CRITICAL '$DOCKER_IMAGE':'$DOCKER_TAG'"
           // informational to see all issues
@@ -676,22 +675,7 @@ pipeline {
 
     stage('tfsec') {
       steps {
-        container('tfsec') {
-          steps {
-            //dir ("components/${COMPONENT}") {
-            ansiColor('xterm') {
-              // aquasec/tfsec image is based on Alpine, doesn't have bash
-              //sh '''#!/usr/bin/env bash -euxo pipefail
-              sh '''#!/bin/sh -eux
-              tfsec --update
-              tfsec --version
-              tfsec --run-statistics  # nice summary table
-              tfsec --soft-fail       # don't error
-              tfsec                   # full details and error out if issues found
-              '''
-            }
-          }
-        }
+        tfsec()  // func in vars/ shared library
       }
     }
 
