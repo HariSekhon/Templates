@@ -21,14 +21,14 @@
 //    ARGOCD_AUTH_TOKEN
 //
 
-def call(timeoutSeconds=600){
+def call(timeoutMinutes=10){
   milestone ordinal: 100, label: "Milestone: Argo Deploy"
   echo "Deploying app '$APP' via ArgoCD"
   String deploymentLock = "Deploying ArgoCD - App '$APP', Environment: " + "$ENVIRONMENT".capitalize()
   lock(resource: deploymentLock, inversePrecedence: true){
     label 'ArgoCD Deploy'
     container('argocd') {
-      timeout(time: timeoutSeconds, unit: 'SECONDS') {
+      timeout(time: timeoutMinutes, unit: 'MINUTES') {
         sh """#!/bin/bash
           set -euxo pipefail
           argocd app sync "$APP" --grpc-web --force
