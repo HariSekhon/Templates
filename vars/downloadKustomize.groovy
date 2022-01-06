@@ -2,7 +2,7 @@
 //  Author: Hari Sekhon
 //  Date: 2021-09-01 11:57:48 +0100 (Wed, 01 Sep 2021)
 //
-//  vim:ts=4:sts=4:sw=4:et
+//  vim:ts=2:sts=2:sw=2:et
 //
 //  https://github.com/HariSekhon/Templates
 //
