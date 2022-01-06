@@ -674,6 +674,25 @@ pipeline {
       }
     }
 
+    stage('tfsec') {
+      steps {
+        container('tfsec') {
+          steps {
+            //dir ("components/${COMPONENT}") {
+            ansiColor('xterm') {
+              sh '''#!/usr/bin/env bash -euxo pipefail
+              tfsec --update
+              tfsec --version
+              tfsec --run-statistics  # nice summary table
+              tfsec --soft-fail       # don't error
+              tfsec                   # full details and error out if issues found
+              '''
+            }
+          }
+        }
+      }
+    }
+
     stage('Terraform Plan') {
       steps {
         // forbids older plans from starting
