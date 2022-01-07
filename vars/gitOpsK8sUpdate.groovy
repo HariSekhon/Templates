@@ -32,7 +32,7 @@
 //
 // Could be adapted to take these as parameters if multiple GitOps updates were done in a single pipeline, but more likely those should be separate pipelines
 
-def call(dockerImages=["$DOCKER_IMAGE"], timeoutSeconds=120){
+def call(dockerImages=["$DOCKER_IMAGE"], timeoutMinutes=4){
   if (!dockerImages){
     throw new IllegalArgumentException("first arg of gitOpsK8sUpdate (dockerImages) is null or empty, please define in the calling pipeline")
   }
@@ -40,7 +40,7 @@ def call(dockerImages=["$DOCKER_IMAGE"], timeoutSeconds=120){
   echo "Acquiring Lock: $gitOpsLock"
   lock(resource: gitOpsLock, inversePrecedence: true){
     retry(2){
-      timeout(time: timeoutSeconds, unit: 'SECONDS'){
+      timeout(time: timeoutMinutes, unit: 'MINUTES'){
         sh """#!/bin/bash
           set -euxo pipefail
           export SSH_AUTH_SOCK="${env.SSH_AUTH_SOCK}"  # workaround for https://issues.jenkins.io/browse/JENKINS-42582
