@@ -21,14 +21,15 @@
 //    DOCKER_IMAGE
 //    GIT_COMMIT - provided automatically by Jenkins
 
-def call(timeout_seconds=3600){
+def call(timeoutMinutes=60){
   echo "Building from branch '${env.GIT_BRANCH}' for '" + "${env.ENVIRONMENT}".capitalize() + "' Environment"
   milestone ordinal: 10, label: "Milestone: Build"
   echo "Running Job '${env.JOB_NAME}' Build ${env.BUILD_ID} on ${env.JENKINS_URL}"
+  int timeoutSeconds = timeoutMinutes * 60
   retry(2){
-    timeout(time: $timeout_seconds, unit: 'SECONDS') {
+    timeout(time: "$timeoutMinutes", unit: 'MINUTES') {
       echo 'Running GCP CloudBuild'
-      withEnv(["TIMEOUT_SECONDS=$timeout_seconds"]) {
+      withEnv(["TIMEOUT_SECONDS=$timeoutSeconds"]) {
         sh '''#!/bin/bash
           set -euxo pipefail
           echo "\$GCP_SERVICEACCOUNT_KEY" | base64 --decode > credentials.json
