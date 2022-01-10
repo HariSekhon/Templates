@@ -321,6 +321,7 @@ pipeline {
       }
     }
 
+    // ========================================================================== //
     // auto-backport hotfixes to upstream environments
     stage('Git Merge') {
       // applied before stage { agent{} }
@@ -369,6 +370,7 @@ pipeline {
       }
     }
 
+    // ========================================================================== //
     stage('Setup') {
       steps {
         milestone(ordinal: 30, label: "Milestone: Setup")
@@ -403,6 +405,7 @@ pipeline {
       }
     }
 
+    // ========================================================================== //
     stage('Wait for Selenium Grid to be up') {
       steps {
         sh script: "./selenium_hub_wait_ready.sh '$SELENIUM_HUB_URL' 60"
@@ -430,6 +433,26 @@ pipeline {
       }
     }
 
+    // ========================================================================== //
+    // SonarQube
+    stage('SonarQube Scan'){
+      steps {
+        withSonarQubeEnv(installationName: 'mysonar'){  // configure with details of SonarQube installation
+          sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar'
+        }
+      }
+    }
+
+    stage('SonarQube Quality Gate'){
+      steps {
+        timeout(time: 2, unit: 'MINUTES'){
+          waitForQualtityGate abortPipeline: true
+        }
+      }
+    }
+
+    // ========================================================================== //
+
     // alternative quick Pipeline to run just a single package of tests for quicker debugging and testing
     stage('Run Single Package Tests') {
       steps {
@@ -454,6 +477,7 @@ pipeline {
       }
     }
 
+    // ========================================================================== //
     stage('Run Tests in Serial') {
       stage('Run Desktop Tests') {
         steps {
@@ -471,6 +495,7 @@ pipeline {
       }
     }
 
+    // ========================================================================== //
     // Parallelize build via multiple sub-stages if possible:
     // https://www.jenkins.io/doc/book/pipeline/syntax/#parallel
     stage('Build') {
@@ -523,7 +548,9 @@ pipeline {
       }
     }
 
-    // Consider using the built-in artifact publishing support in your build tool (Maven/Gradle etc), but jfrog-cli is here if your needs are more complex
+    // ========================================================================== //
+    // Artifactory - consider using the built-in artifact publishing support in your build tool (Maven/Gradle etc),
+    //               but jfrog-cli is here if your needs are more complex
     stage('Artifactory Upload'){
       steps {
         container('jfrog-cli'){
