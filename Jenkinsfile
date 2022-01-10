@@ -597,8 +597,7 @@ pipeline {
     stage('Grype') {
       steps {
         milestone(ordinal: 63, label: "Milestone: Grype")
-        // Requires DOCKER_IMAGE and DOCKER_TAG to be set in environment{} section of pipeline
-        grype()  // func in vars/ shared library
+        grype("$DOCKER_IMAGE:$DOCKER_TAG")  // func in vars/ shared library
       }
     }
     stage('Docker Push') {
