@@ -20,9 +20,9 @@ def call(timeoutMinutes=10){
   container('trivy') {
     timeout(time: timeoutMinuntes, unit: 'MINUTES') {
       ansiColor('xterm') {
-          sh "trivy --no-progress --exit-code 1 --severity HIGH,CRITICAL '$DOCKER_IMAGE':'$DOCKER_TAG'"
+          sh "trivy image --no-progress --exit-code 1 --severity HIGH,CRITICAL '$DOCKER_IMAGE':'$DOCKER_TAG'"
           // informational to see all issues
-          sh "trivy --no-progress '$DOCKER_IMAGE':'$DOCKER_TAG'"
+          sh "trivy image --no-progress '$DOCKER_IMAGE':'$DOCKER_TAG'"
       }
     }
   }
