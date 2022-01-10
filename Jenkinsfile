@@ -598,6 +598,8 @@ pipeline {
       steps {
         milestone(ordinal: 63, label: "Milestone: Grype")
         grype("$DOCKER_IMAGE:$DOCKER_TAG")  // func in vars/ shared library
+        // for locally built packages
+        grype("dir:.")
       }
     }
     stage('Docker Push') {
