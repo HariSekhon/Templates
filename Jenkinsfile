@@ -594,10 +594,17 @@ pipeline {
         trivy()  // func in vars/ shared library
       }
     }
+    stage('Grype') {
+      steps {
+        milestone(ordinal: 63, label: "Milestone: Grype")
+        // Requires DOCKER_IMAGE and DOCKER_TAG to be set in environment{} section of pipeline
+        grype()  // func in vars/ shared library
+      }
+    }
     stage('Docker Push') {
       agent { label 'docker-builder' }
       steps {
-        milestone(ordinal: 63, label: "Milestone: Docker Push")
+        milestone(ordinal: 69, label: "Milestone: Docker Push")
         timeout(time: 15, unit: 'MINUTES') {
           sh "docker push '$DOCKER_IMAGE':'$DOCKER_TAG'"
         }
