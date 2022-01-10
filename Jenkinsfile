@@ -240,6 +240,9 @@ pipeline {
     //JDBC_URL = 'jdbc:mysql://x.x.x.x:3306/my_db'
     //JDBC_URL = 'jdbc:postgres://x.x.x.x:5432/my_db'
 
+    // my DevOps Bash tools lib/ci.sh library will automatically set CI=true in shell if sourced and any of the CI heuristics match
+    CI = true  // used by Artifactory JFrog CLI to disable interactive prompts and progress bar - https://www.jfrog.com/confluence/display/CLI/JFrog+CLI#JFrogCLI-EnvironmentVariables
+
     // used by Git branch auto-merges and GitOps K8s image version updates
     GIT_USERNAME = 'Jenkins'
     GIT_EMAIL = 'platform-engineering@MYCOMPANY.CO.UK'
@@ -266,6 +269,9 @@ pipeline {
     // DockerHub
     //DOCKER_IMAGE = "harisekhon/$APP"
     DOCKER_TAG = "$GIT_COMMIT" // or "$GIT_BRANCH" which can be set to a semver git tag
+
+    ARTIFACTORY_URL = 'http://x.x.x.x:8082/artifactory/'
+    ARTIFACTORY_ACCESS_TOKEN = credentials('artifactory-access-token')
 
     // use to trigger deployment sync's for apps as deploy step
     ARGOCD_SERVER = 'argocd.domain.com'
@@ -514,6 +520,15 @@ pipeline {
 //        }
         // saves artifacts to Jenkins master for basic reporting and archival - not a substitute for Nexus / Artifactory
         // archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+      }
+    }
+
+    // Consider using the built-in artifact publishing support in your build tool (Maven/Gradle etc), but jfrog-cli is here if your needs are more complex
+    stage('Artifactory Upload'){
+      steps {
+        container('jfrog-cli'){
+          sh 'jfrog rt upload --url "$ARTIFACTORY_URL" --access-token "$ARTIFACTORY_ACCESS_TOKEN" target/myapp-0.0.1-SNAPSHOT.jar myapp/'
+        }
       }
     }
 
