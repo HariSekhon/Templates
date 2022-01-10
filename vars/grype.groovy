@@ -15,14 +15,12 @@
 
 // https://github.com/anchore/grype
 
-// Requires DOCKER_IMAGE and DOCKER_TAG to be set in environment{} section of pipeline
-
-def call(timeoutMinutes=10){
+def call(target, timeoutMinutes=10){
   label 'Grype'
   container('grype') {
     timeout(time: timeoutMinuntes, unit: 'MINUTES') {
       ansiColor('xterm') {
-          sh "grype '$DOCKER_IMAGE':'$DOCKER_TAG' --scope all-layers"
+          sh "grype '$target' --fail-on high --scope AllLayers"
       }
     }
   }
