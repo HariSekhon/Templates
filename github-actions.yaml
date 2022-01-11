@@ -23,11 +23,16 @@ name: My Workflow
 
 # https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
 #
+# https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+#
 # GITHUB_WORKFLOW = name of the workflow (set at top of this file)
 # GITHUB_REPOSITORY = owner/repo
 # GITHUB_SHA
 # GITHUB_REF_NAME (branch or tag)
 # GITHUB_REF_TYPE="branch"/"tag"
+# RUNNER_NAME
+# RUNNER_OS
+# RUNNER_ARCH
 env:
   repo: bash-tools
   APP: myapp
@@ -39,9 +44,9 @@ env:
   # Docker Container Registry
   #DOCKER_IMAGE: "${{env.GHCR_REGISTRY}}/${{env.APP}}"
   # GCP
-  #DOCKER_IMAGE: "${{env.GCR_REGISTRY}}/${{env.CLOUDSDK_CORE_PROJECT}}/$APP"
+  #DOCKER_IMAGE: "${{env.GCR_REGISTRY}}/${{env.CLOUDSDK_CORE_PROJECT}}/${{env.APP}}"
   # DockerHub
-  #DOCKER_IMAGE: "harisekhon/$APP"
+  #DOCKER_IMAGE: "harisekhon/${{env.APP}}"
 
   GHCR_REGISTRY: ghcr.io/harisekhon
 
@@ -171,6 +176,7 @@ jobs:
       #  key: value
 
     - name: install git & make
+      #if: ${{ env.MYVAR == 'blah' }}  # only execute this step if $MYVAR=blah
       # multi-line scripts
       run: |
         ls -l /.dockerenv
