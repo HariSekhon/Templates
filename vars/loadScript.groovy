@@ -28,5 +28,6 @@ def call(file, dir = '.') {
 	def scriptContents = libraryResource "$dir/$file"
 	writeFile file: "$file",
 			  text: scriptContents
+			  //encoding: "Base64"  # if the file is Base 64 encoded to decode it before writing (eg. for binaries)
 	sh "chmod a+x ./$file"
 }
