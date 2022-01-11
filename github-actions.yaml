@@ -188,7 +188,7 @@ jobs:
       run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.TIMESTAMP}}"
 
     - name: GHCR Docker login
-      run: echo "${{env.GITHUB_TOKEN_PASSWORD}}" | docker login ghrc.io -u "${{env.GITHUB_TOKEN_USER}" --password-stdin
+      run: echo "${{env.GITHUB_TOKEN_PASSWORD}}" | docker login ghcr.io -u "${{env.GITHUB_TOKEN_USER}" --password-stdin
 
     - name: Docker Push Tags
       # push latest last for an atomic cutover of latest once new tags are available
@@ -203,8 +203,15 @@ jobs:
                     docker push "${{env.DOCKER_IMAGE}}:$tag"
         done
 
-# Cache with matrix
-#
+    # ============================================================================ #
+    #                                 C a c h e
+    # ============================================================================ #
+
+    # https://github.com/actions/cache
+    # https://github.com/marketplace/actions/cache
+
+    # Cache with matrix
+
 #    - uses: actions/cache@v1
 #      with:
 #        path: ~/.cache/pip
@@ -218,10 +225,7 @@ jobs:
 #        restore-keys: |
 #          ${{ runner.os }}-cpanm-
 
-# ============================================================================
-# https://github.com/actions/cache
-# https://github.com/marketplace/actions/cache
-# ============================================================================
+# ============================================================================ #
 # Python
 #    - uses: actions/cache@v1
 #      if: startsWith(runner.os, 'Linux')
