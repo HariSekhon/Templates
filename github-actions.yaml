@@ -166,6 +166,9 @@ jobs:
     # create dynamic environment variable by echo'ing KEY=VALUE >> $GITHUB_ENV
     - name: dynamic environment variable
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+      # step-specific environment variables
+      #env:
+      #  key: value
 
     - name: install git & make
       # multi-line scripts
