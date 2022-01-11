@@ -254,8 +254,17 @@ pipeline {
     GCP_SERVICEACCOUNT_KEY = credentials('gcp-serviceaccount-key')
     GITHUB_TOKEN           = credentials('github-token')  // user/token credential, will create env vars $GITHUB_TOKEN_USR and $GITHUB_TOKEN_PSW
 
+    AWS_ACCOUNT_ID = 123456789012
+    AWS_DEFAULT_REGION = eu-west-2
+    //AWS_DEFAULT_OUTPUT = json
+    //AWS_MAX_ATTEMPTS = 3
+    EKS_CLUSTER = mycluster
+
+    // https://cloud.google.com/sdk/gcloud/reference/config
     CLOUDSDK_CORE_PROJECT = 'mycompany-dev'
-    CLOUDSDK_COMPUTE_REGION = 'europe-west2'
+    CLOUDSDK_COMPUTE_REGION = 'europe-west2' // London
+    //CLOUDSDK_COMPUTE_ZONE = "${env.CLOUDSDK_COMPUTE_REGION}-a" # or b or c
+    //CLOUDSDK_CONTAINER_CLUSTER = myGKEcluster
     GCR_REGISTRY = 'eu.gcr.io'
 
     // use to purge Cloudflare Cache
