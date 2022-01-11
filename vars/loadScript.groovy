@@ -16,7 +16,7 @@
 // Copies a unix script to the local workspace and chmod's it to be used in a subsequent 'sh' step, eg'
 //
 //	steps {
-//		loadUnixScript('path/to/script.sh')
+//		loadScript('path/to/script.sh')
 //	 	sh './script.sh ...'
 //	}
 //
