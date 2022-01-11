@@ -168,9 +168,13 @@ jobs:
     #                                 B u i l d
     # ============================================================================ #
 
-    # create dynamic environment variable by echo'ing KEY=VALUE >> $GITHUB_ENV
-    - name: Create Dynamic Environment Variable
+    # Create Dynamic Environment Variables by echo'ing KEY=VALUE >> $GITHUB_ENV
+    #
+    - name: Generate env GITHUB_SHA_SHORT
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+    - name: Generate env GITHUB_REPO
+      run: echo "GITHUB_REPO=$(echo "${GITHUB_REPOSITORY##*/}")" >> $GITHUB_ENV
+      #
       # step-specific environment variables
       #env:
       #  key: value
