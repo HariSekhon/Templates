@@ -18,7 +18,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 [deployment.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/deployment.yaml),
 [statefulset.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/statefulset.yaml),
 [service.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/service.yaml),
-[ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
+[ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
 - [Terraform](https://www.terraform.io/) -
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
