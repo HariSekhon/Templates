@@ -12,11 +12,86 @@
 #
 
 # MarketPlace:  https://github.com/marketplace?type=actions
+#               https://github.com/marketplace?query=publisher%3Aactions&type=actions
 
-name: CI Ubuntu
+# XXX: Edit - badges appear with this name
+name: My Workflow
 
-#env:
-#  DEBUG: 1
+# ============================================================================ #
+#                             E n v i r o n m e n t
+# ============================================================================ #
+
+# https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+#
+# https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+#
+# GITHUB_WORKFLOW = name of the workflow (set at top of this file)
+# GITHUB_REPOSITORY = owner/repo
+# GITHUB_SHA
+# GITHUB_REF_NAME (branch or tag)
+# GITHUB_REF_TYPE="branch"/"tag"
+# RUNNER_NAME
+# RUNNER_OS
+# RUNNER_ARCH
+env:
+  repo: bash-tools
+  APP: myapp
+  ENV: dev
+  #DEBUG: 1
+
+  DOCKER_IMAGE: myimage
+  DOCKER_TAG: ${{env.GITHUB_SHA}}
+  # Docker Container Registry
+  #DOCKER_IMAGE: "${{env.GHCR_REGISTRY}}/${{env.APP}}"
+  # GCP
+  #DOCKER_IMAGE: "${{env.GCR_REGISTRY}}/${{env.CLOUDSDK_CORE_PROJECT}}/${{env.APP}}"
+  # DockerHub
+  #DOCKER_IMAGE: "harisekhon/${{env.APP}}"
+
+  GHCR_REGISTRY: ghcr.io/harisekhon
+
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  GCP_SERVICEACCOUNT_KEY: ${{ secrets.GCP_SERVICEACCOUNT_KEY }}
+  GITHUB_USER: ${{ secrets.GITHUB_USER }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+
+  AWS_ACCOUNT_ID: 123456789012
+  AWS_DEFAULT_REGION: eu-west-2  # London
+  #AWS_DEFAULT_OUTPUT: json
+  #AWS_MAX_ATTEMPTS: 3
+  #EKS_CLUSTER: mycluster
+
+  CLOUDSDK_CORE_PROJECT: mycompany-dev
+  CLOUDSDK_COMPUTE_REGION: europe-west2
+  #CLOUDSDK_COMPUTE_ZONE: "${{env.CLOUDSDK_COMPUTE_REGION}}-a" # or b or c
+  #CLOUDSDK_CONTAINER_CLUSTER: myGKEcluster
+  GCR_REGISTRY: eu.gcr.io
+
+  #JDBC_URL: jdbc:mysql://x.x.x.x:3306/my_db
+  JDBC_URL: jdbc:postgres://x.x.x.x:5432/my_db
+
+  ARGOCD_SERVER: argocd.domain.com
+  ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+
+  ARTIFACTORY_URL: https://artifactory.domain.com:8082/artifactory/
+  ARTIFACTORY_ACCESS_TOKEN: ${{ secrets.ARTIFACTORY_ACCESS_TOKEN }}
+
+  #SELENIUM_HUB_URL: http://x.x.x.x:4444/wd/hub/
+  #SELENIUM_HUB_URL: https://x.x.x.x/wd/hub/
+
+  TF_IN_AUTOMATION: "1"
+  TF_WORKSPACE: ${{ env.ENV }}  # run same code against multiple environments
+
+  # for Git Merge branch jobs
+  #
+  GIT_USERNAME: 'GitHub Actions'
+  GIT_EMAIL: 'platform-engineering@MYCOMPANY.CO.UK'
+
+# ============================================================================ #
+#                                T r i g g e r s
+# ============================================================================ #
 
 on: # [push]
   push:
@@ -31,49 +106,152 @@ on: # [push]
     # * is a special character in YAML so you have to quote this string
     - cron:  '30 0 * * 1'
 
+# ============================================================================ #
+#                                    J o b s
+# ============================================================================ #
+
 jobs:
   build:
     #name: build
+    #needs: other-job  # dependency
     timeout-minutes: 10
     # for code scanning to create security alerts (see https://github.com/HariSekhon/Terraform/blob/master/.github/workflows/tfsec.yaml)
     #permissions:
     #  actions: read
     #  contents: read
     #  security-events: write
-# =============== choose one of =====================
+
+    # ============================================================================ #
+    #               Chooser Runner - OS, Language, Matrix etc.
+    # ============================================================================ #
     runs-on: ubuntu-latest
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ubuntu-latest, ubuntu-18.04, ubuntu-20.04]
+#        python-version: ['2.7', '3.7', '3.8', '3.9', '3.10', 'pypy-2.7', 'pypy-3.8']
+##        node: [6, 8, 10]
     container: centos
-    env:
-      repo: bash-tools
+
+    # job-specific environment variables
+    #env:
+    #  key: value
+
+    # @<tag/branch/SHA>  # GitHub recommends SHA for 3rd party actions for security
     steps:
+    # ============================================================================ #
+    #                                  S e t u p
+    # ============================================================================ #
+    #
+    # https://github.com/marketplace/actions/checkout
+    - uses: actions/checkout@v2
+    #
+    # https://github.com/marketplace/actions/setup-python
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+        #python-version: ${{ matrix.python-version }}
+    #
+    # https://github.com/marketplace/actions/setup-java-jdk
+    - uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin' # See 'Supported distributions' for available options
+        java-version: '17'  # 8, 11, 16, 17
+    #
+    # https://github.com/marketplace/actions/setup-node-js-environment
+    #
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    # ============================================================================ #
+    #                                 B u i l d
+    # ============================================================================ #
+
+    # create dynamic environment variable by echo'ing KEY=VALUE >> $GITHUB_ENV
+    - name: dynamic environment variable
+      run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+      # step-specific environment variables
+      #env:
+      #  key: value
+
     - name: install git & make
+      #if: ${{ env.MYVAR == 'blah' }}  # only execute this step if $MYVAR=blah
+      # multi-line scripts
       run: |
         ls -l /.dockerenv
         echo "pwd is $PWD"
         cat /etc/*release
         yum install -y git make
+
     - name: git clone
       run: |
         cd /tmp &&
         git clone "https://github.com/harisekhon/$repo"
+
     - name: build
       run: |
         cd "/tmp/$repo" &&
         make
+
     - name: test
       run: |
         cd "/tmp/$repo" &&
         make test
 
-# ================ OR  =====================
-#    runs-on: ${{ matrix.os }}
-#    strategy:
-#      matrix:
-#        os: [ubuntu-latest, ubuntu-16.04]
-##        node: [6, 8, 10]
-#
-#    steps:
-#    - uses: actions/checkout@v2
+    # ============================================================================ #
+    #                                D o c k e r
+    # ============================================================================ #
+
+    - name: Docker Build
+      run: docker build . -f Dockerfile -t "${{env.DOCKER_IMAGE}}:latest"
+
+    - name: Generate Epoch
+      run: echo "EPOCH=$(date --utc '+%s')" >> $GITHUB_ENV
+
+    - name: Generate Datestamp
+      run: echo "DATESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%FT%H%M%SZ')" >> $GITHUB_ENV
+
+    - name: Generate Timestamp
+      run: echo "TIMESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%F')" >> $GITHUB_ENV
+
+    - name: Docker Tag ${{env.DOCKER_TAG}}
+      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}"
+
+    - name: Docker Tag SHA
+      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.GITHUB_SHA}}"
+
+    - name: Docker Tag Datestamp
+      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.DATESTAMP}}"
+
+    - name: Docker Tag Timestamp
+      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.TIMESTAMP}}"
+
+    - name: GHCR Docker login
+      run: echo "${{env.GITHUB_TOKEN}}" | docker login ghcr.io -u "${{env.GITHUB_USER}}" --password-stdin
+
+    - name: Docker Push Tags
+      # push latest last for an atomic cutover of latest once new tags are available
+      run: |
+        set -eux
+        for tag in \
+                  "${{env.DOCKER_TAG}}" \
+                  "${{env.GITHUB_SHA}}" \
+                  "${{env.DATESTAMP}}" \
+                  "${{env.TIMESTAMP}}" \
+                  latest; do \
+                    docker push "${{env.DOCKER_IMAGE}}:$tag"
+        done
+
+    # ============================================================================ #
+    #                                 C a c h e
+    # ============================================================================ #
+
+    # https://github.com/actions/cache
+    # https://github.com/marketplace/actions/cache
+
+    # Cache with matrix
+
 #    - uses: actions/cache@v1
 #      with:
 #        path: ~/.cache/pip
@@ -86,19 +264,8 @@ jobs:
 #        key: ${{ runner.os }}-cpanm-bash-tools  # ${{ hashFiles('**/cpan-requirements.txt') }}
 #        restore-keys: |
 #          ${{ runner.os }}-cpanm-
-#    - name: build
-#      run: make
-#    - name: test
-#      run: make test
 
-    #- name: Run a multi-line script
-    #  run: |
-    #    echo Add other actions to build,
-    #    echo test, and deploy your project.
-
-# ============================================================================
-# https://github.com/actions/cache
-# ============================================================================
+# ============================================================================ #
 # Python
 #    - uses: actions/cache@v1
 #      if: startsWith(runner.os, 'Linux')
@@ -185,3 +352,25 @@ jobs:
 #    - uses: docker://harisekhon/centos-dev
 #    -  name: build & test
 #      run: make build test
+
+# ============================================================================ #
+# Artifact Upload / Download for sharing between jobs or storing
+#
+# https://github.com/marketplace/actions/upload-a-build-artifact
+#
+# - uses: actions/upload-artifact@v2
+#   with:
+#     name: my-artifact
+#       path: path/to/file.jar
+#
+# https://github.com/marketplace/actions/download-a-build-artifact
+#
+# - uses: actions/download-artifact@v2
+#   with:
+#     name: my-artifact  # if name isn't specified, downloads all artifacts to subdirectories of same name
+#     #path: path/to/artifacts-dir
+#
+# ============================================================================ #
+# GitHub Script - API calls to GitHub eg. commenting on issue/PR, applying a label to an issue
+#
+# https://github.com/marketplace/actions/github-script
