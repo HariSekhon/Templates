@@ -349,6 +349,7 @@ pipeline {
       when {
         beforeAgent true  // don't spin up a K8s pod if we don't need to execute
         branch '*/staging'
+        //changeset 'src/**/*.java'  // only run this stage if Java code changed
       }
 
       steps {
