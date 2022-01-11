@@ -1,0 +1,61 @@
+#
+#  Author: Hari Sekhon
+#  Date: Tue Feb 4 09:53:28 2020 +0000
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https://github.com/harisekhon/templates
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback
+#
+#  https://www.linkedin.com/in/harisekhon
+#
+
+# ============================================================================ #
+#                     T F s e c   G i t H u b   A c t i o n
+# ============================================================================ #
+
+# Static analysis of Terraform code - publishes report to GitHub Security tab
+
+name: tfsec
+
+on:
+  #push:
+  #  branches:
+  #    - master
+  #    - main
+  #pull_request:
+  #  branches:
+  #    - master
+  #    - main
+  schedule:
+    - cron: '30 0 * * 1'
+
+jobs:
+  tfsec:
+    name: tfsec sarif report
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: tfsec
+        #uses: tfsec/tfsec-sarif-action@main
+        uses: tfsec/tfsec-sarif-action@9a83b5c3524f825c020e356335855741fd02745f
+        with:
+          sarif_file: tfsec.sarif
+          #config_file: tfsec.yaml  # default: .tfsec/config.yaml
+          #working_directory: terraform/
+          #github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: tfsec.sarif
