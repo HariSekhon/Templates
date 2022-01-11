@@ -13,10 +13,29 @@
 //  [% LINKEDIN %]
 //
 
+// ========================================================================== //
+//                                  G r o o v y
+// ========================================================================== //
+
+// Jenkins Shared Library function
+def call(Map args = [:]) {
+	sh 'echo "key = name, value = ${args.name}" '
+}
+
+// ================
+// Groovy Scripting
+//
+// http://docs.groovy-lang.org/latest/html/documentation/grape.html
+@GrabConfig(systemClassLoader=true)
+@Grab(group='mysql', module='mysql-connector-java', version='5.1.6')
+
+
+// =====================
+// or old class stuff
 class [% NAME %] {
 
     static void main(String[] args) throws Exception {
-        
+
     }
 
 }
