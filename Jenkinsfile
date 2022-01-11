@@ -271,7 +271,7 @@ pipeline {
     CLOUDFLARE_API_KEY = credentials('cloudflare-api-key')
 
     // GCR
-    DOCKER_IMAGE = "$GCR_REGISTRY/$GCR_PROJECT/$APP"
+    DOCKER_IMAGE = "$GCR_REGISTRY/$CLOUDSDK_CORE_PROJECT/$APP"
     // GitHub Container Registry
     GHCR_REGISTRY = 'ghcr.io/harisekhon'
     DOCKER_IMAGE = "$GHCR_REGISTRY/$APP"
