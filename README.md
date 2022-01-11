@@ -14,7 +14,7 @@ Code & Config Templates
 
 Code & DevOps Config templates for many popular programming languages and DevOps tools including:
 
-- [Kubernetes](https://kubernetes.io/) - advanced K8s templates for every major API object eg.
+- [Kubernetes](https://kubernetes.io/) - advanced K8s templates eg.
 [deployment.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/deployment.yaml),
 [statefulset.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/statefulset.yaml),
 [service.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/service.yaml),
