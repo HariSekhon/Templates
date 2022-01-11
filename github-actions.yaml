@@ -155,15 +155,34 @@ jobs:
     # ============================================================================ #
     - name: Docker Build
       run: docker build . -f Dockerfile -t "${{env.DOCKER_IMAGE}}:latest"
+    - name: Docker Epoch
+      run: echo "EPOCH=$(date --utc '+%s')" >> $GITHUB_ENV
+    - name: Docker Datestamp
+      run: echo "DATESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%FT%H%M%SZ')" >> $GITHUB_ENV
+    - name: Docker Timestamp
+      run: echo "TIMESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%F')" >> $GITHUB_ENV
     - name: Docker Tag ${{env.DOCKER_TAG}}
       run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}"
     - name: Docker Tag SHA
       run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.GITHUB_SHA}}"
+    - name: Docker Tag Datestamp
+      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.DATESTAMP}}"
+    - name: Docker Tag Timestamp
+      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.TIMESTAMP}}"
     - name: GHCR Docker login
       run:
     - name: docker push
       # push latest last for an atomic cutover of latest once new tags are available
-      run: for tag in "${{env.DOCKER_TAG}}" "${{env.GITHUB_SHA}}" latest; do docker push "${{env.DOCKER_IMAGE}}:$tag"; done
+      run: |
+        set -eux
+        for tag in \
+                  "${{env.DOCKER_TAG}}" \
+                  "${{env.GITHUB_SHA}}" \
+                  "${{env.DATESTAMP}}" \
+                  "${{env.TIMESTAMP}}" \
+                  latest; do \
+                    docker push "${{env.DOCKER_IMAGE}}:$tag"
+        done
 
 # Cache with matrix
 #
