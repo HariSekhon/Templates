@@ -169,32 +169,38 @@ jobs:
     # ============================================================================ #
 
     # create dynamic environment variable by echo'ing KEY=VALUE >> $GITHUB_ENV
-    - name: dynamic environment variable
+    - name: Create Dynamic Environment Variable
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
       # step-specific environment variables
       #env:
       #  key: value
 
-    - name: install git & make
-      #if: ${{ env.MYVAR == 'blah' }}  # only execute this step if $MYVAR=blah
-      # multi-line scripts
+    - name: Environment
+      #if: ${{ env.DEBUG == '1' }}
+      # multi-line scripts start with |
       run: |
         ls -l /.dockerenv
-        echo "pwd is $PWD"
+        echo
         cat /etc/*release
-        yum install -y git make
+        echo
+        echo "Environment Variables:"
+        echo
+        env | sort
 
-    - name: git clone
+    - name: Install git & make
+      run: yum install -y git make
+
+    - name: Git Clone
       run: |
         cd /tmp &&
         git clone "https://github.com/harisekhon/$repo"
 
-    - name: build
+    - name: Build
       run: |
         cd "/tmp/$repo" &&
         make
 
-    - name: test
+    - name: Test
       run: |
         cd "/tmp/$repo" &&
         make test
