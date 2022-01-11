@@ -289,6 +289,10 @@ pipeline {
     TF_IN_AUTOMATION = 1  // changes output to suppress CLI suggestions for related commands
     //TF_WORKSPACE = "$ENV"  // run the same automation against multiple environments
 
+    // to use Hermit managed fixed binaries and versions, wrap steps in withEnv, splitting the hermit env output
+    //withEnv( HERMIT_ENV_VARS.split('\n').toList() ) {
+    HERMIT_ENV_VARS = sh(returnStdout: true, script: './bin/hermit env --raw').trim()
+
     // for Run Tests stage
     // reference this in double quotes to interpolate in the Jenkinsfile to display the literal value in the Blue Ocean UI step header
     // reference this in single quotes to interpolate in the shell
