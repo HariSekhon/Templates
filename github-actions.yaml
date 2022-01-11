@@ -131,9 +131,11 @@ jobs:
     # ============================================================================ #
     #                                 B u i l d
     # ============================================================================ #
+
     # create dynamic environment variable by echo'ing KEY=VALUE >> $GITHUB_ENV
     - name: dynamic environment variable
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+
     - name: install git & make
       # multi-line scripts
       run: |
@@ -141,40 +143,54 @@ jobs:
         echo "pwd is $PWD"
         cat /etc/*release
         yum install -y git make
+
     - name: git clone
       run: |
         cd /tmp &&
         git clone "https://github.com/harisekhon/$repo"
+
     - name: build
       run: |
         cd "/tmp/$repo" &&
         make
+
     - name: test
       run: |
         cd "/tmp/$repo" &&
         make test
+
     # ============================================================================ #
     #                                D o c k e r
     # ============================================================================ #
+
     - name: Docker Build
       run: docker build . -f Dockerfile -t "${{env.DOCKER_IMAGE}}:latest"
-    - name: Docker Epoch
+
+    - name: Generate Epoch
       run: echo "EPOCH=$(date --utc '+%s')" >> $GITHUB_ENV
-    - name: Docker Datestamp
+
+    - name: Generate Datestamp
       run: echo "DATESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%FT%H%M%SZ')" >> $GITHUB_ENV
-    - name: Docker Timestamp
+
+    - name: Generate Timestamp
       run: echo "TIMESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%F')" >> $GITHUB_ENV
+
     - name: Docker Tag ${{env.DOCKER_TAG}}
       run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}"
+
     - name: Docker Tag SHA
       run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.GITHUB_SHA}}"
+
     - name: Docker Tag Datestamp
       run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.DATESTAMP}}"
+
     - name: Docker Tag Timestamp
       run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.TIMESTAMP}}"
+
     - name: GHCR Docker login
-      run:
-    - name: docker push
+      run: echo "${{env.GITHUB_TOKEN_PASSWORD}}" | docker login ghrc.io -u "${{env.GITHUB_TOKEN_USER}" --password-stdin
+
+    - name: Docker Push Tags
       # push latest last for an atomic cutover of latest once new tags are available
       run: |
         set -eux
