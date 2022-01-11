@@ -14,10 +14,60 @@
 # MarketPlace:  https://github.com/marketplace?type=actions
 #               https://github.com/marketplace?query=publisher%3Aactions&type=actions
 
-name: CI Ubuntu
+# XXX: Edit - badges appear with this name
+name: My Workflow
 
-#env:
-#  DEBUG: 1
+# ============================================================================ #
+#                             E n v i r o n m e n t
+# ============================================================================ #
+
+# https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+#
+# GITHUB_WORKFLOW = name of the workflow (set at top of this file)
+# GITHUB_REPOSITORY = owner/repo
+# GITHUB_SHA
+# GITHUB_REF_NAME (branch or tag)
+# GITHUB_REF_TYPE="branch"/"tag"
+env:
+  repo: bash-tools
+  APP: myapp
+  ENV: dev
+  #DEBUG: 1
+  #
+  DOCKER_IMAGE: myimage
+  DOCKER_TAG: ${{env.GITHUB_SHA}}
+  # Docker Container Registry
+  #DOCKER_IMAGE: "${{env.GHCR_REGISTRY}}/${{env.APP}}"
+  # GCP
+  #DOCKER_IMAGE: "${{env.GCR_REGISTRY}}/${{env.CLOUDSDK_CORE_PROJECT}}/$APP"
+  # DockerHub
+  #DOCKER_IMAGE: "harisekhon/$APP"
+  #
+  GHCR_REGISTRY: ghcr.io/harisekhon
+  #
+  AWS_ACCOUNT_ID: 123456789012
+  AWS_DEFAULT_REGION: eu-west-2  # London
+  #AWS_DEFAULT_OUTPUT: json
+  #AWS_MAX_ATTEMPTS: 3
+  #EKS_CLUSTER: mycluster
+  #
+  CLOUDSDK_CORE_PROJECT: mycompany-dev
+  CLOUDSDK_COMPUTE_REGION: europe-west2
+  #CLOUDSDK_COMPUTE_ZONE: "${{env.CLOUDSDK_COMPUTE_REGION}}-a" # or b or c
+  #CLOUDSDK_CONTAINER_CLUSTER: myGKEcluster
+  GCR_REGISTRY: eu.gcr.io
+  #
+  ARGOCD_SERVER: argocd.domain.com
+  #
+  TF_IN_AUTOMATION: "1"
+  # for Git Merge branch jobs
+  #
+  GIT_USERNAME: 'GitHub Actions'
+  GIT_EMAIL: 'platform-engineering@MYCOMPANY.CO.UK'
+
+# ============================================================================ #
+#                                T r i g g e r s
+# ============================================================================ #
 
 on: # [push]
   push:
@@ -31,6 +81,10 @@ on: # [push]
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '30 0 * * 1'
+
+# ============================================================================ #
+#                                    J o b s
+# ============================================================================ #
 
 jobs:
   build:
@@ -54,52 +108,9 @@ jobs:
 ##        node: [6, 8, 10]
     container: centos
 
-    # ============================================================================ #
-    #                             E n v i r o n m e n t
-    # ============================================================================ #
-
-    # https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
-    #
-    # GITHUB_WORKFLOW = name of the workflow (set at top of this file)
-    # GITHUB_REPOSITORY = owner/repo
-    # GITHUB_SHA
-    # GITHUB_REF_NAME (branch or tag)
-    # GITHUB_REF_TYPE="branch"/"tag"
-    env:
-      repo: bash-tools
-      APP: myapp
-      ENV: dev
-      #
-      DOCKER_IMAGE: myimage
-      DOCKER_TAG: ${{env.GITHUB_SHA}}
-      # Docker Container Registry
-      #DOCKER_IMAGE: "${{env.GHCR_REGISTRY}}/${{env.APP}}"
-      # GCP
-      #DOCKER_IMAGE: "${{env.GCR_REGISTRY}}/${{env.CLOUDSDK_CORE_PROJECT}}/$APP"
-      # DockerHub
-      #DOCKER_IMAGE: "harisekhon/$APP"
-      #
-      GHCR_REGISTRY: ghcr.io/harisekhon
-      #
-      AWS_ACCOUNT_ID: 123456789012
-      AWS_DEFAULT_REGION: eu-west-2  # London
-      #AWS_DEFAULT_OUTPUT: json
-      #AWS_MAX_ATTEMPTS: 3
-      #EKS_CLUSTER: mycluster
-      #
-      CLOUDSDK_CORE_PROJECT: mycompany-dev
-      CLOUDSDK_COMPUTE_REGION: europe-west2
-      #CLOUDSDK_COMPUTE_ZONE: "${{env.CLOUDSDK_COMPUTE_REGION}}-a" # or b or c
-      #CLOUDSDK_CONTAINER_CLUSTER: myGKEcluster
-      GCR_REGISTRY: eu.gcr.io
-      #
-      ARGOCD_SERVER: argocd.domain.com
-      #
-      TF_IN_AUTOMATION: "1"
-      # for Git Merge branch jobs
-      #
-      GIT_USERNAME: 'GitHub Actions'
-      GIT_EMAIL: 'platform-engineering@MYCOMPANY.CO.UK'
+    # job-specific environment variables
+    #env:
+    #  key: value
 
     # @<tag/branch/SHA>  # GitHub recommends SHA for 3rd party actions for security
     steps:
