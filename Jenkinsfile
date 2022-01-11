@@ -591,6 +591,10 @@ pipeline {
     }
     stage('Docker Build') {
       agent { label 'docker-builder' }
+      //when {
+      //  beforeAgent true
+      //  changeset 'Dockerfile' // if the docker image doesn't ADD/COPY anything from local repo then only rebuild it when the Dockerfile changes
+      //}
       steps {
         milestone(ordinal: 61, label: "Milestone: Docker Build")
         timeout(time: 60, unit: 'MINUTES') {
