@@ -13,10 +13,12 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
-// Copies a unix script to the local workspace and chmod's it to be used in a subsequent 'sh' step, eg'
+// Copies a unix script to the local workspace and chmod's it to be used in a subsequent 'sh' step, eg:
 //
 //	steps {
-//		loadScript('path/to/script.sh')
+//		loadScript('script.sh')
+//		// or
+//		// loadScript('script.sh', 'path/to/srcdir')
 //	 	sh './script.sh ...'
 //	}
 //
