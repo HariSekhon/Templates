@@ -113,7 +113,7 @@ on: # [push]
 jobs:
   build:
     #name: build
-    #needs: other-job  # dependency
+    #needs: [job1, job2]  # dependency jobs
     timeout-minutes: 10
     # for code scanning to create security alerts (see https://github.com/HariSekhon/Terraform/blob/master/.github/workflows/tfsec.yaml)
     #permissions:
