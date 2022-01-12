@@ -181,6 +181,7 @@ jobs:
 
     - name: Environment
       #if: ${{ env.DEBUG == '1' }}
+      #if: (github.actor != 'dependabot[bot]')  # skip any PR created by dependabot
       # multi-line scripts start with |
       run: |
         ls -l /.dockerenv
