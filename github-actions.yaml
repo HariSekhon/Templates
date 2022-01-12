@@ -114,6 +114,8 @@ jobs:
   build:
     #name: build
     #needs: other-job  # dependency
+    environment:
+      name: production  # use Environment with approval and different Secrets - add this to Deploy stage to allow the build to progress
     timeout-minutes: 10
     # for code scanning to create security alerts (see https://github.com/HariSekhon/Terraform/blob/master/.github/workflows/tfsec.yaml)
     #permissions:
@@ -182,6 +184,7 @@ jobs:
     - name: Environment
       #if: ${{ env.DEBUG == '1' }}
       #if: (github.actor != 'dependabot[bot]')  # skip any PR created by dependabot
+      #if: github.event_name == 'push' && contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
       # multi-line scripts start with |
       run: |
         ls -l /.dockerenv
@@ -210,10 +213,16 @@ jobs:
         cd "/tmp/$repo" &&
         make test
 
-    # ============================================================================ #
-    #                                D o c k e r
-    # ============================================================================ #
+  # ============================================================================ #
+  #                                D o c k e r
+  # ============================================================================ #
 
+  docker_build:
+    #name: build
+    #needs: other-job  # dependency
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
     - name: Docker Build
       run: docker build . -f Dockerfile -t "${{env.DOCKER_IMAGE}}:latest"
 
@@ -263,6 +272,7 @@ jobs:
   semgrep:
     name: Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     # Skip any PR created by dependabot to avoid permission issues
     if: (github.actor != 'dependabot[bot]')
     steps:
