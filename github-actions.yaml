@@ -94,6 +94,8 @@ env:
 #                                T r i g g e r s
 # ============================================================================ #
 
+# https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
+
 on: # [push]
   push:
     branches:
@@ -103,6 +105,13 @@ on: # [push]
     branches:
       - master
       - main
+  # https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow#running-a-workflow
+	workflow_dispatch:
+    #inputs:
+    #  description:
+    #    description: Some description of this input
+    #    default: My Default Description
+    #    required: true  # or false
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '30 0 * * 1'
