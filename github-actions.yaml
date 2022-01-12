@@ -50,6 +50,7 @@ env:
 
   GHCR_REGISTRY: ghcr.io/harisekhon
 
+  # or configure via aws-actions/configure-aws-credentials in Setup section
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   GCP_SERVICEACCOUNT_KEY: ${{ secrets.GCP_SERVICEACCOUNT_KEY }}
@@ -106,7 +107,7 @@ on: # [push]
       - master
       - main
   # https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow#running-a-workflow
-	workflow_dispatch:
+  workflow_dispatch:
     #inputs:
     #  description:
     #    description: Some description of this input
@@ -157,19 +158,26 @@ jobs:
     #
     # https://github.com/marketplace/actions/checkout
     - uses: actions/checkout@v2
-    #
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
     # https://github.com/marketplace/actions/setup-python
     - uses: actions/setup-python@v2
       with:
         python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
         #python-version: ${{ matrix.python-version }}
-    #
+
     # https://github.com/marketplace/actions/setup-java-jdk
     - uses: actions/setup-java@v2
       with:
         distribution: 'temurin' # See 'Supported distributions' for available options
         java-version: '17'  # 8, 11, 16, 17
-    #
+
     # https://github.com/marketplace/actions/setup-node-js-environment
     #
     - uses: actions/setup-node@v2
