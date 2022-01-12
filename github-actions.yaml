@@ -60,9 +60,10 @@ env:
 
   AWS_ACCOUNT_ID: 123456789012
   AWS_DEFAULT_REGION: eu-west-2  # London
+  AWS_ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ $AWS_DEFAULT_REGION }}.amazonaws.com
   #AWS_DEFAULT_OUTPUT: json
   #AWS_MAX_ATTEMPTS: 3
-  #EKS_CLUSTER: mycluster
+  #AWS_EKS_CLUSTER: mycluster
 
   CLOUDSDK_CORE_PROJECT: mycompany-dev
   CLOUDSDK_COMPUTE_REGION: europe-west2
@@ -286,7 +287,7 @@ jobs:
   # ============================================================================ #
 
   deploy:
-    #name: build
+    #name: Deploy
     needs: build
     runs-on: ubuntu-latest
     environment:
