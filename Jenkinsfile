@@ -308,12 +308,33 @@ pipeline {
     //COLLECTING_METRICS_PERIOD_IN_SECONDS = '120'
     //COLLECT_DISK_USAGE = 'true'  // for cloud agents set to false to avoid scanning virtually unlimited storage, or install 'CloudBees Disk Usage Simple' plugin to provide this info (done in jenkins-values.yaml in my Kubernetes repo)
 
-
     // using this only to dedupe common message suffix for Slack channel notifications in post {}
     SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}>"
     //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>)"
     //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>) - ${params.CLASS}"    // to differentiate Single Class Tests
     //SLACK_MESSAGE = "Pipeline <${env.JOB_DISPLAY_URL}|${env.JOB_NAME}> - <${env.RUN_DISPLAY_URL}|Build #${env.BUILD_NUMBER}> (<${env.JOB_URL}/${env.BUILD_NUMBER}/allure/|Allure Report>) - ${params.PACKAGE}"  // to differentiate Single Package Tests
+
+    // https://semgrep.dev/docs/semgrep-ci/sample-ci-configs/#jenkins
+    //SEMGREP_RULES = "p/security-audit p/secrets" // more at semgrep.dev/explore
+    SEMGREP_BASELINE_REF = "origin/${env.CHANGE_TARGET}"
+
+    // Instead of `SEMGREP_RULES:`, use rules set in Semgrep App.
+    // Get your token from semgrep.dev/manage/settings.
+    //   SEMGREP_APP_TOKEN: credentials('SEMGREP_APP_TOKEN')
+    //   SEMGREP_REPO_URL = env.GIT_URL.replaceFirst(/^(.*).git$/,'$1')
+    //   SEMGREP_BRANCH = "${CHANGE_BRANCH}"
+    //   SEMGREP_JOB_URL = "${BUILD_URL}"
+    //   SEMGREP_REPO_NAME = env.GIT_URL.replaceFirst(/^https:\/\/github.com\/(.*).git$/, '$1')
+    //   SEMGREP_COMMIT = "${GIT_COMMIT}"
+    //   SEMGREP_PR_ID = "${env.CHANGE_ID}"
+
+    // Never fail the build due to findings.
+    // Instead, just collect findings for semgrep.dev/manage/findings
+    //SEMGREP_AUDIT_ON = "unknown"
+
+    // Change job timeout (default is 1800 seconds; set to 0 to disable)
+    SEMGREP_TIMEOUT = "300"
+
   }
 
   // ========================================================================== //
@@ -465,6 +486,19 @@ pipeline {
       }
     }
 
+    // ========================================================================== //
+    stage('Semgrep') {
+      when {
+        // Scan changed files in PRs, block on new issues only (existing issues ignored)
+        expression { env.CHANGE_ID && env.BRANCH_NAME.startsWith("PR-") }
+        beforeAgent true
+      }
+      container('semgrep'){
+        steps {
+          sh 'git fetch origin ${SEMGREP_BASELINE_REF#origin/} && semgrep-agent'
+        }
+      }
+    }
     // ========================================================================== //
 
     // alternative quick Pipeline to run just a single package of tests for quicker debugging and testing
