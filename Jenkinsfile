@@ -256,9 +256,10 @@ pipeline {
 
     AWS_ACCOUNT_ID = 123456789012
     AWS_DEFAULT_REGION = eu-west-2
+    AWS_ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
     //AWS_DEFAULT_OUTPUT = json
     //AWS_MAX_ATTEMPTS = 3
-    EKS_CLUSTER = mycluster
+    AWS_EKS_CLUSTER = mycluster
 
     // https://cloud.google.com/sdk/gcloud/reference/config
     CLOUDSDK_CORE_PROJECT = 'mycompany-dev'
