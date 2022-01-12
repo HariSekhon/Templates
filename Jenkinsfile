@@ -271,6 +271,8 @@ pipeline {
     // use to purge Cloudflare Cache
     CLOUDFLARE_API_KEY = credentials('cloudflare-api-key')
 
+    // AWS
+    DOCKER_IMAGE = "$AWS_ECR_REGISTRY/$APP"
     // GCR
     DOCKER_IMAGE = "$GCR_REGISTRY/$CLOUDSDK_CORE_PROJECT/$APP"
     // GitHub Container Registry
