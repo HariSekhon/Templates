@@ -72,6 +72,7 @@ env:
   #JDBC_URL: jdbc:mysql://x.x.x.x:3306/my_db
   JDBC_URL: jdbc:postgres://x.x.x.x:5432/my_db
 
+  # or set in argocd job
   ARGOCD_SERVER: argocd.domain.com
   ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
 
@@ -262,6 +263,39 @@ jobs:
                   latest; do \
                     docker push "${{env.DOCKER_IMAGE}}:$tag"
         done
+
+  # ============================================================================ #
+  #                                  D e p l o y
+  # ============================================================================ #
+
+  deploy:
+    #name: build
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production  # set up Environment 'production' to require approval to wait here
+    timeout-minutes: 10
+    steps:
+    - name: Deploy
+      run: kubectl apply -f ./
+
+  argocd:
+    name: ArgoCD Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    container: argoproj/argocd:v2.0.3
+    environment:
+      name: production  # set up Environment 'production' to require approval to wait here
+    env:
+      # or set in global env at top
+      ARGOCD_SERVER: argocd.domain.com
+      ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+    timeout-minutes: 10
+    steps:
+    - name: ArgoCD Sync
+      run: argocd app sync "$APP" --grpc-web --force
+    - name: ArgoCD Wait
+      run: argocd app wait "$APP" --grpc-web --timeout 600
 
   # ============================================================================ #
   #                                 S e m g r e p
