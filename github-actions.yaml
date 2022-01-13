@@ -255,6 +255,7 @@ jobs:
     - name: Docker Login GHCR
       run: docker login ghcr.io -u "${{env.GITHUB_USER}}" -p "${{env.GITHUB_TOKEN}}"
 
+    # or consider using a script to do all of the below like aws_ecr_docker_build_push.sh from DevOps Bash tools repo - https://github.com/HariSekhon/DevOps-Bash-tools
     - name: Docker Build
       run: docker build . -f Dockerfile -t "${{env.DOCKER_IMAGE}}:latest"
 
@@ -276,9 +277,11 @@ jobs:
       # push latest last for an atomic cutover of latest once new tags are available
       run: |
         set -eux
+        # env.GIT_TAG is not quoted in case it's blank
         for tag in \
-                  "${{env.DOCKER_TAG}}" \
-                  "${{env.GITHUB_SHA}}" \
+                  "${{env.GIT_BRANCH}}" \
+                  ${{env.GIT_TAG}} \
+                  "${{env.GIT_SHA}}" \
                   "${{env.DATESTAMP}}" \
                   "${{env.TIMESTAMP}}" \
                   latest; do \
