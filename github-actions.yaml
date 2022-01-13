@@ -367,13 +367,35 @@ jobs:
       run: argocd app wait "$APP" --grpc-web --timeout 600
 
   # ============================================================================ #
+	#                                 C h e c k o v
+  # ============================================================================ #
+
+  checkov:
+    name: Checkov Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Skip any PR created by dependabot to avoid permission issues
+    if: (github.actor != 'dependabot[bot]')
+    steps:
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Test with Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: terraform
+
+  # ============================================================================ #
   #                                 S e m g r e p
   # ============================================================================ #
 
   # https://semgrep.dev/docs/semgrep-ci/sample-ci-configs/#github-actions
 
   semgrep:
-    name: Scan
+    name: Semgrep Scan
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # Skip any PR created by dependabot to avoid permission issues
