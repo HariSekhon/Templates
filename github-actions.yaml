@@ -143,6 +143,7 @@ jobs:
     #                                  S e t u p
     # ============================================================================ #
     #
+    # do checkout first so we can generate dynamic environment variables for branch, tags, SHA etc.
     # https://github.com/marketplace/actions/checkout
     - uses: actions/checkout@v2
     #
@@ -213,32 +214,63 @@ jobs:
     #                                D o c k e r
     # ============================================================================ #
 
+    # workaround for GitHub Actions env not being able to reference other env
+    - name: Generate environment variable AWS_ECR_REGISTRY
+      run: echo "AWS_ECR_REGISTRY=${{env.AWS_ACCOUNT_ID}}.dkr.ecr.${{env.AWS_DEFAULT_REGION}}.amazonaws.com" >> $GITHUB_ENV
+    - name: Generate environment variable DOCKER_IMAGE
+      run: echo "DOCKER_IMAGE=${{ env.AWS_ECR_REGISTRY }}/${{ env.APP }}" >> $GITHUB_ENV
+    # $GITHUB_SHA is shown in environment dump but evaluates to blank, so use our own generated env var instead
+    - name: Generate environment variable GIT_SHA
+      run: echo "GIT_SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
+    - name: Generate environment_variable GIT_BRANCH
+      run: echo "GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
+    - name: Generate environment_variable GIT_TAG
+      run: echo "GIT_TAG=$(git tag --points-at HEAD)" >> $GITHUB_ENV
+    - name: Generate environment variable EPOCH
+      run: echo "EPOCH=$(date --utc '+%s')" >> $GITHUB_ENV
+    - name: Generate environment variable DATESTAMP
+      run: echo "DATESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%FT%H%M%SZ')" >> $GITHUB_ENV
+    - name: Generate environment variable TIMESTAMP
+      run: echo "TIMESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%F')" >> $GITHUB_ENV
+
+    # don't split Docker Login to separate job as it may happen on a separate machine, resulting in a docker push error of 'no basic auth credentials'
+    # also can't dynamically create AWS_ECR_REGISTRY env var for 2 jobs, would have to set statically in workflow env or duplicate generation in each job
+    - name: AWS CLI version
+      run: aws --version
+    - name: Docker version
+      run: docker --version
+    #- name: Configure AWS credentials
+    #  uses: aws-actions/configure-aws-credentials@v1
+    #  with:
+    #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #    aws-region: ${{ env.AWS_DEFAULT_REGION }}
+    - name: AWS CLI whoami
+      run: aws sts get-caller-identity
+		# doing this in 2 steps so we can differentiate AWS CLI failures from Docker CLI failures
+    - name: AWS ECR password
+      run: echo "AWS_ECR_PASSWORD=$(aws ecr get-login-password --region "${{env.AWS_DEFAULT_REGION}}")" >> $GITHUB_ENV
+    - name: Docker Login ECR
+      run: docker login "${{env.AWS_ECR_REGISTRY}}" -u AWS -p "${{env.AWS_ECR_PASSWORD}}"
+    - name: Docker Login GHCR
+      run: docker login ghcr.io -u "${{env.GITHUB_USER}}" -p "${{env.GITHUB_TOKEN}}"
+
     - name: Docker Build
       run: docker build . -f Dockerfile -t "${{env.DOCKER_IMAGE}}:latest"
 
-    - name: Generate Epoch
-      run: echo "EPOCH=$(date --utc '+%s')" >> $GITHUB_ENV
-
-    - name: Generate Datestamp
-      run: echo "DATESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%FT%H%M%SZ')" >> $GITHUB_ENV
-
-    - name: Generate Timestamp
-      run: echo "TIMESTAMP=$(date --utc --date="@${{env.EPOCH}}" '+%F')" >> $GITHUB_ENV
-
-    - name: Docker Tag ${{env.DOCKER_TAG}}
-      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.DOCKER_TAG}}"
-
-    - name: Docker Tag SHA
-      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.GITHUB_SHA}}"
-
-    - name: Docker Tag Datestamp
-      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.DATESTAMP}}"
-
-    - name: Docker Tag Timestamp
-      run: docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:${{env.TIMESTAMP}}"
-
-    - name: GHCR Docker login
-      run: echo "${{env.GITHUB_TOKEN}}" | docker login ghcr.io -u "${{env.GITHUB_USER}}" --password-stdin
+    - name: Docker Tagging
+      run: |
+        set -eux
+        # env.GIT_TAG is not quoted in case it's blank
+        for tag in \
+                  "${{env.GIT_BRANCH}}" \
+                  ${{env.GIT_TAG}} \
+                  "${{env.GIT_SHA}}" \
+                  "${{env.DATESTAMP}}" \
+                  "${{env.TIMESTAMP}}" \
+                  latest; do \
+            docker tag "${{env.DOCKER_IMAGE}}:latest" "${{env.DOCKER_IMAGE}}:$tag"
+        done
 
     - name: Docker Push Tags
       # push latest last for an atomic cutover of latest once new tags are available
