@@ -33,14 +33,18 @@ name: My Workflow
 # RUNNER_NAME
 # RUNNER_OS
 # RUNNER_ARCH
+#
+# XXX: can't reference other environment variable to compose larger ones, must be done as a step based workaround, see Steps section of build further down
 env:
   repo: bash-tools
   APP: myapp
   ENV: dev
   #DEBUG: 1
 
+  # or generate dynamic image including the registry, see step section
   DOCKER_IMAGE: myimage
-  DOCKER_TAG: ${{env.GITHUB_SHA}}
+  # must generate in Steps
+  #DOCKER_TAG: ${{env.GITHUB_SHA}}
   # Docker Container Registry
   #DOCKER_IMAGE: "${{env.GHCR_REGISTRY}}/${{env.APP}}"
   # GCP
@@ -60,7 +64,9 @@ env:
 
   AWS_ACCOUNT_ID: 123456789012
   AWS_DEFAULT_REGION: eu-west-2  # London
-  AWS_ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ $AWS_DEFAULT_REGION }}.amazonaws.com
+  # must generate in Steps
+  #AWS_ECR_REGISTRY: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ $AWS_DEFAULT_REGION }}.amazonaws.com
+  #DOCKER_IMAGE: ${{ env.AWS_ECR_REGISTRY }}/${{ env.APP }}
   #AWS_DEFAULT_OUTPUT: json
   #AWS_MAX_ATTEMPTS: 3
   #AWS_EKS_CLUSTER: mycluster
@@ -124,7 +130,7 @@ on: # [push]
 
 jobs:
   build:
-    #name: build
+    name: Build
     #needs: other-job  # dependency
     environment:
       name: production  # use Environment with approval and different Secrets - add this to Deploy stage to allow the build to progress
@@ -189,6 +195,8 @@ jobs:
     #                                 B u i l d
     # ============================================================================ #
 
+    # all run steps seem to operate with 'set -e'
+
     # Create Dynamic Environment Variables by echo'ing KEY=VALUE >> $GITHUB_ENV
     #
     - name: Generate env GITHUB_SHA_SHORT
@@ -206,7 +214,7 @@ jobs:
       #if: github.event_name == 'push' && contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
       # multi-line scripts start with |
       run: |
-        ls -l /.dockerenv
+        [ -e /.dockerenv ] && ls -l /.dockerenv
         echo
         cat /etc/*release
         echo
@@ -237,7 +245,7 @@ jobs:
   # ============================================================================ #
 
   docker_build:
-    #name: build
+    name: Docker Build, Tag and Push
     #needs: other-job  # dependency
     timeout-minutes: 10
     runs-on: ubuntu-latest
