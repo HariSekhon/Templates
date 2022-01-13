@@ -222,9 +222,9 @@ jobs:
     # $GITHUB_SHA is shown in environment dump but evaluates to blank, so use our own generated env var instead
     - name: Generate environment variable GIT_SHA
       run: echo "GIT_SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
-    - name: Generate environment_variable GIT_BRANCH
+    - name: Generate environment variable GIT_BRANCH
       run: echo "GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
-    - name: Generate environment_variable GIT_TAG
+    - name: Generate environment variable GIT_TAG
       run: echo "GIT_TAG=$(git tag --points-at HEAD)" >> $GITHUB_ENV
     - name: Generate environment variable EPOCH
       run: echo "EPOCH=$(date --utc '+%s')" >> $GITHUB_ENV
