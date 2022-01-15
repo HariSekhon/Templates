@@ -334,7 +334,7 @@ jobs:
         done
 
   - name: Docker Scan
-    run: docker scan "${{env.DOCKER_IMAGE}}:latest"  # requires docker-scan-cli plugin
+    run: docker scan "${{env.DOCKER_IMAGE}}:latest"  # requires docker-scan-cli plugin (see HariSekhon/DevOps-Bash-tools setup/install_docker_scan.sh)
 
   # ============================================================================ #
   #                                  D e p l o y
