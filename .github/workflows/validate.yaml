@@ -31,14 +31,12 @@ jobs:
     name: Validate
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: harisekhon/pytools
-    env:
-      PATH: $PATH:/github/pytools:/github/pytools/bash-tools
+    container: harisekhon/pytools:debian
     steps:
     - uses: actions/checkout@v2
     - name: Validate
       run: |
-        # selection of checks taken from check_all.sh in DevOps Bash Tools
+        # selection of checks taken from check_all.sh in HariSekhon/DevOps-Bash-Tools repo
         # more common / important checks at top likely to break the build earlier
         check_yaml.sh
         check_json.sh
