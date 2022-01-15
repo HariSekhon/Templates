@@ -35,10 +35,10 @@
 
 timeout: 600s
 steps:
-# uses the official 'golang' docker image from DockerHub to build the binary
-- name: golang
-  args: ['go', 'build', '.']
-  timeout: 500s
+  # uses the official 'golang' docker image from DockerHub to build the binary
+  - name: golang
+    args: ['go', 'build', '.']
+    timeout: 500s
 # uploads the given artifact paths to the GCS bucket along with a metadata file:
 # artifacts-12345abc-6789-0d1e-23fa-4b5cd678e901.json
 artifacts:
