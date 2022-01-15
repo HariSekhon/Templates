@@ -36,4 +36,4 @@ jobs:
     - uses: actions/checkout@v2
     - name: Validate
       run: |
-        bash-tools/check_all.sh
+        /github/pytools/bash-tools/check_all.sh
