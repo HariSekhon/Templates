@@ -39,14 +39,24 @@ jobs:
     - name: Validate
       run: |
         # selection of checks taken from check_all.sh in DevOps Bash Tools
+        # more common / important checks at top likely to break the build earlier
+        check_yaml.sh
+        check_json.sh
+        check_bash_syntax.sh
+        check_non_executable_scripts.sh
+        check_dockerfiles.sh
+        check_makefiles.sh
+        check_circleci_config.sh
         check_aws_no_git_credentials.sh
         check_git_no_merge_remnants.sh
         check_git_commit_authors.sh
+        check_whitespace.sh
+        check_no_tabs.sh
+        check_bash_references.sh
+        #check_docker_compose.sh  # doesn't like the templating eg. [% NAME %]
         check_bash_duplicate_defs.sh
         check_duplicate_packages.sh
         check_duplicate_dependencies.sh
-        check_non_executable_scripts.sh
-        check_makefiles.sh
         #check_perl_syntax.sh  # breaks because HariSekhonUtils isn't available in this repo
         check_ruby_syntax.sh
         #python_compile.sh  # doesn't like the templating eg. [% NAME %]
@@ -55,20 +65,10 @@ jobs:
         check_python_exception_pass.sh
         check_python_pylint.sh
         check_python_misc.sh
-        check_bash_syntax.sh
-        check_bash_references.sh
-        check_bash_references.sh
         check_readme_badges.sh
-        check_circleci_config.sh
         check_concourse_config.sh
         check_codefresh_config.sh
         check_drone_yml.sh
         check_gitlab_ci_yml.sh
         check_travis_yml.sh
         check_shippable_readme_ids.sh
-        check_whitespace.sh
-        check_no_tabs.sh
-        check_dockerfiles.sh
-        #check_docker_compose.sh  # doesn't like the templating eg. [% NAME %]
-        check_json.sh
-        check_yaml.sh
