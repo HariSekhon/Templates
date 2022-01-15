@@ -49,10 +49,9 @@ jobs:
         check_makefiles.sh
         #check_perl_syntax.sh  # breaks because HariSekhonUtils isn't available in this repo
         check_ruby_syntax.sh
-        python_compile.sh
-        python_compile.sh
+        #python_compile.sh  # doesn't like the templating eg. [% NAME %]
         check_python_misc.sh
-        WARN_ONLY=1 . check_python_asserts.sh
+        WARN_ONLY=1 check_python_asserts.sh
         check_python_exception_pass.sh
         check_python_pylint.sh
         check_python_misc.sh
@@ -70,6 +69,6 @@ jobs:
         check_whitespace.sh
         check_no_tabs.sh
         check_dockerfiles.sh
-        check_docker_compose.sh
+        #check_docker_compose.sh  # doesn't like the templating eg. [% NAME %]
         check_json.sh
         check_yaml.sh
