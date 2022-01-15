@@ -104,8 +104,8 @@ images:
 # XXX: must grant "Secret Manager Secret Accessor" to ...@cloudbuild.gserviceaccount.com
 availableSecrets:
   secretManager:
-  - versionName: projects/${_PROJECT}/secrets/SECRET-NAME/versions/latest  # XXX: replace secret name
-    env: 'SSH_KEY'
+    - versionName: projects/${_PROJECT}/secrets/SECRET-NAME/versions/latest  # XXX: replace secret name
+      env: 'SSH_KEY'
 
 steps:
   # Debug build environment, find we run inside $PWD of /workspace where our local $PWD was unpacked
@@ -162,9 +162,10 @@ steps:
       - .
     # or use kaniko builder to cache
     #name: '${_REGISTRY}/kaniko-project/executor:latest'
-    #- --destination=${_IMAGE}:${_IMAGE_VERSION}
-    #- --cache=true
-    #- --cache-ttl=6h
+    #args:
+      #- --destination=${_IMAGE}:${_IMAGE_VERSION}
+      #- --cache=true
+      #- --cache-ttl=6h
     timeout: 3600s
 
   # check the newly created image with a test command
