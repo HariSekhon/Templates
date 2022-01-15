@@ -47,6 +47,7 @@ jobs:
         check_duplicate_dependencies.sh
         check_non_executable_scripts.sh
         check_makefiles.sh
+        #check_perl_syntax.sh  # breaks because HariSekhonUtils isn't available in this repo
         check_ruby_syntax.sh
         python_compile.sh
         python_compile.sh
