@@ -32,8 +32,43 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     container: harisekhon/pytools
+    env:
+      PATH: $PATH:/github/pytools:/github/pytools/bash-tools
     steps:
     - uses: actions/checkout@v2
     - name: Validate
       run: |
-        /github/pytools/bash-tools/check_all.sh
+        # selection of checks taken from check_all.sh in DevOps Bash Tools
+        check_aws_no_git_credentials.sh
+        check_git_no_merge_remnants.sh
+        check_git_commit_authors.sh
+        check_bash_duplicate_defs.sh
+        check_duplicate_packages.sh
+        check_duplicate_dependencies.sh
+        check_non_executable_scripts.sh
+        check_makefiles.sh
+        check_ruby_syntax.sh
+        python_compile.sh
+        python_compile.sh
+        check_python_misc.sh
+        WARN_ONLY=1 . check_python_asserts.sh
+        check_python_exception_pass.sh
+        check_python_pylint.sh
+        check_python_misc.sh
+        check_bash_syntax.sh
+        check_bash_references.sh
+        check_bash_references.sh
+        check_readme_badges.sh
+        check_circleci_config.sh
+        check_concourse_config.sh
+        check_codefresh_config.sh
+        check_drone_yml.sh
+        check_gitlab_ci_yml.sh
+        check_travis_yml.sh
+        check_shippable_readme_ids.sh
+        check_whitespace.sh
+        check_no_tabs.sh
+        check_dockerfiles.sh
+        check_docker_compose.sh
+        check_json.sh
+        check_yaml.sh
