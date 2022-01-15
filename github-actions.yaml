@@ -333,6 +333,9 @@ jobs:
                     docker push "${{env.DOCKER_IMAGE}}:$tag"
         done
 
+  - name: Docker Scan
+    run: docker scan "${{env.DOCKER_IMAGE}}:latest"  # requires docker-scan-cli plugin
+
   # ============================================================================ #
   #                                  D e p l o y
   # ============================================================================ #
