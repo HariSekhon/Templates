@@ -42,6 +42,7 @@ jobs:
         #check_yaml.sh
         validate_yaml.py .
         check_json.sh
+        check_symlinks.sh
         check_bash_syntax.sh
         check_non_executable_scripts.sh
         check_dockerfiles.sh
