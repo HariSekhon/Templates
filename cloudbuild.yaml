@@ -122,7 +122,7 @@ steps:
   # use Docker cloud builder to pull image - not available in eu.gcr.io
   - id: pull-image-cache-latest
     name: gcr.io/cloud-builders/docker
-    waitFor: [ '-' ]  # don't wait for any other steps
+    waitFor: ['-']  # don't wait for any other steps
     entrypoint: 'bash'
     args:
       - -c
@@ -130,7 +130,7 @@ steps:
   #
   - id: pull-image-cache-version
     name: gcr.io/cloud-builders/docker
-    waitFor: [ '-' ]  # don't wait for any other steps
+    waitFor: ['-']  # don't wait for any other steps
     entrypoint: 'bash'
     args:
       - -c
@@ -163,9 +163,9 @@ steps:
     # or use kaniko builder to cache
     #name: '${_REGISTRY}/kaniko-project/executor:latest'
     #args:
-      #- --destination=${_IMAGE}:${_IMAGE_VERSION}
-      #- --cache=true
-      #- --cache-ttl=6h
+    #  - --destination=${_IMAGE}:${_IMAGE_VERSION}
+    #  - --cache=true
+    #  - --cache-ttl=6h
     timeout: 3600s
 
   # check the newly created image with a test command
