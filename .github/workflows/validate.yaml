@@ -38,7 +38,9 @@ jobs:
       run: |
         # selection of checks taken from check_all.sh in HariSekhon/DevOps-Bash-Tools repo
         # more common / important checks at top likely to break the build earlier
-        check_yaml.sh
+        #
+        #check_yaml.sh
+        validate_yaml.py .
         check_json.sh
         check_bash_syntax.sh
         check_non_executable_scripts.sh
