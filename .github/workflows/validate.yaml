@@ -1,0 +1,74 @@
+#
+#  Author: Hari Sekhon
+#  Date: Tue Feb 4 09:53:28 2020 +0000
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https://github.com/harisekhon/templates
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback
+#
+#  https://www.linkedin.com/in/harisekhon
+#
+
+name: Validation
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '30 0 * * 1'
+
+jobs:
+  build:
+    name: Validate
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    container: harisekhon/pytools:debian
+    steps:
+    - uses: actions/checkout@v2
+    - name: Validate
+      run: |
+        # selection of checks taken from check_all.sh in HariSekhon/DevOps-Bash-Tools repo
+        # more common / important checks at top likely to break the build earlier
+        #
+        #check_yaml.sh
+        validate_yaml.py .
+        check_json.sh
+        check_bash_syntax.sh
+        check_non_executable_scripts.sh
+        check_dockerfiles.sh
+        check_makefiles.sh
+        check_circleci_config.sh
+        check_aws_no_git_credentials.sh
+        check_git_no_merge_remnants.sh
+        check_git_commit_authors.sh
+        check_whitespace.sh
+        check_no_tabs.sh
+        check_bash_references.sh
+        #check_docker_compose.sh  # doesn't like the templating eg. [% NAME %]
+        check_bash_duplicate_defs.sh
+        check_duplicate_packages.sh
+        check_duplicate_dependencies.sh
+        #check_perl_syntax.sh  # breaks because HariSekhonUtils isn't available in this repo
+        check_ruby_syntax.sh
+        #python_compile.sh  # doesn't like the templating eg. [% NAME %]
+        check_python_misc.sh
+        WARN_ONLY=1 check_python_asserts.sh
+        check_python_exception_pass.sh
+        check_python_pylint.sh
+        check_python_misc.sh
+        check_readme_badges.sh
+        check_concourse_config.sh
+        check_codefresh_config.sh
+        check_drone_yml.sh
+        check_gitlab_ci_yml.sh
+        check_travis_yml.sh
+        check_shippable_readme_ids.sh

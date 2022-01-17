@@ -10,17 +10,17 @@ $main::VERSION = 0.1;
 
 use strict;
 use warnings;
-use Benchmark::Timer;
+#use Benchmark::Timer;
 use File::Basename;
 use File::Temp "tempfile";
 use FindBin;
 use Getopt::Long qw(:config bundling);
-use MIME::Lite;
+#use MIME::Lite;
 use Pod::Usage;
 use SMS::AQL;
 use Sys::Hostname;
 #use Time::Local;
-use WWW::Shorten::TinyURL;
+#use WWW::Shorten::TinyURL;
 use lib "$FindBin::Bin";
 use lib "/etc/nagios/plugins";
 use lib "/usr/lib64/nagios/plugins";
@@ -62,7 +62,7 @@ my $host;
 my $port;
 my $warning;
 sub usage {
-    print "@_\n\n" if defined(@_);
+    print "@_\n\n" if @_;
     print "usage: $progname [ options ]
 
     -H --host           Host to connect to
@@ -118,5 +118,3 @@ $SIG{ALRM} = sub {
 };
 vlog "setting plugin timeout to $timeout secs\n";
 alarm($timeout);
-
-

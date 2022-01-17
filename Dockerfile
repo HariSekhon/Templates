@@ -42,10 +42,30 @@ WORKDIR /
 
 #COPY NAME.repo /etc/yum.repos.d
 
+# ============================================================================ #
+#                       GitHub Incremental Update Pattern
+# ============================================================================ #
+
+# Hari: good for incremental builds from GitHub
+
+COPY build.sh /
+
+RUN /build.sh
+
+# Cache Bust upon new commits
+ADD https://api.github.com/repos/HariSekhon/DevOps-Python-tools/git/refs/heads/master /.git-hashref
+
+# 2nd run is almost a noop without cache, and only an incremental update upon cache bust
+RUN /build.sh
+
+# ============================================================================ #
+
 # ===============
 # Alpine
 RUN set -eux && \
     apk add --no-cache bash git make
+
+
 
 RUN bash -c ' \
     set -euxo pipefail && \
@@ -89,6 +109,9 @@ EXPOSE 8080
 #CMD "shell command"
 CMD ["/some/command","arg1"]
 ENTRYPOINT ["/entrypoint.sh"]
+
+#ADD http://date.jsontest.com /etc/builddate
+#ADD http://worldclockapi.com/api/json/utc/now /etc/builddate
 
 # ============================================================================ #
 #                             Golang Builder Pattern
