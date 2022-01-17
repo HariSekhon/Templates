@@ -25,7 +25,7 @@ on:
   workflow_dispatch:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '30 0 * * 1'
+    - cron:  '0 0 * * 1'
 
 jobs:
   validate:
