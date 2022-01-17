@@ -19,6 +19,7 @@
 
 # https://docs.travis-ci.com/user/customizing-the-build/
 
+---
 version: ~> 1.0
 
 # ==============================================================
@@ -55,20 +56,20 @@ cache:
   - pip
   #- packages # R
   - directories:
-    - $HOME/.cache
-    - $HOME/.cpan
-    - $HOME/.cpanm
-    - $HOME/.gem
-    #- $HOME/.m2
-    #- $HOME/.ivy
-    #- $HOME/.ivy2
-    #- $HOME/.gradle
-    #- $HOME/.sbt
-    #- $HOME/.groovy
-    #- $HOME/.rvm
-    #- $HOME/go/pkg
-    # bash-tools is not a submodule, but downloaded so ok to cache whole
-    - bash-tools
+      - $HOME/.cache
+      - $HOME/.cpan
+      - $HOME/.cpanm
+      - $HOME/.gem
+      #- $HOME/.m2
+      #- $HOME/.ivy
+      #- $HOME/.ivy2
+      #- $HOME/.gradle
+      #- $HOME/.sbt
+      #- $HOME/.groovy
+      #- $HOME/.rvm
+      #- $HOME/go/pkg
+      # bash-tools is not a submodule, but downloaded so ok to cache whole
+      - bash-tools
 
 # ==============================================
 # https://docs.travis-ci.com/user/job-lifecycle/
