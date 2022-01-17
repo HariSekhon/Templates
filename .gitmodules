@@ -8,3 +8,7 @@
 	path = jenkins
 	url = https://github.com/HariSekhon/Jenkins
 	branch = master
+[submodule "github-actions"]
+	path = github-actions
+	url = https://github.com/HariSekhon/GitHub-Actions
+	branch = master
