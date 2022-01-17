@@ -31,3 +31,5 @@ jobs:
   validate:
     name: Validate
     uses: HariSekhon/GitHub-Actions/.github/workflows/validate.yaml@master
+    env:
+      NO_PERL_SYNTAX_CHECK: 1
