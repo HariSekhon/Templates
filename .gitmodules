@@ -4,3 +4,7 @@
 [submodule "terraform"]
 	path = terraform-templates
 	url = https://github.com/HariSekhon/Terraform-templates
+[submodule "jenkins"]
+	path = jenkins
+	url = https://github.com/HariSekhon/Jenkins
+	branch = master
