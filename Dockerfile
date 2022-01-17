@@ -39,6 +39,11 @@ LABEL Description="NAME" \
 
 WORKDIR /
 
+# Alpine / sh
+#SHELL ["/bin/sh", "-eux", "-c"]
+#
+SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
+
 #COPY NAME.repo /etc/yum.repos.d
 
 # ============================================================================ #
@@ -65,20 +70,16 @@ RUN /build.sh
 RUN set -eux && \
     apk add --no-cache bash git make
 
-RUN bash -c ' \
-    set -euxo pipefail && \
-    apk add --no-cache curl wget && \
+RUN apk add --no-cache curl wget && \
     wget ... && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
     apk del curl wget && \
-    rm -fr /etc/apk/cache /var/cache/apk \
-    '
+    rm -fr /etc/apk/cache /var/cache/apk
 
 # ===============
 # CentOS
 #RUN curl http://URL/NAME.repo /etc/yum.repos.d/NAME.repo && \
-RUN set -euxo pipefail && \
-    yum install -y curl && \
+RUN yum install -y curl && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
     yum remove -y curl && \
     yum autoremove -y && \
@@ -87,16 +88,13 @@ RUN set -euxo pipefail && \
 
 # ===============
 # Debian / Ubuntu
-RUN bash -c ' \
-    set -euxo pipefail && \
-    apt-get update && \
-    apt-get install -y curl && \
+RUN apt-get update && \
+    apt-get install -y curl --no-install-recommends && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
     apt-get purge -y curl && \
     apt-get autoremove -y && \
     apt-get clean && \
-    rm -fr /var/cache/apt /var/lib/apt/lists \
-    '
+    rm -fr /var/cache/apt/* /var/lib/apt/lists/* \
 
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
 RUN trivy rootfs --no-progress / && rm /usr/local/bin/trivy  # checks everything on the filesystem, catching intermediate image vulnerabilities
