@@ -16,6 +16,8 @@
 # format 2.1 enables ${VAR:-default}
 # Docker 1.13.0+
 # format 2.2 enables user
+
+---
 version: '2.2'
 
 # XXX: for Dockerfiles only, remove otherwise
