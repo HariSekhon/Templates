@@ -292,13 +292,19 @@ jobs:
     #    aws-region: ${{ env.AWS_DEFAULT_REGION }}
     - name: AWS CLI whoami
       run: aws sts get-caller-identity
-		# doing this in 2 steps so we can differentiate AWS CLI failures from Docker CLI failures
+    # doing this in 2 steps so we can differentiate AWS CLI failures from Docker CLI failures
     - name: AWS ECR password
       run: echo "AWS_ECR_PASSWORD=$(aws ecr get-login-password --region "${{env.AWS_DEFAULT_REGION}}")" >> $GITHUB_ENV
     - name: Docker Login ECR
       run: docker login "${{env.AWS_ECR_REGISTRY}}" -u AWS -p "${{env.AWS_ECR_PASSWORD}}"
     - name: Docker Login GHCR
       run: docker login ghcr.io -u "${{env.GITHUB_USER}}" -p "${{env.GITHUB_TOKEN}}"
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     # or consider using a script to do all of the below like aws_ecr_docker_build_push.sh from DevOps Bash tools repo - https://github.com/HariSekhon/DevOps-Bash-tools
     - name: Docker Build
@@ -367,7 +373,7 @@ jobs:
       run: argocd app wait "$APP" --grpc-web --timeout 600
 
   # ============================================================================ #
-	#                                 C h e c k o v
+  #                                 C h e c k o v
   # ============================================================================ #
 
   checkov:
