@@ -31,7 +31,7 @@ jobs:
     name: Validate
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container: harisekhon/pytools:debian
+    container: harisekhon/pytools
     steps:
     - uses: actions/checkout@v2
       with:
