@@ -77,6 +77,9 @@ new myapp.py
 ```
 new build.gradle
 ```
+```
+new .github/workflows/build.yaml
+```
 
 `new.pl` can be found in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo.
 
