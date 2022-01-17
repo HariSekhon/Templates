@@ -93,94 +93,95 @@ timeout: 3660s
 
 # push this image to GCR - doing it this way instead of docker push links the image artifact in GCP Console's Cloud Build UI
 images:
-# XXX: fabricated usage of substitution variables to avoid error described above at 'substitution_option: ALLOW_LOOSE'
-#- ${_IMAGE}
-- ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
-# the above pushed all tags to GCR without specifying tags explicitly like this:
-#- ${_IMAGE}:latest
-#- ${_IMAGE}:${_IMAGE_VERSION}
+  # XXX: fabricated usage of substitution variables to avoid error described above at 'substitution_option: ALLOW_LOOSE'
+  #- ${_IMAGE}
+  - ${_REGISTRY}/${_PROJECT}/${_IMAGE_NAME}
+  # the above pushed all tags to GCR without specifying tags explicitly like this:
+  #- ${_IMAGE}:latest
+  #- ${_IMAGE}:${_IMAGE_VERSION}
 
 # Usually this isn't needed because cloudbuild tarballs and uploads $PWD - this is to access another service using an API token, SSH key etc.
 # XXX: must grant "Secret Manager Secret Accessor" to ...@cloudbuild.gserviceaccount.com
 availableSecrets:
   secretManager:
-  - versionName: projects/${_PROJECT}/secrets/SECRET-NAME/versions/latest  # XXX: replace secret name
-    env: 'SSH_KEY'
+    - versionName: projects/${_PROJECT}/secrets/SECRET-NAME/versions/latest  # XXX: replace secret name
+      env: 'SSH_KEY'
 
 steps:
-# Debug build environment, find we run inside $PWD of /workspace where our local $PWD was unpacked
-#- name: busybox
-#  args:
-#    - sh
-#    - -c
-#    - pwd; ls -l
-#
-# ============================================================================ #
-#                              P u l l   C a c h e
-# ============================================================================ #
-# Pull previous builds to re-use their cache layers
-# use Docker cloud builder to pull image - not available in eu.gcr.io
-- id: pull-image-cache-latest
-  name: gcr.io/cloud-builders/docker
-  waitFor: [ '-' ]  # don't wait for any other steps
-  entrypoint: 'bash'
-  args:
-    - -c
-    - docker pull ${_IMAGE}:latest || exit 0
-#
-- id: pull-image-cache-version
-  name: gcr.io/cloud-builders/docker
-  waitFor: [ '-' ]  # don't wait for any other steps
-  entrypoint: 'bash'
-  args:
-    - -c
-    - docker pull ${_IMAGE}:${_IMAGE_VERSION} || exit 0
-# ============================================================================ #
-#                             B u i l d   I m a g e
-# ============================================================================ #
-# use Docker cloud builder to build image - not available in eu.gcr.io
-- id: build-myimage  # optional but useful in the logs, otherwise you just get Step #1, Step #2 prefixes which make it difficult to differentiate which step an error comes from
-  name: gcr.io/cloud-builders/docker
-  # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
-  args:
-    - build
-    # extra variables available for builds invoked by triggers:
-    # https://cloud.google.com/cloud-build/docs/configuring-builds/substitute-variable-values
-    - --tag=${_IMAGE}:latest
-    - --tag=${_IMAGE}:${_IMAGE_VERSION}
-    # use all cached layers where possible (will pull, better for seldomly rebuilt images, kaniko cache is better for frequent as it's local)
-    - --build-arg=BUILDKIT_INLINE_CACHE=1
-    - --cache-from=${_IMAGE}:latest
-    - --cache-from=${_IMAGE}:${_IMAGE_VERSION}
-    # Specifying a different Dockerfile path is tricky - requires /workspace prefix and cannot be quoted or have a space between args otherwise ends up with this error trying to lstat blank or quote as first dir component:
-    #
-    #   failed to solve with frontend dockerfile.v0: failed to read dockerfile: error from sender: failed to resolve : lstat  : no such file or directory
-    #
-    #- --file=/workspace/DIR1/DIR2/Dockerfile
-    #  this works too:
-    #- -f=/workspace/DIR1/DIR2/Dockerfile
-    - .
-  # or use kaniko builder to cache
-  #name: '${_REGISTRY}/kaniko-project/executor:latest'
-  #- --destination=${_IMAGE}:${_IMAGE_VERSION}
-  #- --cache=true
-  #- --cache-ttl=6h
-  timeout: 3600s
+  # Debug build environment, find we run inside $PWD of /workspace where our local $PWD was unpacked
+  #- name: busybox
+  #  args:
+  #    - sh
+  #    - -c
+  #    - pwd; ls -l
+  #
+  # ============================================================================ #
+  #                              P u l l   C a c h e
+  # ============================================================================ #
+  # Pull previous builds to re-use their cache layers
+  # use Docker cloud builder to pull image - not available in eu.gcr.io
+  - id: pull-image-cache-latest
+    name: gcr.io/cloud-builders/docker
+    waitFor: ['-']  # don't wait for any other steps
+    entrypoint: 'bash'
+    args:
+      - -c
+      - docker pull ${_IMAGE}:latest || exit 0
+  #
+  - id: pull-image-cache-version
+    name: gcr.io/cloud-builders/docker
+    waitFor: ['-']  # don't wait for any other steps
+    entrypoint: 'bash'
+    args:
+      - -c
+      - docker pull ${_IMAGE}:${_IMAGE_VERSION} || exit 0
+  # ============================================================================ #
+  #                             B u i l d   I m a g e
+  # ============================================================================ #
+  # use Docker cloud builder to build image - not available in eu.gcr.io
+  - id: build-myimage  # optional but useful in the logs, otherwise you just get Step #1, Step #2 prefixes which make it difficult to differentiate which step an error comes from
+    name: gcr.io/cloud-builders/docker
+    # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
+    args:
+      - build
+      # extra variables available for builds invoked by triggers:
+      # https://cloud.google.com/cloud-build/docs/configuring-builds/substitute-variable-values
+      - --tag=${_IMAGE}:latest
+      - --tag=${_IMAGE}:${_IMAGE_VERSION}
+      # use all cached layers where possible (will pull, better for seldomly rebuilt images, kaniko cache is better for frequent as it's local)
+      - --build-arg=BUILDKIT_INLINE_CACHE=1
+      - --cache-from=${_IMAGE}:latest
+      - --cache-from=${_IMAGE}:${_IMAGE_VERSION}
+      # Specifying a different Dockerfile path is tricky - requires /workspace prefix and cannot be quoted or have a space between args otherwise ends up with this error trying to lstat blank or quote as first dir component:
+      #
+      #   failed to solve with frontend dockerfile.v0: failed to read dockerfile: error from sender: failed to resolve : lstat  : no such file or directory
+      #
+      #- --file=/workspace/DIR1/DIR2/Dockerfile
+      #  this works too:
+      #- -f=/workspace/DIR1/DIR2/Dockerfile
+      - .
+    # or use kaniko builder to cache
+    #name: '${_REGISTRY}/kaniko-project/executor:latest'
+    #args:
+    #  - --destination=${_IMAGE}:${_IMAGE_VERSION}
+    #  - --cache=true
+    #  - --cache-ttl=6h
+    timeout: 3600s
 
-# check the newly created image with a test command
-- name: '${_IMAGE}:${_IMAGE_VERSION}'
-  args:
-    - test
-  timeout: 60s
+  # check the newly created image with a test command
+  - name: '${_IMAGE}:${_IMAGE_VERSION}'
+    args:
+      - test
+    timeout: 60s
 
-#- name: '${_REGISTRY}/cloud-builders/docker'
-#  args: ['push', '${_IMAGE}:${_IMAGE_VERSION}']
+  #- name: '${_REGISTRY}/cloud-builders/docker'
+  #  args: ['push', '${_IMAGE}:${_IMAGE_VERSION}']
 
-# CI/CD - deploy to GKE
-#
-#- name: '${_REGISTRY}/cloud-builders/kubectl'
-#  args: ['set', 'image', 'deployment/my-deployment', 'my-container=${_IMAGE}:${_IMAGE_VERSION}']
-#  env:
-#  - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
-#  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
-#  timeout: 600s
+  # CI/CD - deploy to GKE
+  #
+  #- name: '${_REGISTRY}/cloud-builders/kubectl'
+  #  args: ['set', 'image', 'deployment/my-deployment', 'my-container=${_IMAGE}:${_IMAGE_VERSION}']
+  #  env:
+  #  - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
+  #  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
+  #  timeout: 600s
