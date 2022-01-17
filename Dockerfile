@@ -15,9 +15,8 @@
 #FROM ubuntu:20.04
 #FROM debian:10  # aka buster
 #FROM centos:8
-FROM alpine:latest
+FROM alpine:3
 #FROM --platform=linux/amd64 amazonlinux:2  # pin current version - safer than 'latest' which may upgrade and break build unexpectedly
-MAINTAINER Hari Sekhon (https://www.linkedin.com/in/HariSekhon)
 
 ARG NAME_VERSION
 
@@ -48,9 +47,10 @@ WORKDIR /
 
 # Hari: good for incremental builds from GitHub
 
-COPY build.sh /
+#COPY build.sh /
+ADD https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/setup/docker_bootstrap.sh /build.sh
 
-RUN /build.sh
+RUN chmod +x /build.sh && /build.sh
 
 # Cache Bust upon new commits
 ADD https://api.github.com/repos/HariSekhon/DevOps-Python-tools/git/refs/heads/master /.git-hashref
@@ -64,8 +64,6 @@ RUN /build.sh
 # Alpine
 RUN set -eux && \
     apk add --no-cache bash git make
-
-
 
 RUN bash -c ' \
     set -euxo pipefail && \
