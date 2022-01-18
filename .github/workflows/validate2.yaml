@@ -4,7 +4,7 @@
 #
 #  vim:ts=2:sts=2:sw=2:et
 #
-#  https://github.com/HariSekhon/Jenkins
+#  https://github.com/HariSekhon/Templates
 #
 #  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback
 #
@@ -34,6 +34,6 @@ jobs:
     env:
       NO_DOCKER_COMPOSE_CHECK: 1
       NO_PERL_SYNTAX_CHECK: 1
+      NO_PYTHON_COMPILE: 1
       NO_YAML_CHECK: 1
       VALIDATE_YAML_BASIC: 1
-      NO_PYTHON_COMPILE: 1
