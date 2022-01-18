@@ -34,8 +34,8 @@ jobs:
     with:
       # string, because GitHub Actions can't pass maps/objects to shared workflows at this time
       env: |
-        export NO_DOCKER_COMPOSE_CHECK=1
-        export NO_PERL_SYNTAX_CHECK=1
-        export NO_PYTHON_COMPILE=1
-        export NO_YAML_CHECK=1
-        export VALIDATE_YAML_BASIC=1
+        NO_DOCKER_COMPOSE_CHECK=1
+        NO_PERL_SYNTAX_CHECK=1
+        NO_PYTHON_COMPILE=1
+        NO_YAML_CHECK=1
+        VALIDATE_YAML_BASIC=1
