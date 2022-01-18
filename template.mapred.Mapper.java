@@ -24,6 +24,6 @@ public class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
         // TODO: put logic here
 
         context.write(key, new IntWritable(value));
-    
+
     }
 }
