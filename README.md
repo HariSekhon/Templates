@@ -28,8 +28,8 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - [Docker](https://www.docker.com/) - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
 - [AWS](https://aws.amazon.com/) - various templates
 - [GCP](https://cloud.google.com/) - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
-- [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Templates/blob/master/Jenkinsfile) (advanced) and [vars/](https://github.com/HariSekhon/Templates/tree/master/vars) Jenkins Shared Library
-- [GitHub Actions](https://github.com/features/actions) - [github-actions.yaml](https://github.com/HariSekhon/Templates/blob/master/github-actions.yaml) (advanced)
+- [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Jenkins/blob/master/Jenkinsfile) (advanced) and [jenkins/vars/](https://github.com/HariSekhon/Jenkins/tree/master/vars) Jenkins Shared Library
+- [GitHub Actions](https://github.com/features/actions) - [github-actions.yaml](https://github.com/HariSekhon/GitHub-Actions/blob/master/main.yaml) (advanced)
 - [Circle CI](https://circleci.com/) - [circleci-config.yml](https://github.com/HariSekhon/Templates/blob/master/circleci-config.yml) (advanced)
 - [Vagrant](https://www.vagrantup.com/) - [Vagrantfile](https://github.com/HariSekhon/Templates/blob/master/Vagrantfile)
 - [Make](https://www.gnu.org/software/make/) - [Makefile](https://github.com/HariSekhon/Templates/blob/master/Makefile)
