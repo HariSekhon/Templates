@@ -25,7 +25,7 @@ public class MyReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
    */
     @Override
     public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-        
+
         // TODO: put logic here
 
         context.write(key, new IntWritable(value));
