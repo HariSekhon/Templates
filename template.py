@@ -68,7 +68,7 @@ class [% NAME %](RestNagiosPlugin):
         #self.password = None
         #self.protocol = 'http'
         #self.request = RequestHandler()
-        self.name = 
+        self.name =
         self.default_port = 80
         self.path = '/'
         #self.auth = False
