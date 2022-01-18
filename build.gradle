@@ -93,12 +93,12 @@ run {
 // disables java srcDir by making them empty
 // now put both Java + Groovy sources in same src dir and use Groovy compiler for both
 sourceSets {
-	main {
-		java { srcDirs = [] }
-		groovy { srcDir 'src' }
-	}
-	test {
-		java { srcDirs = [] }
-		groovy { srcDir 'src' }
-	}
+    main {
+        java { srcDirs = [] }
+        groovy { srcDir 'src' }
+    }
+    test {
+        java { srcDirs = [] }
+        groovy { srcDir 'src' }
+    }
 }
