@@ -48,6 +48,8 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - XML - [template.xml](https://github.com/HariSekhon/Templates/blob/master/template.xml)
 - YAML - [template.yaml](https://github.com/HariSekhon/Templates/blob/master/template.yaml)
 
+Many more real world DevOps Tooling & CI/CD configs for all major CI/CD systems can be found in the [DevOps Bash tools](https://github.com/HariSekhon/DevOps-Bash-tools) repo.
+
 Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools), this is now a submodule of the following repos:
 
 - [DevOps Bash tools](https://github.com/HariSekhon/DevOps-Bash-tools)
