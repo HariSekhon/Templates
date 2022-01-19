@@ -1,14 +1,14 @@
 {
-    "clusterName": "", 
+    "clusterName": "",
     "tags": [
         {
-            "key": "", 
+            "key": "",
             "value": ""
         }
-    ], 
+    ],
     "settings": [
         {
-            "name": "containerInsights", 
+            "name": "containerInsights",
             "value": ""
         }
     ]

@@ -39,7 +39,7 @@ public class MyDriver extends Configured implements Tool {
         // globs can be specified to restrict input files
         FileInputFormat.setInputPaths(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        
+
         job.setInputFormatClass(KeyValueTextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
@@ -49,10 +49,10 @@ public class MyDriver extends Configured implements Tool {
 
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
-        
+
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        
+
         boolean success = job.waitForCompletion(true);
         return success ? 0 : 1;
     }
