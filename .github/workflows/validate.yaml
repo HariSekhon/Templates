@@ -24,18 +24,9 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    # * is a special character in YAML so you have to quote this string
     - cron: '0 0 * * 1'
 
 jobs:
   validate:
     name: Validate
     uses: HariSekhon/GitHub-Actions/.github/workflows/validate.yaml@master
-    with:
-      # string, because GitHub Actions can't pass maps/objects to shared workflows at this time
-      env: |
-        NO_DOCKER_COMPOSE_CHECK=1
-        NO_PERL_SYNTAX_CHECK=1
-        NO_PYTHON_COMPILE=1
-        NO_YAML_CHECK=1
-        VALIDATE_YAML_BASIC=1
