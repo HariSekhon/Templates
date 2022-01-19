@@ -38,6 +38,7 @@
 # - tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
 # - $PWD is unpacked to /workspace inside the docker images being run to create builds
 
+---
 options:
   dynamic_substitutions: true  # required for composing substitutions from other substitutions + eval'ing them to values in steps shell commands
 
