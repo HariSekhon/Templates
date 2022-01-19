@@ -18,6 +18,7 @@
 
 # place at .circleci/config.yml at the top for your git repo
 
+---
 version: 2.1
 
 # ============================================================================ #
@@ -26,9 +27,12 @@ version: 2.1
 
 # XXX: consider avoiding Orbs for reuse CLI commands that port between CI/CD systems
 orbs:
-  # XXX: Needed on Docker executor but not on machine VM executor which already had AWS CLI installed
-  # gives install/setup/some CLI wrapper commands - https://circleci.com/developer/orbs/orb/circleci/aws-cli
-  aws-cli: circleci/aws-cli@2.0.6  # this is the Orb version not the AWS CLI version
+  # @orb_version, not tool version
+  #
+  # AWS CLI is already available on machine VM executor - only use this on Docker executor
+  aws-cli: circleci/aws-cli@2.0.6  # https://circleci.com/developer/orbs/orb/circleci/aws-cli - gives install/setup/some CLI wrapper commands
+
+  #aws-ecr: circleci/aws-ecr@7.3.0  # https://circleci.com/developer/orbs/orb/circleci/aws-ecr
   #
   # or use more portable check_bash_syntax.sh in https://github.com/HariSekhon/DevOps-Bash-tools
   # https://circleci.com/developer/orbs/orb/circleci/shellcheck
@@ -143,6 +147,30 @@ workflows:
   #              - 13.11.0
   #              - 12.16.0
   #              - 10.19.0
+  #
+  # https://circleci.com/developer/orbs/orb/circleci/aws-ecr
+  build_and_push_image:
+    jobs:
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_ACCOUNT_URL  # env vars in project/context - should contain ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          context: myContext
+          create-repo: true
+          dockerfile: Dockerfile
+          no-output-timeout: 10m
+          path: .
+          profile-name: default
+          region: AWS_DEFAULT_REGION
+          repo: myECRRepository  # XXX: set this
+          skip-when-tags-exist: false
+          tag: "latest,$CIRCLE_BRANCH,$CIRCLE_SHA1,$CIRCLE_TAG"
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+  #
   terraform:
     jobs:
       - terraform-plan
@@ -163,6 +191,7 @@ workflows:
       #- terraform-destroy:
       #    requires:
       #      - terraform-approve-destroy
+  #
   # use parameterized Commands to Terragrunt plan & apply various modules
   terragrunt:
     jobs:
