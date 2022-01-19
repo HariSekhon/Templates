@@ -114,7 +114,7 @@ new tf
 
 ### See Also
 
-- [Jenkins](https://github.com/harisekhon/jenkins) - advanced Jenkinsfile and Jenkins Shared Library
+- [Jenkins](https://github.com/harisekhon/jenkins) - Advanced Jenkinsfile & Jenkins Shared Library
 
 - [GitHub-Actions](https://github.com/HariSekhon/GitHub-Actions) - GitHub Actions master template & GitHub Actions Shared Workflows library
 
