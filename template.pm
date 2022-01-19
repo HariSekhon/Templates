@@ -7,7 +7,7 @@
 #  [% URL %]
 #
 #  [% LICENSE %]
-#  
+#
 #  [% MESSAGE %]
 #
 #  [% LINKEDIN %]
