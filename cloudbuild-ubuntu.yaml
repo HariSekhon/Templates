@@ -28,6 +28,7 @@
 
 # tars $PWD to bucket called ${PROJECT_ID}_cloudbuild
 
+---
 timeout: 3660s
 
 steps:
