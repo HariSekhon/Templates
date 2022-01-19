@@ -33,6 +33,7 @@
 
 # $PROJECT_ID and $BUILD_ID are auto-populated by Cloud Build
 
+---
 timeout: 600s
 steps:
   # uses the official 'golang' docker image from DockerHub to build the binary
