@@ -16,6 +16,10 @@
 // TODO: scrape gradle fat jar groovy application stack overflow sample
 // TODO: see Gradle Cookbook fat jar section (old)
 
+//buildscript {
+//    apply from: 'https://github.com/valkolovos/gradle_cobertura/raw/master/repo/gradle_cobertura/gradle_cobertura/1.2/coberturainit.gradle'
+//}
+
 // plugins { } must be first otherwise error => "only buildscript {} and other plugins {} script blocks are allowed before plugins {} blocks, no other statements are allowed"
 plugins {
     // adds 'gradle sonarqube' task, picks up settings from ~/.gradle/gradle.properties
