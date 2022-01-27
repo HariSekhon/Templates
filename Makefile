@@ -28,6 +28,8 @@ SHELL = /usr/bin/env bash
 
 PATH := $(PATH):$(PWD)/bash-tools
 
+RELEASE := v1
+
 .PHONY: default
 default:
 	@echo "running default build:"
@@ -57,6 +59,11 @@ test: bash-tools
 .PHONY: tests
 tests: test
 	@:
+
+release:
+	@echo "Releasing $(RELEASE)"
+	git tag --force $(RELEASE)
+	git push --tags --force
 
 # ============================================================================ #
 #                 S k a f f o l d   f o r   K u b e r n e t e s
