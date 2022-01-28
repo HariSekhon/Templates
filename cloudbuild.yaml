@@ -57,9 +57,11 @@ substitutions:
   # XXX: set image and tag
   _IMAGE_NAME: myapp
   # requires string, not float
-  _IMAGE_VERSION: "1.0"  # updating this may not bust the cache because we pre-pull both exact version and latest tags, you'd need to comment out latest pull in first step for a proper cache bust behaviour
+  _IMAGE_VERSION: version-undefined  # updating this may not bust the cache because we --cache-from multiple tags, you'd need to comment out the --cache-from or use --no-cache for a proper cache bust behaviour
+  _GIT_BRANCH: branch-undefined
+  _GIT_TAG: tag-undefined
 
-  # Google Container Registry (legacy)
+  # Google Container Registry (legacy):
   #_REGISTRY: eu.gcr.io
   #_REGISTRY: gcr.io
 
@@ -123,23 +125,24 @@ steps:
   # ============================================================================ #
   #                              P u l l   C a c h e
   # ============================================================================ #
+  # OLD: don't need to do this any more on newere versions of Docker
   # Pull previous builds to re-use their cache layers
   # use Docker cloud builder to pull image - not available in eu.gcr.io
-  - id: pull-image-cache-latest
-    name: gcr.io/cloud-builders/docker
-    waitFor: ['-']  # don't wait for any other steps
-    entrypoint: 'bash'
-    args:
-      - -c
-      - docker pull ${_IMAGE}:latest || exit 0
-  #
-  - id: pull-image-cache-version
-    name: gcr.io/cloud-builders/docker
-    waitFor: ['-']  # don't wait for any other steps
-    entrypoint: 'bash'
-    args:
-      - -c
-      - docker pull ${_IMAGE}:${_IMAGE_VERSION} || exit 0
+  #- id: pull-image-cache-latest
+  #  name: gcr.io/cloud-builders/docker
+  #  waitFor: ['-']  # don't wait for any other steps
+  #  entrypoint: 'bash'
+  #  args:
+  #    - -c
+  #    - docker pull ${_IMAGE}:latest || exit 0
+  ##
+  #- id: pull-image-cache-version
+  #  name: gcr.io/cloud-builders/docker
+  #  waitFor: ['-']  # don't wait for any other steps
+  #  entrypoint: 'bash'
+  #  args:
+  #    - -c
+  #    - docker pull ${_IMAGE}:${_IMAGE_VERSION} || exit 0
   # ============================================================================ #
   #                             B u i l d   I m a g e
   # ============================================================================ #
@@ -161,6 +164,12 @@ steps:
       - --build-arg=BUILDKIT_INLINE_CACHE=1
       - --cache-from=${_IMAGE}:latest
       - --cache-from=${_IMAGE}:${_IMAGE_VERSION}
+      #
+      # Multi-stage layer caching - CloudBuild still doesn't support --cache-to as of Jan 2022 (GitHub Actions -> Docker action does, see my GitHub-Actions repo's reusable Docker workflows)
+      #- --cache-to=type=registry,ref=${_IMAGE}:buildcache_${_GIT_BRANCH}_${_GIT_TAG},mode=max
+      #- --tag=${_IMAGE}:buildcache_${_GIT_BRANCH}_${_GIT_TAG}
+      #- --cache-from=${_IMAGE}:buildcache_${_GIT_BRANCH}_${_GIT_TAG}
+      #
       # Specifying a different Dockerfile path is tricky - requires /workspace prefix and cannot be quoted or have a space between args otherwise ends up with this error trying to lstat blank or quote as first dir component:
       #
       #   failed to solve with frontend dockerfile.v0: failed to read dockerfile: error from sender: failed to resolve : lstat  : no such file or directory
