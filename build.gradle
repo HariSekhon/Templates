@@ -59,8 +59,8 @@ repositories {
 //}
 
 jar {
-    dependsOn configurations.runtime
-    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+    //dependsOn configurations.runtime
+    //from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
     // what to call the generated jar => my-app-1.0.jar
     // deprecated
     //baseName = 'my-app'
