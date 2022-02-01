@@ -203,3 +203,8 @@ steps:
   #  - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
   #  - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
   #  timeout: 600s
+
+# not used in builds - only used for filtering build jobs in GCP CloudBuild UI  - https://cloud.google.com/build/docs/view-build-results#filtering_build_results_using_tags
+tags:
+  - build
+  - myapp
