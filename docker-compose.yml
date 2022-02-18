@@ -27,7 +27,8 @@ build:
     - nocache
 
 services:
-  [% NAME %]:
+  #[% NAME %]:
+  NAME:
     extends:
       file: common.yml
       service: common
