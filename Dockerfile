@@ -102,6 +102,11 @@ RUN trivy rootfs --no-progress / && rm /usr/local/bin/trivy  # checks everything
 COPY file.txt /file.txt
 EXPOSE 8080
 
+# XXX: create this and set permissions in prior RUN step
+USER myuser
+
+HEALTHCHECK --interval=10s --timeout=10s --start-period=10s --retries=3 CMD curl -f http://localhost/
+
 #CMD "shell command"
 CMD ["/some/command","arg1"]
 ENTRYPOINT ["/entrypoint.sh"]
