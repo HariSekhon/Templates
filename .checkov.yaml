@@ -18,6 +18,10 @@
 # ============================================================================ #
 
 # https://github.com/bridgecrewio/checkov#configuration-using-a-config-file
+#
+# This is not well documented but the fields seem to be the same as:
+#
+#   checkov --help
 
 ---
 #branch: develop
