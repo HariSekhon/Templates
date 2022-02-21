@@ -1,3 +1,4 @@
+---
 AWSTemplateFormatVersion: 2010-09-09
 
 Description: Template to create an EC2 instance and enable SSH
@@ -16,7 +17,7 @@ Resources:
       ImageId: ami-0bdb1d6c15a40392c  # TODO: replace with AMI ID for your region, eg. awless search images canonical:ubuntu --latest-id --silent
       KeyName: !Ref KeyName
       SecurityGroups:
-       - Ref: InstanceSecurityGroup
+        - Ref: InstanceSecurityGroup
       Tags:
         - Key: Name
           Value: My CF Instance
