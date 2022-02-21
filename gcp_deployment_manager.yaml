@@ -12,38 +12,39 @@
 #  https://www.linkedin.com/in/harisekhon
 #
 
+---
 imports:
-- path: gcp_deployment_manager_instance_template.yaml.j2
+  - path: gcp_deployment_manager_instance_template.yaml.j2
 
 resources:
-# auto-mode network
-- name: mynetwork
-  type: compute.v1.network
-  properties:
-    autoCreateSubnetworks: true
-# firewall rule
-- name: mynetwork-allow-http-ssh-rdp-icmp
-  type: compute.v1.firewall
-  properties:
-    network: $(ref.mynetwork.selfLink)
-    sourceRanges: ["0.0.0.0/0"]
-    allowed:
-      - IPProtocol: TCP
-        ports: [22, 80, 3389]
-      - IPProtocol: ICMP
-# mynet-us-vm instance
-- name: mynet-us-vm
-  type: gcp_deployment_manager_instance_template.yaml.j2
-  properties:
-    zone: us-central1-a
-    machineType: n1-standard-1
-    network: $(ref.mynetwork.selfLink)
-    subnetwork: regions/us-central1/subnetworks/mynetwork
-# mynet-eu-vm instance
-- name: mynet-eu-vm
-  type: gcp_deployment_manager_instance_template.yaml.j2
-  properties:
-    zone: europe-west1-d
-    machineType: n1-standard-1
-    network: $(ref.mynetwork.selfLink)
-    subnetwork: regions/europe-west1/subnetworks/mynetwork
+  # auto-mode network
+  - name: mynetwork
+    type: compute.v1.network
+    properties:
+      autoCreateSubnetworks: true
+  # firewall rule
+  - name: mynetwork-allow-http-ssh-rdp-icmp
+    type: compute.v1.firewall
+    properties:
+      network: $(ref.mynetwork.selfLink)
+      sourceRanges: ["0.0.0.0/0"]
+      allowed:
+        - IPProtocol: TCP
+          ports: [22, 80, 3389]
+        - IPProtocol: ICMP
+  # mynet-us-vm instance
+  - name: mynet-us-vm
+    type: gcp_deployment_manager_instance_template.yaml.j2
+    properties:
+      zone: us-central1-a
+      machineType: n1-standard-1
+      network: $(ref.mynetwork.selfLink)
+      subnetwork: regions/us-central1/subnetworks/mynetwork
+  # mynet-eu-vm instance
+  - name: mynet-eu-vm
+    type: gcp_deployment_manager_instance_template.yaml.j2
+    properties:
+      zone: europe-west1-d
+      machineType: n1-standard-1
+      network: $(ref.mynetwork.selfLink)
+      subnetwork: regions/europe-west1/subnetworks/mynetwork

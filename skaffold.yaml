@@ -54,33 +54,33 @@ build:
     #  format: "2006-01-02_15-04-05.999_MST"
     #  timezone: "UTC"
   artifacts:
-  - image: NAME  # XXX: Edit
-    #context: .  # dir containing artifact sources
-    #sync: infer: ["**/*"]  # file sync local files live without rebuilding, see https://skaffold.dev/docs/pipeline-stages/filesync/
-    docker:
-      dockerfile: Dockerfile
-      #target: builder  # which target to build
-      buildArgs:
-        BUILDKIT_INLINE_CACHE: '1'
-      #cacheFrom:
-      #- myrepo/myimage:mytag
-      noCache: false  # set to true to bust the cache
-      squash: false   # default, don't squash layers into 1
-    #bazel:
-    #  target: //:skaffold_example.tar
-    #  args:
-    #  - "-flag"
-    #  - "--otherflag"
-    #buildpacks:  # see reference doc
-    #jib:
-    #kaniko:
-    #  ...
-    #googleCloudBuild:  # since this doesn't use cloudbuild.yaml, may want to call gcloud builds submit in custom instead
-    #custom:
-    #  buildCommand: ./build.sh
-    #  dependencies:
-    #    paths:
-    #    - .
+    - image: NAME  # XXX: Edit
+      #context: .  # dir containing artifact sources
+      #sync: infer: ["**/*"]  # file sync local files live without rebuilding, see https://skaffold.dev/docs/pipeline-stages/filesync/
+      docker:
+        dockerfile: Dockerfile
+        #target: builder  # which target to build
+        buildArgs:
+          BUILDKIT_INLINE_CACHE: '1'
+        #cacheFrom:
+        #- myrepo/myimage:mytag
+        noCache: false  # set to true to bust the cache
+        squash: false   # default, don't squash layers into 1
+      #bazel:
+      #  target: //:skaffold_example.tar
+      #  args:
+      #    - "-flag"
+      #    - "--otherflag"
+      #buildpacks:  # see reference doc
+      #jib:
+      #kaniko:
+      #  ...
+      #googleCloudBuild:  # since this doesn't use cloudbuild.yaml, may want to call gcloud builds submit in custom instead
+      #custom:
+      #  buildCommand: ./build.sh
+      #  dependencies:
+      #    paths:
+      #      - .
 deploy:
   # prevents .kube/config context switching race condition - see also KUBECONFIG isolation trick in https://github.com/HariSekhon/Kubernetes-configs/blob/master/.envrc
   # could also use skaffold --kube-context
@@ -100,18 +100,18 @@ deploy:
   # OR
   helm:
     releases:
-    - name: my-release
-      artifactOverrides:
-        image: gcr.io/my-project/my-image  # no tag present! Must match build artifacts image name near top
-      imageStrategy:
-        helm: {}
+      - name: my-release
+        artifactOverrides:
+          image: gcr.io/my-project/my-image  # no tag present! Must match build artifacts image name near top
+        imageStrategy:
+          helm: {}
   #portForward:
-  #- resourceType: deployment
-  #  resourceName: myDep
-  #  namespace: mynamespace
-  #  port: 8080
-  #  #localPort: 9000   # defaults to same port >= 1024
-  #  #address: 0.0.0.0  # default: 127.0.0.1
+  #  - resourceType: deployment
+  #    resourceName: myDep
+  #    namespace: mynamespace
+  #    port: 8080
+  #    #localPort: 9000   # defaults to same port >= 1024
+  #    #address: 0.0.0.0  # default: 127.0.0.1
 
 # =========
 # Profiles - https://skaffold.dev/docs/environment/profiles/
@@ -125,26 +125,26 @@ deploy:
 #   skaffold run -p dev
 #
 profiles:
-- name: local
-  activation:  # any of these will activate this profile
-    #- env: DEBUG=1
-    #- kubeContext: minikube
-    # if you're set to docker-desktop and use the command 'dev' then override the default deploy location to use docker-desktop
-    - kubeContext: docker-desktop
-      command: dev
-  patches:
-    - op: replace
-      path: /deploy/kubeContext
-      value: docker-desktop
-- name: dev
-  activation:
-    #- env: DEBUG=1
-    # if you're set to your GKE dev cluster and use the command 'dev' then override the default deploy location to use that cluster
-    - kubeContext: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2
-      command: dev
-  patches:
-    - op: replace
-      #path: /build/artifacts/0/docker/dockerfile
-      #value: Dockerfile_dev
-      path: /deploy/kubeContext
-      value: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2
+  - name: local
+    activation:  # any of these will activate this profile
+      #- env: DEBUG=1
+      #- kubeContext: minikube
+      # if you're set to docker-desktop and use the command 'dev' then override the default deploy location to use docker-desktop
+      - kubeContext: docker-desktop
+        command: dev
+    patches:
+      - op: replace
+        path: /deploy/kubeContext
+        value: docker-desktop
+  - name: dev
+    activation:
+      #- env: DEBUG=1
+      # if you're set to your GKE dev cluster and use the command 'dev' then override the default deploy location to use that cluster
+      - kubeContext: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2
+        command: dev
+    patches:
+      - op: replace
+        #path: /build/artifacts/0/docker/dockerfile
+        #value: Dockerfile_dev
+        path: /deploy/kubeContext
+        value: gke_MYCOMPANY-dev_europe-west1_MYCOMPANY-dev-europe-west2
