@@ -24,7 +24,7 @@
 #   checkov --help
 
 ---
-#branch: develop
+#branch: master
 #check:
 #  - CKV_DOCKER_1
 compact: true
@@ -35,9 +35,9 @@ skip-path:
   - github-actions
   - kubernetes-templates
   - terraform-templates
-#docker-image: sample-image
+#docker-image: harisekhon/bash-tools
 #dockerfile-path: Dockerfile
-#download-external-modules: true
+download-external-modules: true  # without this gets lots of annoying warning lines such as '2022-02-22 16:14:40,180 [MainThread  ] [WARNI]  Failed to download module x/y/z:n.n.n'
 #evaluate-variables: true
 #external-checks-dir:
 #  - sample-dir
@@ -47,7 +47,7 @@ framework:
 no-guide: true
 output: cli
 quiet: true
-#repo-id: bridgecrew/sample-repo
+#repo-id: HariSekhon/DevOps-Bash-tools  # what to report to Bridgecrew Cloud - without this gets annoying duplicate repos such as 'harisekhon_cli_repo/bash-tools'
 #skip-check:
 #  - CKV_DOCKER_3
 #  - CKV_DOCKER_2
