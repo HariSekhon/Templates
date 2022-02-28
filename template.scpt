@@ -31,3 +31,5 @@ set y to 1255
 tell application "System Events"
     click at {x,y}
 end tell
+
+tell application "Google Chome" to keystroke "w" using command down
