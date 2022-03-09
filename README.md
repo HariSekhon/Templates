@@ -4,15 +4,18 @@ Code & Config Templates
 [![Validation](https://github.com/HariSekhon/Templates/actions/workflows/validate.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/validate.yaml)
 [![Semgrep](https://github.com/HariSekhon/Templates/actions/workflows/semgrep.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/semgrep.yaml)
 [![Checkov](https://github.com/HariSekhon/Templates/actions/workflows/checkov.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/checkov.yaml)
+[![GitHub stars](https://img.shields.io/github/stars/HariSekhon/Templates?logo=github)](https://github.com/HariSekhon/Templates//stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/HariSekhon/Templates?logo=github)](https://github.com/HariSekhon/Templates/network)
+[![Lines of Code](https://img.shields.io/badge/lines%20of%20code-7k-lightgrey?logo=codecademy)](https://github.com/HariSekhon/Templates)
+[![License](https://img.shields.io/github/license/HariSekhon/Templates)](https://github.com/HariSekhon/Templates/blob/master/LICENSE)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/HariSekhon/Templates?logo=github)](https://github.com/HariSekhon/Templates/commits/master)
+
 [![CI Builds Overview](https://img.shields.io/badge/CI%20Builds-Overview%20Page-blue?logo=circleci)](https://bitbucket.org/harisekhon/devops-bash-tools/src/master/STATUS.md)
 [![Repo on Azure DevOps](https://img.shields.io/badge/repo-Azure%20DevOps-0078D7?logo=azure%20devops)](https://dev.azure.com/harisekhon/GitHub/_git/Templates)
 [![Repo on GitHub](https://img.shields.io/badge/repo-GitHub-2088FF?logo=github)](https://github.com/HariSekhon/Templates)
 [![Repo on GitLab](https://img.shields.io/badge/repo-GitLab-FCA121?logo=gitlab)](https://gitlab.com/HariSekhon/Templates)
 [![Repo on BitBucket](https://img.shields.io/badge/repo-BitBucket-0052CC?logo=bitbucket)](https://bitbucket.org/HariSekhon/Templates)
 [![Travis CI](https://img.shields.io/badge/TravisCI-legacy-lightgrey?logo=travis&label=Travis%20CI)](https://github.com/HariSekhon/Templates/blob/master/.travis.yml)
-[![Lines of Code](https://img.shields.io/badge/lines%20of%20code-7k-lightgrey?logo=codecademy)](https://github.com/HariSekhon/Templates)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/HariSekhon/Templates?logo=github)](https://github.com/HariSekhon/Templates/commits/master)
-[![License](https://img.shields.io/github/license/HariSekhon/Templates)](https://github.com/HariSekhon/Templates/blob/master/LICENSE)
 
 [git.io/code-templates](https://git.io/code-templates)
 
