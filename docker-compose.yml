@@ -12,6 +12,8 @@
 #  [% LINKEDIN %]
 #
 
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+
 # Docker 1.12.0+
 # format 2.1 enables ${VAR:-default}
 # Docker 1.13.0+
@@ -34,7 +36,8 @@ services:
       service: common
     image: harisekhon/[% NAME %]:${VERSION:-latest}
     ports:
-      #- "5000:5000"
+      # host:container
+      - "8080:80"
     volumes:
       - .:/code
       #-logvolume01:/var/log
