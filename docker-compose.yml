@@ -20,20 +20,20 @@
 # format 2.2 enables user
 
 ---
-version: '2.2'
-
-# XXX: for Dockerfiles only, remove otherwise
-build:
-  context: .
-  args:
-    - nocache
+version: '3.9'
 
 services:
   #[% NAME %]:
   NAME:
-    extends:
-      file: common.yml
-      service: common
+    # XXX: for Dockerfiles only, remove otherwise
+    build:
+      context: .
+      args:
+        - nocache
+
+    #extends:
+    #  file: common.yml
+    #  service: common
     image: harisekhon/[% NAME %]:${VERSION:-latest}
     ports:
       # host:container
