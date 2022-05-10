@@ -70,10 +70,9 @@ RUN /build.sh
 RUN set -eux && \
     apk add --no-cache bash git make
 
-RUN apk add --no-cache curl wget && \
-    wget ... && \
+RUN apk add --no-cache curl && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
-    apk del curl wget && \
+    apk del curl && \
     rm -fr /etc/apk/cache /var/cache/apk
 
 # ===============
