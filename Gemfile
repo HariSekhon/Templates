@@ -3,7 +3,6 @@
 #  Date: [% DATE  # 2022-05-13 15:21:13 +0100 (Fri, 13 May 2022) %]
 #
 #  [% VIM_TAGS %]
-#  run: bundle install
 #
 #  [% URL %]
 #
