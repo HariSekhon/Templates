@@ -60,6 +60,10 @@ test: bash-tools
 tests: test
 	@:
 
+.PHONY: clean
+clean:
+	find . -name '*.class' -exec rm {} \;
+
 release:
 	@echo "Releasing $(RELEASE)"
 	git tag --force $(RELEASE)
