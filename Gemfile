@@ -23,6 +23,8 @@
 source 'https://rubygems.org'
 
 gem 'cfn-nag'
+gem 'json'
+gem 'gitlab'
 
 # install from another source
 #source 'https://gems.example.com' do
