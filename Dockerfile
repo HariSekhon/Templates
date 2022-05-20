@@ -10,6 +10,8 @@
 #  [% LINKEDIN %]
 #
 
+# Put steps with more variability as far down as you can to avoid cache bust on layers that don't change much
+
 #FROM scatch
 #FROM busybox:latest
 #FROM ubuntu:20.04
@@ -18,6 +20,14 @@
 FROM alpine:3
 #FROM --platform=linux/amd64 amazonlinux:2  # pin current version - safer than 'latest' which may upgrade and break build unexpectedly
 
+# Catch Errors Early in RUN commands
+#
+# Alpine / sh
+#SHELL ["/bin/sh", "-eux", "-c"]
+#
+SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
+
+# put ENV/ARGs that may change as far down as you can as they can break your Docker layer caching from this point onwards
 ARG NAME_VERSION
 
 ENV PATH $PATH:/NAME/bin
@@ -39,32 +49,10 @@ LABEL Description="NAME" \
 
 WORKDIR /
 
-# Alpine / sh
-#SHELL ["/bin/sh", "-eux", "-c"]
-#
-SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
-
 #COPY NAME.repo /etc/yum.repos.d
 
-# ============================================================================ #
-#                       GitHub Incremental Update Pattern
-# ============================================================================ #
-
-# Hari: good for incremental builds from GitHub
-
-#COPY build.sh /
-ADD https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/setup/docker_bootstrap.sh /build.sh
-
-RUN chmod +x /build.sh && /build.sh
-
-# Cache Bust upon new commits
-ADD https://api.github.com/repos/HariSekhon/DevOps-Python-tools/git/refs/heads/master /.git-hashref
-
-# 2nd run is almost a noop without cache, and only an incremental update upon cache bust
-RUN /build.sh
-
-# ============================================================================ #
-
+# Install Packages for your OS as high up as you can to benefit from caching skipping doing this every time
+#
 # ===============
 # Alpine
 RUN set -eux && \
@@ -95,10 +83,30 @@ RUN apt-get update && \
     apt-get clean && \
     rm -fr /var/cache/apt/* /var/lib/apt/lists/* \
 
+# ============================================================================ #
+#                       GitHub Incremental Update Pattern
+# ============================================================================ #
+
+# Hari: good for incremental builds from GitHub repos
+
+#COPY build.sh /
+ADD https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/setup/docker_bootstrap.sh /build.sh
+
+RUN chmod +x /build.sh && /build.sh
+
+# Cache Bust upon new commits
+ADD https://api.github.com/repos/HariSekhon/DevOps-Python-tools/git/refs/heads/master /.git-hashref
+
+# 2nd run is almost a noop without cache, and only an incremental update upon cache bust
+RUN /build.sh
+
+# ============================================================================ #
+
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
 RUN trivy rootfs --no-progress / && rm /usr/local/bin/trivy  # checks everything on the filesystem, catching intermediate image vulnerabilities
 
 COPY file.txt /file.txt
+
 EXPOSE 8080
 
 # XXX: create this and set permissions in prior RUN step
