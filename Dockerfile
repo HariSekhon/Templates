@@ -10,6 +10,10 @@
 #  [% LINKEDIN %]
 #
 
+# ============================================================================ #
+#                              D o c k e r f i l e
+# ============================================================================ #
+
 # Put steps with more variability as far down as you can to avoid cache bust on layers that don't change much
 
 #FROM scatch
@@ -32,6 +36,8 @@ ARG NAME_VERSION
 
 ENV PATH $PATH:/NAME/bin
 
+ENV PYTHONPATH /app
+
 # stops Python generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE 1
 
@@ -51,7 +57,12 @@ WORKDIR /
 
 #COPY NAME.repo /etc/yum.repos.d
 
-# Install Packages for your OS as high up as you can to benefit from caching skipping doing this every time
+
+# ============================================================================ #
+#                             O S   P a c k a g e s
+# ============================================================================ #
+#
+# Install Packages for your OS as high up as you can to CACHE them and skip these steps in future
 #
 # ===============
 # Alpine
@@ -83,8 +94,36 @@ RUN apt-get update && \
     apt-get clean && \
     rm -fr /var/cache/apt/* /var/lib/apt/lists/* \
 
+
 # ============================================================================ #
-#                       GitHub Incremental Update Pattern
+#               P y t h o n   +   A W S   C o d e A r t i f a c t
+# ============================================================================ #
+
+# ARG changes BREAK CACHE for everything below
+#
+# Generated externally in CI/CD system and passed to docker as a --build-arg - this ARG BREAKS CACHE for everything below
+#
+# XXX: to minimize cache-busting on same day, regenerate this once every 12 hours (max token life) and insert into a CI/CD secret to reuse between workflow runs eg.
+#
+#   https://github.com/HariSekhon/GitHub-Actions/blob/master/.github/workflows/codeartifact_secret.yaml
+#
+ARG CODARTIFACT_AUTH_TOKEN
+
+# Python Install Dependencies from AWS CodeArtifact
+#
+# don't bother with virtualenv in docker
+RUN poetry config http-basic.MYREPO aws "$CODEARTIFACT_AUTH_TOKEN" && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-root "${NO_DEV:+--no-dev}"
+    #if [ "${NO_DEV:-}" = 'true' ]; then \
+    #    poetry install --no-root --no-dev; \
+    #else \
+    #    poetry install --no-root; \
+    #fi
+
+
+# ============================================================================ #
+#       G i t H u b   I n c r e m e n t a l   U p d a t e   P a t t e r n
 # ============================================================================ #
 
 # Hari: good for incremental builds from GitHub repos
@@ -102,6 +141,8 @@ RUN /build.sh
 
 # ============================================================================ #
 
+# false positive: COPY --from should reference a previously defined FROM alias
+# hadolint ignore=DL3022
 COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
 RUN trivy rootfs --no-progress / && rm /usr/local/bin/trivy  # checks everything on the filesystem, catching intermediate image vulnerabilities
 
@@ -121,8 +162,9 @@ ENTRYPOINT ["/entrypoint.sh"]
 #ADD http://date.jsontest.com /etc/builddate
 #ADD http://worldclockapi.com/api/json/utc/now /etc/builddate
 
+
 # ============================================================================ #
-#                             Golang Builder Pattern
+#                  G o l a n g   B u i l d e r   P a t t e r n
 # ============================================================================ #
 
 FROM golang:1.15 as builder
