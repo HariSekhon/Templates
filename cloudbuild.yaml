@@ -39,6 +39,7 @@
 # - $PWD is unpacked to /workspace inside the docker images being run to create builds
 
 ---
+# https://cloud.google.com/build/docs/api/reference/rest/v1/projects.builds#buildoptions
 options:
   dynamic_substitutions: true  # required for composing substitutions from other substitutions + eval'ing them to values in steps shell commands
 
@@ -48,6 +49,13 @@ options:
   #
   # but this disables all variable misuse protections, so better to just fabricate a usage of the construction variables instead, see images section below
   #substitution_option: ALLOW_LOOSE
+  #
+  # https://cloud.google.com/build/docs/api/reference/rest/v1/projects.builds#machinetype
+  #machineType: E2_HIGHCPU_8  # defaults to 1 CPU machine
+  #diskSizeGb: 50  # up to 1000 GB
+  #
+  env:
+    - DOCKER_BUILDKIT=1
 
 # variables - can override these on the CLI via:
 #
@@ -149,10 +157,10 @@ steps:
   # use Docker cloud builder to build image - not available in eu.gcr.io
   - id: build-myimage  # optional but useful in the logs, otherwise you just get Step #1, Step #2 prefixes which make it difficult to differentiate which step an error comes from
     name: gcr.io/cloud-builders/docker
+    env:
+      - MYKEY=myvalue
     secretEnv:
       - SSH_KEY  # from 'availableSecrets: secretManager: ...' section above
-    env:
-      - DOCKER_BUILDKIT=1
     # multiple tags (all tags get pushed to GCR implicitly via image declaration above)
     args:
       - build
