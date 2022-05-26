@@ -31,10 +31,13 @@ gem 'gitlab'
   # Gems from the alternative source here
 #end
 
-# if authenticatin is required for the gem source, set up the machine this Gemfile will run on like so
+# if authentication is required for the gem source, set up the machine this Gemfile will run on like so
 #
 # bundle config https://gems.example.com/ user:password
 #
-# don't put a line like this which will expose the credentials in plaintext:
+# nosemgrep: generic.secrets.security.detected-username-and-password-in-uri.detected-username-and-password-in-uri
+#
+# XXX: don't put a line like this which will expose the credentials in plaintext:
+#
 #
 # source "https://user:password@gems.example.com"
