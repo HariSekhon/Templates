@@ -16,6 +16,7 @@
 
 # Put steps with more variability as far down as you can to avoid cache bust on layers that don't change much
 
+# nosemgrep: dockerfile.audit.dockerfile-source-not-pinned.dockerfile-source-not-pinned
 #FROM scatch
 #FROM busybox:latest
 #FROM ubuntu:20.04
@@ -129,6 +130,8 @@ RUN poetry config http-basic.MYREPO aws "$CODEARTIFACT_AUTH_TOKEN" && \
 # Hari: good for incremental builds from GitHub repos
 
 #COPY build.sh /
+# need ADD tpo source latest boostrap from github
+# nosemgrep: dockerfile.best-practice.prefer-copy-over-add.prefer-copy-over-add
 ADD https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/setup/docker_bootstrap.sh /build.sh
 
 RUN chmod +x /build.sh && /build.sh
@@ -153,7 +156,7 @@ EXPOSE 8080
 # XXX: create this and set permissions in prior RUN step
 USER myuser
 
-HEALTHCHECK --interval=10s --timeout=10s --start-period=10s --retries=3 CMD curl -f http://localhost/
+HEALTHCHECK --interval=10s --timeout=10s --start-period=10s --retries=3 CMD ["curl", "-f", "http://localhost/"]
 
 #CMD "shell command"
 CMD ["/some/command","arg1"]
@@ -167,6 +170,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 #                  G o l a n g   B u i l d e r   P a t t e r n
 # ============================================================================ #
 
+# nosemgrep: dockerfile.audit.dockerfile-source-not-pinned.dockerfile-source-not-pinned
 FROM golang:1.15 as builder
 
 COPY main.go .
