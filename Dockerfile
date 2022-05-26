@@ -57,6 +57,8 @@ LABEL org.opencontainers.image.description="NAME" \
       org.opencontainers.image.url="https://ghcr.io/HariSekhon/REPO" \
       org.opencontainers.image.source="https://github.com/HariSekhon/Dockerfiles"
       # on GHCR the image source label links to the GitHub repo so it appears in repo's packages and uses its README - then set the package to public
+      # otherwise set it to DockerHub, must be lowercase or will get a 404 error
+      #org.opencontainers.image.url="https://hub.docker.com/r/harisekhon/REPO" \
 
 WORKDIR /
 
