@@ -73,8 +73,7 @@ WORKDIR /
 #
 # ===============
 # Alpine
-RUN set -eux && \
-    apk add --no-cache bash git make
+RUN apk add --no-cache bash git make
 
 RUN apk add --no-cache curl && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
