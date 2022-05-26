@@ -136,8 +136,8 @@ ADD https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/setup/
 
 RUN chmod +x /build.sh && /build.sh
 
-# nosemgrep: dockerfile.best-practice.prefer-copy-over-add.prefer-copy-over-add
 # Cache Bust upon new commits
+# nosemgrep: dockerfile.best-practice.prefer-copy-over-add.prefer-copy-over-add
 ADD https://api.github.com/repos/HariSekhon/DevOps-Python-tools/git/refs/heads/master /.git-hashref
 
 # 2nd run is almost a noop without cache, and only an incremental update upon cache bust
