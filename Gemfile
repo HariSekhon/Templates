@@ -35,9 +35,7 @@ gem 'gitlab'
 #
 # bundle config https://gems.example.com/ user:password
 #
-# nosemgrep: generic.secrets.security.detected-username-and-password-in-uri.detected-username-and-password-in-uri
-#
 # XXX: don't put a line like this which will expose the credentials in plaintext:
 #
-#
+# nosemgrep: generic.secrets.security.detected-username-and-password-in-uri.detected-username-and-password-in-uri
 # source "https://user:password@gems.example.com"
