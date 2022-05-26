@@ -51,13 +51,11 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # flush stdout immediately for more real-time container logging
 ENV PYTHONUNBUFFERED 1
 
-LABEL Description="NAME" \
-      "NAME Version"="$NAME_VERSION" \
-      org.opencontainers.image.description="NAME" \
+LABEL org.opencontainers.image.description="NAME" \
       org.opencontainers.image.version="$NAME_VERSION" \
       org.opencontainers.image.authors="Hari Sekhon (https://www.linkedin.com/in/HariSekhon)" \
       org.opencontainers.image.url="https://ghcr.io/HariSekhon/REPO" \
-      org.opencontainers.image.source="https://github.com/HariSekhon/REPO"
+      org.opencontainers.image.source="https://github.com/HariSekhon/Dockerfiles"
       # on GHCR the image source label links to the GitHub repo so it appears in repo's packages and uses its README - then set the package to public
 
 WORKDIR /
