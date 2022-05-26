@@ -30,7 +30,6 @@ services:
       context: .
       args:
         - nocache
-
     #extends:
     #  file: common.yml
     #  service: common
@@ -43,5 +42,8 @@ services:
       #-logvolume01:/var/log
     #links:
     #  - redis
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
 #volumes:
 #  logvolume01: {}
