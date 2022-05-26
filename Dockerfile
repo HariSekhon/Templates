@@ -14,6 +14,12 @@
 #                              D o c k e r f i l e
 # ============================================================================ #
 
+# https://docs.docker.com/engine/reference/builder/
+#
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+#
+# https://docs.docker.com/develop/dev-best-practices/
+
 # Put steps with more variability as far down as you can to avoid cache bust on layers that don't change much
 
 #FROM scatch
