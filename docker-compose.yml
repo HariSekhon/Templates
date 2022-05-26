@@ -43,6 +43,10 @@ services:
     #links:
     #  - redis
     read_only: true
+    # if app has to write to local path
+    #tmpfs:
+    #  - /var/run
+    #  - /var/cache
     security_opt:
       - no-new-privileges:true
 #volumes:
