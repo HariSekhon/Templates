@@ -16,12 +16,12 @@
 
 # Put steps with more variability as far down as you can to avoid cache bust on layers that don't change much
 
-# nosemgrep: dockerfile.audit.dockerfile-source-not-pinned.dockerfile-source-not-pinned
 #FROM scatch
 #FROM busybox:latest
 #FROM ubuntu:20.04
 #FROM debian:10  # aka buster
 #FROM centos:8
+# nosemgrep: dockerfile.audit.dockerfile-source-not-pinned.dockerfile-source-not-pinned
 FROM alpine:3
 #FROM --platform=linux/amd64 amazonlinux:2  # pin current version - safer than 'latest' which may upgrade and break build unexpectedly
 
@@ -182,9 +182,9 @@ ARG SKAFFOLD_GO_GCFLAGS
 RUN go build -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /app main.go
 
 # ============
+#FROM alpine:3
 # workaround for : https://github.com/returntocorp/semgrep/issues/5315
 # nosemgrep: dockerfile.best-practice.missing-image-version.missing-image-version
-#FROM alpine:3
 FROM scratch
 
 COPY --from=builder /app .
