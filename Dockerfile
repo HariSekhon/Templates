@@ -181,6 +181,8 @@ ARG SKAFFOLD_GO_GCFLAGS
 RUN go build -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /app main.go
 
 # ============
+# workaround for : https://github.com/returntocorp/semgrep/issues/5315
+# nosemgrep: dockerfile.best-practice.missing-image-version.missing-image-version
 #FROM alpine:3
 FROM scratch
 
