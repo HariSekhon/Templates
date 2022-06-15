@@ -150,6 +150,17 @@ ADD https://api.github.com/repos/HariSekhon/DevOps-Python-tools/git/refs/heads/m
 RUN /build.sh
 
 # ============================================================================ #
+#                  C a c h e   B u s t   O n c e   a   W e e k
+# ============================================================================ #
+
+# Wrap your docker build in a Makefile or CI/CD step which does
+#
+#   date '+%W' > week_of_year.txt
+#
+# before the docker build step and then do this to have the cache break once a week:
+COPY week_of_year.txt /etc/
+
+# ============================================================================ #
 
 # false positive: COPY --from should reference a previously defined FROM alias
 # hadolint ignore=DL3022
