@@ -1,5 +1,4 @@
-Code & Config Templates
-=======================
+# Code & Config Templates
 
 [![GitHub stars](https://img.shields.io/github/stars/HariSekhon/Templates?logo=github)](https://github.com/HariSekhon/Templates//stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/HariSekhon/Templates?logo=github)](https://github.com/HariSekhon/Templates/network)
