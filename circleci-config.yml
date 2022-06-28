@@ -32,7 +32,7 @@ orbs:
   # AWS CLI is already available on machine VM executor - only use this on Docker executor
   aws-cli: circleci/aws-cli@2.0.6  # https://circleci.com/developer/orbs/orb/circleci/aws-cli - gives install/setup/some CLI wrapper commands
 
-  #aws-ecr: circleci/aws-ecr@7.3.0  # https://circleci.com/developer/orbs/orb/circleci/aws-ecr
+  aws-ecr: circleci/aws-ecr@7.3.0  # https://circleci.com/developer/orbs/orb/circleci/aws-ecr
   #
   # or use more portable check_bash_syntax.sh in https://github.com/HariSekhon/DevOps-Bash-tools
   # https://circleci.com/developer/orbs/orb/circleci/shellcheck
