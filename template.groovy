@@ -20,7 +20,13 @@
 
 // Jenkins Shared Library function
 def call(Map args = [:]) {
-    sh 'echo "key = name, value = ${args.name}" '
+    sh (
+      label: 'MyLabel',
+      script: """
+        set -eux
+        echo "key = name, value = ${args.name}"
+      """
+    )
 }
 
 // ================
