@@ -13,6 +13,8 @@
 //  [% LINKEDIN %]
 //
 
+// https://k6.io/docs/getting-started/running-k6/
+
 import http from 'k6/http';
 import { sleep } from 'k6';
 
@@ -50,6 +52,9 @@ export default function () {
 }
 
 // more complex requests such as logins
+//
+//	https://k6.io/docs/using-k6/http-requests/
+//
 //export default function () {
 //  const url = 'http://test.k6.io/login';
 //  const payload = JSON.stringify({
