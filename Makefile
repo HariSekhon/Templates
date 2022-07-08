@@ -62,7 +62,7 @@ tests: test
 
 .PHONY: clean
 clean:
-	find . -name '*.class' -exec rm {} \;
+	find . -name '*.class' -o -name '*.py[oc]' -exec rm {} \;
 
 release:
 	@echo "Releasing $(RELEASE)"
