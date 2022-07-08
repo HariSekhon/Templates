@@ -2,7 +2,7 @@
 //  run: k6 run k6.js
 //
 //  Author: Hari Sekhon
-//  Date: 2022-07-08 15:21:05 +0100 (Fri, 08 Jul 2022)
+//  Date: [% DATE  # 2022-07-08 15:21:05 +0100 (Fri, 08 Jul 2022) %]
 //
 //  [% URL %]
 //
