@@ -1,4 +1,5 @@
 //  vim:ts=2:sts=2:sw=2:et
+//  run: k6 run k6.js
 //
 //  Author: Hari Sekhon
 //  Date: 2022-07-08 15:21:05 +0100 (Fri, 08 Jul 2022)
@@ -21,7 +22,9 @@ export const options = {
   duration: '30s',
 
   // or run more complex scenarios of traffic patterns
-
+  //
+  // https://k6.io/docs/using-k6/scenarios/
+  //
   //scenarios: {
   //  example_scenario: {
   //    // name of the executor to use
@@ -42,6 +45,23 @@ export const options = {
 };
 
 export default function () {
-  http.get('https://test.k6.io');
-  sleep(1);
+	http.get('https://test.k6.io');
+	sleep(1);
 }
+
+// more complex requests such as logins
+//export default function () {
+//  const url = 'http://test.k6.io/login';
+//  const payload = JSON.stringify({
+//    email: 'aaa',
+//    password: 'bbb',
+//  });
+//
+//  const params = {
+//    headers: {
+//      'Content-Type': 'application/json',
+//    },
+//  };
+//
+//  http.post(url, payload, params);
+//}
