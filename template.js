@@ -4,3 +4,11 @@
 //
 //  [% VIM_TAGS %]
 //
+//  [% URL %]
+//
+//  [% LICENSE %]
+//
+//  [% MESSAGE %]
+//
+//  [% LINKEDIN %]
+//
