@@ -37,6 +37,10 @@
 #
 #  http://127.0.0.1:8000/redoc  # alternative API docs
 
+# XXX: DO NOT NAME THIS FILE 'fastapi.py' as it'll break the fastapi import
+#      Don't even do this with differing capitalization as it may break on case insensitive filesystems that are non-case preserving
+#      It is named FastAPI.py only for convenience and ease of finding in this repo here
+
 """
 
 FastAPI Starter App
