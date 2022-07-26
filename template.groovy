@@ -20,13 +20,16 @@
 
 // Jenkins Shared Library function
 def call(Map args = [:]) {
+  args.var = args.var ?: 'default_value'
+  withEnv(["VAR=${args.var}"]){
     sh (
       label: 'MyLabel',
-      script: """
+      script: '''
         set -eux
-        echo "key = name, value = ${args.name}"
-      """
+        echo "key = name, value = $VAR"
+      '''
     )
+  }
 }
 
 // ================
