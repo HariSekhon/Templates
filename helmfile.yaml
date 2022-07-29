@@ -17,7 +17,7 @@
 #                                H e l m f i l e
 # ============================================================================ #
 
-# You should probably see kustomization.yaml instead
+# You should probably see kustomization.yaml instead under kubernetes-templates submodule
 
 # https://github.com/helmfile/helmfile
 
