@@ -29,14 +29,14 @@ TODO: DESCRIPTION
 # shellcheck disable=SC2034
 usage_args="arg [<options>]"
 
+help_usage "$@"
+
+min_args 1 "$@"
+
 host="${BLAH_HOST:-${HOST:-localhost}}"
 port="${BLAH_PORT:-${PORT:-80}}"
 
 check_env_defined "API_TOKEN"
-
-help_usage "$@"
-
-min_args 1 "$@"
 
 until [ $# -lt 1 ]; do
     case $1 in
