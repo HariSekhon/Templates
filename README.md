@@ -150,3 +150,8 @@ new tf
 [![Stargazers over time](https://starchart.cc/HariSekhon/Templates.svg)](https://starchart.cc/HariSekhon/Templates)
 
 [git.io/code-templates](https://git.io/code-templates)
+
+
+### Infrastructure model
+
+![Infrastructure model](.infragenie/infrastructure_model.png)
