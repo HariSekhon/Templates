@@ -207,11 +207,10 @@ FROM scratch
 FROM gcr.io/distroless/base-debian11
 
 COPY --from=builder /app .
-#COPY --from=build /app/bin/main /
+#COPY --from=build /app/bin/main /app
 
 # Define GOTRACEBACK to mark this container as using the Go language runtime
 # for `skaffold debug` (https://skaffold.dev/docs/workflows/debug/)
 ENV GOTRACEBACK=single
 
 CMD ["/app"]
-#CMD ["/main"]
