@@ -203,11 +203,15 @@ RUN go build -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /app main.go
 # workaround for : https://github.com/returntocorp/semgrep/issues/5315
 # nosemgrep: dockerfile.best-practice.missing-image-version.missing-image-version
 FROM scratch
+# or distroless - https://github.com/GoogleContainerTools/distroless
+FROM gcr.io/distroless/base-debian10
 
 COPY --from=builder /app .
+#COPY --from=build /app/bin/main /
 
 # Define GOTRACEBACK to mark this container as using the Go language runtime
 # for `skaffold debug` (https://skaffold.dev/docs/workflows/debug/)
 ENV GOTRACEBACK=single
 
-CMD ["./app"]
+CMD ["/app"]
+#CMD ["/main"]
