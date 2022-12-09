@@ -203,7 +203,23 @@ RUN go build -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /app main.go
 # workaround for : https://github.com/returntocorp/semgrep/issues/5315
 # nosemgrep: dockerfile.best-practice.missing-image-version.missing-image-version
 FROM scratch
-# or distroless - https://github.com/GoogleContainerTools/distroless
+#
+# or distroless
+#
+#   https://github.com/GoogleContainerTools/distroless
+#
+# - because scratch containers miss:
+#   - users to run as non-root (will get uid/gid 0 regardless of username since no /etc/passwd group nsswitch.conf)
+#   - /tmp, /home, /var and other locations apps expect
+#   - timezone info
+#   - CA certificates
+#
+# - distroless/static-* - for statically linked binaries like golang apps
+# - distroless/base-*   - if needing libc and openssl
+# - distroless/cc-*     - if needing libstdc++
+# - distroless/python3-* - cc + interpreter
+# - distroless/nodejs-*  - cc + runtime
+# - distroless/java-*    - cc + runtime
 FROM gcr.io/distroless/base-debian11
 
 COPY --from=builder /app .
