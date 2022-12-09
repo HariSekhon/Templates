@@ -204,7 +204,7 @@ RUN go build -gcflags="${SKAFFOLD_GO_GCFLAGS}" -o /app main.go
 # nosemgrep: dockerfile.best-practice.missing-image-version.missing-image-version
 FROM scratch
 # or distroless - https://github.com/GoogleContainerTools/distroless
-FROM gcr.io/distroless/base-debian10
+FROM gcr.io/distroless/base-debian11
 
 COPY --from=builder /app .
 #COPY --from=build /app/bin/main /
