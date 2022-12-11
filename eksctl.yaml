@@ -28,11 +28,18 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: mycluster
+  name: hari
   region: eu-west-2
 
+# creates a VPC by default - careful, you'll hit your account VPC limits, causing a rollback
 vpc:
-  cidr: 10.0.0.0/16
+  #cidr: 10.0.0.0/16
+	# use an existing VPC by providing the subnets
+  subnets:
+    private:
+      eu-west-2a: { id: subnet-xxxxxxxxxxxxxxxxx }
+      eu-west-2b: { id: subnet-xxxxxxxxxxxxxxxxx }
+      eu-west-2c: { id: subnet-xxxxxxxxxxxxxxxxx }
 
 nodeGroups:
   - name: ng-1
