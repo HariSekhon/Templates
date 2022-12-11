@@ -34,7 +34,7 @@ metadata:
 # creates a VPC by default - careful, you'll hit your account VPC limits, causing a rollback
 vpc:
   #cidr: 10.0.0.0/16
-	# use an existing VPC by providing the subnets
+  # use an existing VPC by providing the subnets
   subnets:
     private:
       eu-west-2a: { id: subnet-xxxxxxxxxxxxxxxxx }
