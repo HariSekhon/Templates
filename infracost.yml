@@ -1,0 +1,42 @@
+#
+#  Author: Hari Sekhon
+#  Date: [% DATE # 2023-01-23 13:56:47 +0000 (Mon, 23 Jan 2023)  %]
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  [% URL %]
+#
+#  [% LICENSE %]
+#
+#  [% MESSAGE %]
+#
+#  [% LINKEDIN %]
+#
+
+# ============================================================================ #
+#                        I n f r a C o s t   C o n f i g
+# ============================================================================ #
+
+# https://www.infracost.io/docs/features/config_file/
+
+# https://www.infracost.io/docs/features/terraform_modules/
+
+---
+version: 0.1
+
+projects:
+  - path: dev
+    name: development
+    terraform_var_files:
+      - dev.tfvars
+
+  - path: staging
+    name: staging
+    terraform_var_files:
+      - staging.tfvars
+
+  - path: prod
+    name: production
+    terraform_vars:
+      instance_count: 5
+      artifact_version: foobar
