@@ -60,6 +60,10 @@ test: bash-tools
 tests: test
 	@:
 
+.PHONY: push
+push:
+	git push
+
 .PHONY: clean
 clean:
 	find . -name '*.class' -o -name '*.py[oc]' -exec rm {} \;
