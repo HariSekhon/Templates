@@ -1,0 +1,94 @@
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  Author: Hari Sekhon
+#  Date: [% DATE # 2023-04-02 21:52:21 +0100 (Sun, 02 Apr 2023) %]
+#
+#  run: k3d cluster create --config k3d.yaml
+#
+#  [% URL %]
+#
+#  [% LICENSE %]
+#
+#  [% MESSAGE %]
+#
+#  [% LINKEDIN %]
+#
+
+# ============================================================================ #
+#                             K i n d   C o n f i g
+# ============================================================================ #
+
+# https://kind.sigs.k8s.io/docs/user/configuration/
+
+---
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+# cluster name
+name: kind
+
+#featureGates:
+#  #FeatureGateName: true
+#  "CSIMigration": true
+
+nodes:
+  - role: control-plane
+    # Allow local host requests to reach the Ingress controller
+    # https://kind.sigs.k8s.io/docs/user/ingress/
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        listenAddress: 127.0.0.1 # Optional, defaults to "0.0.0.0"
+        protocol: TDP            # Optional, defaults to tcp
+      - containerPort: 443
+        hostPort: 443
+        listenAddress: 127.0.0.1 # Optional, defaults to "0.0.0.0"
+        protocol: TDP            # Optional, defaults to tcp
+  # 2 more for HA
+  #- role: control-plane
+  #- role: control-plane
+  #
+  #  # if you want a specific version - see:
+  #  #
+  #  #     https://github.com/kubernetes-sigs/kind/releases
+  #  #
+  #  image: kindest/node:v1.16.4@sha256:b91a2c2317a000f3a783489dfb755064177dbc3a0b2f4147d50f04825d016f55
+  #
+  #  # add a mount from /path/to/my/files on the host to /files on the node
+  #  extraMounts:
+  #  - hostPath: /path/to/my/files
+  #    containerPath: /files
+  #    #readOnly: true  # default: false
+  #
+
+  - role: worker
+  - role: worker
+    #
+    # if you want a specific version - see:
+    #
+    #     https://github.com/kubernetes-sigs/kind/releases
+    #
+    #image: kindest/node:v1.16.4@sha256:b91a2c2317a000f3a783489dfb755064177dbc3a0b2f4147d50f04825d016f55
+
+# patch the generated kubeadm config with some extra settings
+kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+#  - |
+#    apiVersion: kubelet.config.k8s.io/v1beta1
+#    kind: KubeletConfiguration
+#    evictionHard:
+#      nodefs.available: "0%"
+
+# patch it further using a JSON 6902 patch
+#kubeadmConfigPatchesJSON6902:
+#  - group: kubeadm.k8s.io
+#    version: v1beta3
+#    kind: ClusterConfiguration
+#    patch: |
+#      - op: add
+#        path: /apiServer/certSANs/-
+#        value: my-hostname
