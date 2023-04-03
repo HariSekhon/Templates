@@ -62,11 +62,14 @@ servers: 1  # 2+ will switch k3s internal datastore from sqlite to etcd
 
 # Add to /etc/hosts:
 #
-#   127.0.0.1 myapp.k3d.localhost
+#     127.0.0.1 myapp.k3d.localhost
 #
-# then browse to Ingress at http://myapp.k3d.localhost:8080
+# then browse to Ingress at
+#
+#     http://myapp.k3d.localhost:8080
 #
 # or for *.k3d.localhost use Dnsmasq to avoid having to add entries to /etc/hosts each time
+#
 ports:
   - port: 8080:80 # same as `--port '8080:80@loadbalancer'`
     nodeFilters:
