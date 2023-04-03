@@ -1,7 +1,8 @@
-#  vim:ts=2:sts=2:sw=2:et
 #
 #  Author: Hari Sekhon
 #  Date: [% DATE # 2023-04-02 21:52:21 +0100 (Sun, 02 Apr 2023) %]
+#
+#  vim:ts=2:sts=2:sw=2:et
 #
 #  run: k3d cluster create --config k3d.yaml
 #
