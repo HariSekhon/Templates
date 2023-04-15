@@ -65,7 +65,7 @@ from diagrams import Diagram, Cluster, Edge
 #   https://diagrams.mingrammer.com/docs/nodes/aws
 #
 from diagrams.aws.compute import EC2, ECS, EKS, Lambda
-from diagrams.aws.database import RDS, Redshift, ElastiCache
+from diagrams.aws.database import RDS, Redshift, ElastiCache, Aurora
 from diagrams.aws.integration import SQS
 from diagrams.aws.network import ELB, Route53, VPC
 from diagrams.aws.storage import S3
@@ -81,15 +81,20 @@ from diagrams.azure.storage import BlobStorage
 #
 #   https://diagrams.mingrammer.com/docs/nodes/gcp
 #
-from diagrams.gcp.compute import AppEngine, GKE
+from diagrams.gcp.analytics import BigQuery, Dataflow, PubSub
+from diagrams.gcp.compute import AppEngine, GKE, Functions
+from diagrams.gcp.database import BigTable
+from diagrams.gcp.iot import IotCore
 from diagrams.gcp.ml import AutoML
+from diagrams.gcp.storage import GCS
 
 # K8s resources:
 #
 #   https://diagrams.mingrammer.com/docs/nodes/k8s
 #
-from diagrams.k8s.compute import Pod, StatefulSet
-from diagrams.k8s.network import Service
+from diagrams.k8s.clusterconfig import HPA
+from diagrams.k8s.compute import Deployment, Pod, ReplicaSet, StatefulSet
+from diagrams.k8s.network import Ingress, Service
 from diagrams.k8s.storage import PV, PVC, StorageClass
 
 # On-premise / Open Source resources:
@@ -105,11 +110,16 @@ from diagrams.onprem.monitoring import Grafana, Prometheus
 from diagrams.onprem.network import Nginx
 from diagrams.onprem.queue import Kafka
 
+# for creating a custom object using a downloaded image
+from diagrams.custom import Custom
+
+
 # Can render directly inside a Jupyter notebook like this:
 #
 # with Diagram('Simple Diagram') as diag:
 #     EC2('web')
 # diag
+
 
 # diagram name results in 'web_service.png' as the output name
 # pylint: disable=W0106
@@ -144,6 +154,7 @@ with Diagram('Web Service',
     # parens to protect against unexpected precedence results combining << >> with -
     (ELB('lb') >> EC2('web')) - EC2('web') >> RDS('userdb')
 
+
 with Diagram("Grouped Workers", show=True, direction="TB"):
     # can use variables to connect nodes to the same items
     # lb = ELB("lb")
@@ -161,6 +172,29 @@ with Diagram("Grouped Workers", show=True, direction="TB"):
                   EC2("worker4"),
                   EC2("worker5")] >> RDS("events")
 
+
+with Diagram("Kubernetes 3 Pods Deployment with HPA exposed via Ingress", show=True):
+    net = Ingress("domain.com") >> Service("svc")
+    net >> [Pod("pod1"),
+            Pod("pod2"),
+            Pod("pod3")] << ReplicaSet("rs") << Deployment("dp") << HPA("hpa")
+
+
+with Diagram("Kubernetes StatefulSet Architecture", show=True):
+    with Cluster("Apps"):
+        svc = Service("svc")
+        sts = StatefulSet("sts")
+
+        apps = []
+        for _ in range(3):
+            pod = Pod("pod")
+            pvc = PVC("pvc")
+            pod - sts - pvc
+            apps.append(svc >> pod >> pvc)
+
+    apps << PV("pv") << StorageClass("sc")
+
+
 # Cluster puts a box around RDS nodes, and can connect outside ECS and Route53 to the primary RDS
 with Diagram("Simple Web Service with DB Cluster", show=True):
     dns = Route53("dns")
@@ -172,6 +206,27 @@ with Diagram("Simple Web Service with DB Cluster", show=True):
                      RDS("replica2")]
 
     dns >> web >> db_primary
+
+
+with Diagram("Clustered Web Services", show=True):
+    dns = Route53("dns")
+    lb = ELB("lb")
+
+    with Cluster("Services"):
+        svc_group = [ECS("web1"),
+                     ECS("web2"),
+                     ECS("web3")]
+
+    with Cluster("DB Cluster"):
+        db_primary = RDS("userdb")
+        db_primary - [RDS("userdb ro")]
+
+    memcached = ElastiCache("memcached")
+
+    dns >> lb >> svc_group
+    svc_group >> db_primary
+    svc_group >> memcached
+
 
 # Nest clusters
 with Diagram("Event Processing", show=True):
@@ -196,6 +251,7 @@ with Diagram("Event Processing", show=True):
     source >> workers >> queue >> handlers
     handlers >> store
     handlers >> dw
+
 
 # Edge is an object representing a connection between Nodes with some additional properties
 #
@@ -243,3 +299,48 @@ with Diagram(name="Advanced Web Service with On-Premise (colored)", show=True):
         << grpcsvc \
         >> Edge(color="darkorange") \
         >> aggregator
+
+
+with Diagram("Message Collecting", show=True):
+    pubsub = PubSub("pubsub")
+
+    with Cluster("Source of Data"):
+        [IotCore("core1"),
+         IotCore("core2"),
+         IotCore("core3")] >> pubsub
+
+    with Cluster("Targets"):
+        with Cluster("Data Flow"):
+            flow = Dataflow("data flow")
+
+        with Cluster("Data Lake"):
+            flow >> [BigQuery("bq"),
+                     GCS("storage")]
+
+        with Cluster("Event Driven"):
+            with Cluster("Processing"):
+                flow >> AppEngine("engine") >> BigTable("bigtable")
+
+            with Cluster("Serverless"):
+                flow >> Functions("func") >> AppEngine("appengine")
+
+    pubsub >> flow
+
+
+# Download an image to be used into a Custom Node class
+rabbitmq_url = "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"
+rabbitmq_icon = "rabbitmq.png"
+
+from urllib.request import urlretrieve
+urlretrieve(rabbitmq_url, rabbitmq_icon)
+
+with Diagram("RabbitMQ Broker Consumers with custom downloaded png icon", show=True):
+    with Cluster("Consumers"):
+        consumers = [
+            Pod("worker"),
+            Pod("worker"),
+            Pod("worker")]
+
+    queue = Custom("Message queue", rabbitmq_icon)
+
+    queue >> consumers >> Aurora("Database")
