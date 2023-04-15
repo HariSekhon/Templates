@@ -50,7 +50,11 @@ __version__ = '0.1'
 #
 #   https://diagrams.mingrammer.com/docs/nodes/k8s
 #
+#   https://diagrams.mingrammer.com/docs/nodes/openstack
+#
 #   https://diagrams.mingrammer.com/docs/nodes/elastic
+#
+#   https://diagrams.mingrammer.com/docs/nodes/digitalocean
 #
 #   https://diagrams.mingrammer.com/docs/nodes/saas  # contains Snowflake, Newrelic, Akamai, Cloudflare, Fastly, Slack, Teams, Auth0, Okta, DataDog, Facebook, Twitter
 #
