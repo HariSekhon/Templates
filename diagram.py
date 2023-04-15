@@ -80,12 +80,12 @@ from diagrams.k8s.storage import PV, PVC, StorageClass
 
 # diagram name results in 'web_service.png' as the output name
 # pylint: disable=W0106
-with Diagram("Web Service",
+with Diagram('Web Service',
              show=True,        # set to False to not auto-open the generated image file
-             direction=LR,     # left-to-right, other options: TB, BT, LR, RL
-             #outformat="jpg"  # default: png
-             #outformat=["jpg", "png", "dot"]  # or create all 3 format output files
-             #filename="my_diagram"  # override the default filename, without the extension
+             direction='LR',     # left-to-right, other options: TB, BT, LR, RL
+             #outformat='jpg'  # default: png
+             #outformat=['jpg', 'png', 'dot']  # or create all 3 format output files
+             #filename='my_diagram'  # override the default filename, without the extension
              #
              # GraphViz dot attributes are supported graph_attr, node_attr and edge_attr - create a dictionary{} of settings containing these attributes:
              #
@@ -103,17 +103,17 @@ with Diagram("Web Service",
     # XXX: the order of rendered diagrams is the reverse of the declaration order
 
     # appears at bottom
-    ELB("lb") >> EC2("web") >> RDS("userdb") >> S3("store")
+    ELB('lb') >> EC2('web') >> RDS('userdb') >> S3('store')
 
-    ELB("lb") >> EC2("web") >> RDS("userdb") << EC2("stat")
+    ELB('lb') >> EC2('web') >> RDS('userdb') << EC2('stat')
 
     # appears at top
     # parens to protect against unexpected precedence results combining << >> with -
-    (ELB("lb") >> EC2("web")) - EC2("web") >> RDS("userdb")
+    (ELB('lb') >> EC2('web')) - EC2('web') >> RDS('userdb')
 
 
 # Can render directly inside a Jupyter notebook like this:
 #
-# with Diagram("Simple Diagram") as diag:
-#     EC2("web")
+# with Diagram('Simple Diagram') as diag:
+#     EC2('web')
 # diag
