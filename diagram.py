@@ -42,9 +42,9 @@ __version__ = '0.1'
 #
 #   https://diagrams.mingrammer.com/docs/nodes/aws
 #
-#   https://diagrams.mingrammer.com/docs/nodes/gcp
-#
 #   https://diagrams.mingrammer.com/docs/nodes/azure
+#
+#   https://diagrams.mingrammer.com/docs/nodes/gcp
 #
 #   https://diagrams.mingrammer.com/docs/nodes/k8s
 #
@@ -60,20 +60,33 @@ __version__ = '0.1'
 
 from diagrams import Diagram
 
-# aws resources
-from diagrams.aws.compute import ECS, Lambda
+# AWS resources:
+#
+#   https://diagrams.mingrammer.com/docs/nodes/aws
+#
+from diagrams.aws.compute import EC2, ECS, Lambda
 from diagrams.aws.database import RDS, ElastiCache
 from diagrams.aws.network import ELB, Route53, VPC
+from diagrams.aws.storage import S3
 
-# azure resources
+# Azure resources:
+#
+#   https://diagrams.mingrammer.com/docs/nodes/azure
+#
 from diagrams.azure.compute import FunctionApps
 from diagrams.azure.storage import BlobStorage
 
-# gcp resources
+# GCP resources:
+#
+#   https://diagrams.mingrammer.com/docs/nodes/gcp
+#
 from diagrams.gcp.compute import AppEngine, GKE
 from diagrams.gcp.ml import AutoML
 
-# k8s resources
+# K8s resources:
+#
+#   https://diagrams.mingrammer.com/docs/nodes/k8s
+#
 from diagrams.k8s.compute import Pod, StatefulSet
 from diagrams.k8s.network import Service
 from diagrams.k8s.storage import PV, PVC, StorageClass
