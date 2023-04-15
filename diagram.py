@@ -124,6 +124,22 @@ with Diagram('Web Service',
     # parens to protect against unexpected precedence results combining << >> with -
     (ELB('lb') >> EC2('web')) - EC2('web') >> RDS('userdb')
 
+with Diagram("Grouped Workers", show=False, direction="TB"):
+    # can use variables to connect nodes to the same items
+    # lb = ELB("lb")
+    # db = RDS("events")
+    # lb >> EC2("worker1") >> db
+    # lb >> EC2("worker2") >> db
+    # lb >> EC2("worker3") >> db
+    # lb >> EC2("worker4") >> db
+    # lb >> EC2("worker5") >> db
+
+    # but less redundant code than the above can be achieved by grouping the workers into a list[]
+    ELB("lb") >> [EC2("worker1"),
+                  EC2("worker2"),
+                  EC2("worker3"),
+                  EC2("worker4"),
+                  EC2("worker5")] >> RDS("events")
 
 # Can render directly inside a Jupyter notebook like this:
 #
