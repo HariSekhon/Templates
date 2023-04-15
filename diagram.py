@@ -219,9 +219,11 @@ with Diagram('Web Service',
 #rabbitmq_url = "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"
 #rabbitmq_icon = "rabbitmq.png"
 
+#import os
 #from urllib.request import urlretrieve
 
 # download to $PWD/rabbitmq.png
 #urlretrieve(rabbitmq_url, rabbitmq_icon)
 
 #rabbitmq_object = Custom("Message queue", rabbitmq_icon)
+#os.remove(rabbitmq_icon)
