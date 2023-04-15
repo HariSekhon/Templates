@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #  coding=utf-8
 #  vim:ts=4:sts=4:sw=4:et
 #
@@ -64,5 +64,8 @@ from diagrams.aws.network import ELB
 
 # diagram name results in 'web_service.png' as the output name
 # pylint: disable=W0106
-with Diagram("Web Service", show=False):
+with Diagram("Web Service",
+             show=True,  # set to False to not auto-open the generated image file
+             #outformat="jpg"  # default: png
+             ):
     ELB("lb") >> EC2("web") >> RDS("userdb")
