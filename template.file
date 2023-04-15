@@ -4,7 +4,7 @@
 #
 #  [% VIM_TAGS %]
 #
-#  [% URL %]
+#  [% URL # https://github.com/HariSekhon/Templates %]
 #
 #  [% LICENSE %]
 #
@@ -12,5 +12,3 @@
 #
 #  [% LINKEDIN %]
 #
-
-
