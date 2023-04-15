@@ -58,14 +58,15 @@ __version__ = '0.1'
 
 # pylint: disable=E0401
 
-from diagrams import Diagram
+from diagrams import Diagram, Cluster, Edge
 
 # AWS resources:
 #
 #   https://diagrams.mingrammer.com/docs/nodes/aws
 #
-from diagrams.aws.compute import EC2, ECS, Lambda
-from diagrams.aws.database import RDS, ElastiCache
+from diagrams.aws.compute import EC2, ECS, EKS, Lambda
+from diagrams.aws.database import RDS, Redshift, ElastiCache
+from diagrams.aws.integration import SQS
 from diagrams.aws.network import ELB, Route53, VPC
 from diagrams.aws.storage import S3
 
@@ -90,6 +91,25 @@ from diagrams.gcp.ml import AutoML
 from diagrams.k8s.compute import Pod, StatefulSet
 from diagrams.k8s.network import Service
 from diagrams.k8s.storage import PV, PVC, StorageClass
+
+# On-premise / Open Source resources:
+#
+#   https://diagrams.mingrammer.com/docs/nodes/onprem
+#
+from diagrams.onprem.analytics import Spark
+from diagrams.onprem.compute import Server
+from diagrams.onprem.database import PostgreSQL
+from diagrams.onprem.inmemory import Redis
+from diagrams.onprem.aggregator import Fluentd
+from diagrams.onprem.monitoring import Grafana, Prometheus
+from diagrams.onprem.network import Nginx
+from diagrams.onprem.queue import Kafka
+
+# Can render directly inside a Jupyter notebook like this:
+#
+# with Diagram('Simple Diagram') as diag:
+#     EC2('web')
+# diag
 
 # diagram name results in 'web_service.png' as the output name
 # pylint: disable=W0106
@@ -124,7 +144,7 @@ with Diagram('Web Service',
     # parens to protect against unexpected precedence results combining << >> with -
     (ELB('lb') >> EC2('web')) - EC2('web') >> RDS('userdb')
 
-with Diagram("Grouped Workers", show=False, direction="TB"):
+with Diagram("Grouped Workers", show=True, direction="TB"):
     # can use variables to connect nodes to the same items
     # lb = ELB("lb")
     # db = RDS("events")
@@ -141,8 +161,85 @@ with Diagram("Grouped Workers", show=False, direction="TB"):
                   EC2("worker4"),
                   EC2("worker5")] >> RDS("events")
 
-# Can render directly inside a Jupyter notebook like this:
+# Cluster puts a box around RDS nodes, and can connect outside ECS and Route53 to the primary RDS
+with Diagram("Simple Web Service with DB Cluster", show=True):
+    dns = Route53("dns")
+    web = ECS("service")
+
+    with Cluster("DB Cluster"):
+        db_primary = RDS("primary")
+        db_primary - [RDS("replica1"),
+                     RDS("replica2")]
+
+    dns >> web >> db_primary
+
+# Nest clusters
+with Diagram("Event Processing", show=True):
+    source = EKS("k8s source")
+
+    with Cluster("Event Flows"):
+        with Cluster("Event Workers"):
+            workers = [ECS("worker1"),
+                       ECS("worker2"),
+                       ECS("worker3")]
+
+        queue = SQS("event queue")
+
+        with Cluster("Processing"):
+            handlers = [Lambda("proc1"),
+                        Lambda("proc2"),
+                        Lambda("proc3")]
+
+    store = S3("events store")
+    dw = Redshift("analytics")
+
+    source >> workers >> queue >> handlers
+    handlers >> store
+    handlers >> dw
+
+# Edge is an object representing a connection between Nodes with some additional properties
 #
-# with Diagram('Simple Diagram') as diag:
-#     EC2('web')
-# diag
+# An edge object contains three attributes: label, color and style which mirror corresponding graphviz edge attributes
+#
+with Diagram(name="Advanced Web Service with On-Premise (colored)", show=True):
+    ingress = Nginx("ingress")
+
+    metrics = Prometheus("metric")
+    metrics << Edge(color="firebrick", style="dashed") << Grafana("monitoring")
+
+    with Cluster("Service Cluster"):
+        grpcsvc = [
+            Server("grpc1"),
+            Server("grpc2"),
+            Server("grpc3")]
+
+    with Cluster("Sessions HA"):
+        primary = Redis("session")
+        primary \
+            - Edge(color="brown", style="dashed") \
+            - Redis("replica") \
+            << Edge(label="collect") \
+            << metrics
+        grpcsvc >> Edge(color="brown") >> primary
+
+    with Cluster("Database HA"):
+        primary = PostgreSQL("users")
+        primary \
+            - Edge(color="brown", style="dotted") \
+            - PostgreSQL("replica") \
+            << Edge(label="collect") \
+            << metrics
+        grpcsvc >> Edge(color="black") >> primary
+
+    aggregator = Fluentd("logging")
+    aggregator \
+        >> Edge(label="parse") \
+        >> Kafka("stream") \
+        >> Edge(color="black", style="bold") \
+        >> Spark("analytics")
+
+    ingress \
+        >> Edge(color="darkgreen") \
+        << grpcsvc \
+        >> Edge(color="darkorange") \
+        >> aggregator
