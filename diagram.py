@@ -114,7 +114,7 @@ from diagrams.onprem.database import PostgreSQL
 from diagrams.onprem.inmemory import Redis
 from diagrams.onprem.aggregator import Fluentd
 from diagrams.onprem.monitoring import Grafana, Prometheus
-from diagrams.onprem.network import Nginx
+from diagrams.onprem.network import Nginx, Kong, Traefik
 from diagrams.onprem.queue import Kafka
 
 # for creating a custom object using a downloaded image
@@ -136,7 +136,7 @@ from diagrams.custom import Custom
 
 
 # diagram name results in 'web_service.png' as the output name
-# pylint: disable=W0106
+# pylint: disable=W0104,W0106
 with Diagram('Web Service',
              show=True,        # set to False to not auto-open the generated image file
              direction='LR',     # left-to-right, other options: TB, BT, LR, RL
