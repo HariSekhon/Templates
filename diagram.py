@@ -24,6 +24,8 @@ Diagrams-as-Code Template
 __author__ = 'Hari Sekhon'
 __version__ = '0.1'
 
+# https://diagrams.mingrammer.com/docs/getting-started/examples
+
 # Diagram reference objects:
 #
 #   # 'onprem' includes Cloud SaaS CI/CD and major Open Source products including:
@@ -120,6 +122,7 @@ from diagrams.custom import Custom
 #     EC2('web')
 # diag
 
+# https://diagrams.mingrammer.com/docs/getting-started/examples
 
 # diagram name results in 'web_service.png' as the output name
 # pylint: disable=W0106
