@@ -334,7 +334,7 @@ with Diagram("Message Collecting", show=True):
     pubsub >> flow
 
 
-# Download an image to be used into a Custom Node class
+# Download an image to be used in a Custom node
 rabbitmq_url = "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"
 rabbitmq_icon = "rabbitmq.png"
 
