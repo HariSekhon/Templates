@@ -65,6 +65,7 @@ __version__ = '0.1'
 
 # pylint: disable=E0401,W0611
 
+import os
 from diagrams import Diagram, Cluster, Edge
 
 # AWS resources:
@@ -139,7 +140,8 @@ from diagrams.custom import Custom
 # diagram name results in 'web_service.png' as the output name
 # pylint: disable=W0104,W0106
 with Diagram('Web Service',
-             show=True,        # set to False to not auto-open the generated image file
+             #show=True,        # set to False to not auto-open the generated image file
+             show=not bool(os.environ.get('CI', 0)),
              direction='LR',     # left-to-right, other options: TB, BT, LR, RL
              #outformat='jpg'  # default: png
              #outformat=['jpg', 'png', 'dot']  # or create all 3 format output files
