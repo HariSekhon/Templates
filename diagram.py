@@ -93,6 +93,7 @@ from diagrams.gcp.compute import AppEngine, GKE, Functions
 from diagrams.gcp.database import BigTable
 from diagrams.gcp.iot import IotCore
 from diagrams.gcp.ml import AutoML
+from diagrams.gcp.network import DNS, LoadBalancing
 from diagrams.gcp.storage import GCS
 
 # K8s resources:
