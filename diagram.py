@@ -24,6 +24,7 @@ Diagrams-as-Code Template
 __author__ = 'Hari Sekhon'
 __version__ = '0.1'
 
+# ============================================================================ #
 # https://diagrams.mingrammer.com/docs/getting-started/examples
 
 # Diagram reference objects:
@@ -56,39 +57,47 @@ __version__ = '0.1'
 #
 #   https://diagrams.mingrammer.com/docs/nodes/digitalocean
 #
-#   https://diagrams.mingrammer.com/docs/nodes/saas  # contains Snowflake, Newrelic, Akamai, Cloudflare, Fastly,
+#   https://diagrams.mingrammer.com/docs/nodes/saas  # Snowflake, Newrelic, CDNs, Akamai, Cloudflare, Fastly,
 #                                                      Slack, Teams, Auth0, Okta, DataDog, Facebook, Twitter
 #
-#   https://diagrams.mingrammer.com/docs/nodes/generic
+#   https://diagrams.mingrammer.com/docs/nodes/generic  # Datacenter, Operating Systems, Virtualization, Mobile Devices
 #
 #   https://diagrams.mingrammer.com/docs/nodes/programming
 
 # pylint: disable=E0401,W0611
 
+# ============================================================================ #
+
 import os
 from diagrams import Diagram, Cluster, Edge
 
+# ============================================================================ #
 # AWS resources:
 #
 #   https://diagrams.mingrammer.com/docs/nodes/aws
 #
+
 from diagrams.aws.compute import EC2, ECS, EKS, Lambda
 from diagrams.aws.database import RDS, Redshift, ElastiCache, Aurora
 from diagrams.aws.integration import SQS
 from diagrams.aws.network import ELB, Route53, VPC
 from diagrams.aws.storage import S3
 
+# ============================================================================ #
 # Azure resources:
 #
 #   https://diagrams.mingrammer.com/docs/nodes/azure
 #
+
 from diagrams.azure.compute import FunctionApps
 from diagrams.azure.storage import BlobStorage
 
+# ============================================================================ #
 # GCP resources:
 #
 #   https://diagrams.mingrammer.com/docs/nodes/gcp
 #
+
 from diagrams.gcp.analytics import BigQuery, Dataflow, PubSub
 from diagrams.gcp.compute import AppEngine, GKE, Functions
 from diagrams.gcp.database import BigTable
@@ -97,19 +106,23 @@ from diagrams.gcp.ml import AutoML
 from diagrams.gcp.network import DNS, LoadBalancing
 from diagrams.gcp.storage import GCS
 
+# ============================================================================ #
 # K8s resources:
 #
 #   https://diagrams.mingrammer.com/docs/nodes/k8s
 #
+
 from diagrams.k8s.clusterconfig import HPA
 from diagrams.k8s.compute import Deployment, Pod, ReplicaSet, StatefulSet
 from diagrams.k8s.network import Ingress, Service
 from diagrams.k8s.storage import PV, PVC, StorageClass
 
+# ============================================================================ #
 # On-premise / Open Source resources:
 #
 #   https://diagrams.mingrammer.com/docs/nodes/onprem
 #
+
 from diagrams.onprem.analytics import Spark
 from diagrams.onprem.compute import Server
 from diagrams.onprem.database import PostgreSQL
@@ -119,10 +132,52 @@ from diagrams.onprem.monitoring import Grafana, Prometheus
 from diagrams.onprem.network import Nginx, Kong, Traefik
 from diagrams.onprem.queue import Kafka
 
-# for creating a custom object using a downloaded image
+# ============================================================================ #
+# SaaS:
+#
+#   https://diagrams.mingrammer.com/docs/nodes/saas
+#
+
+#from diagrams.saas.alerting import Newrelic
+from diagrams.saas.logging import Datadog, Newrelic
+from diagrams.saas.analytics import Snowflake
+from diagrams.saas.cdn import Akamai, Cloudflare, Fastly
+from diagrams.saas.chat import Slack, Teams
+from diagrams.saas.identity import Auth0, Okta
+
+# ============================================================================ #
+# Generic - Datacentre, Operating Systems, Virtualization, Mobile Devices:
+#
+#   https://diagrams.mingrammer.com/docs/nodes/generic
+#
+
+from diagrams.generic.place import Datacenter
+from diagrams.generic.compute import Rack
+from diagrams.generic.storage import Storage
+from diagrams.generic.network import Firewall, Router, Subnet, Switch, VPN
+from diagrams.generic.os import LinuxGeneral, Debian, Ubuntu, RedHat, Centos
+from diagrams.generic.os import IOS, Android, Raspbian, Windows
+from diagrams.generic.virtualization import Vmware, Virtualbox, XEN
+
+# ============================================================================ #
+#
+# Programming - flowcharts, programming languages and frameworks
+#
+
+from diagrams.programming.flowchart import Action, Database, Decision, Delay, Document, InputOutput, MultipleDocuments
+from diagrams.programming.framework import Angular, Django, FastAPI, Flask, GraphQL, Rails, React, Spring
+from diagrams.programming.language import Bash, Go, Python, R, Ruby, PHP, JavaScript, Rust, TypeScript
+from diagrams.programming.language import C, Cpp, Csharp, Java, Kotlin, Scala
+
+# ============================================================================ #
+#
+# Custom - for creating a custom object using a downloaded image
+#
+
 from diagrams.custom import Custom
 
 
+# ============================================================================ #
 # Can render directly inside a Jupyter notebook like this:
 #
 # with Diagram('Simple Diagram') as diag:
