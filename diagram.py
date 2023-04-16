@@ -163,6 +163,8 @@ from diagrams.generic.virtualization import Vmware, Virtualbox, XEN
 #
 # Programming - flowcharts, programming languages and frameworks
 #
+#   https://diagrams.mingrammer.com/docs/nodes/programming
+#
 
 from diagrams.programming.flowchart import Action, Database, Decision, Delay, Document, InputOutput, MultipleDocuments
 from diagrams.programming.framework import Angular, Django, FastAPI, Flask, GraphQL, Rails, React, Spring
@@ -171,7 +173,18 @@ from diagrams.programming.language import C, Cpp, Csharp, Java, Kotlin, Scala
 
 # ============================================================================ #
 #
+# C4 - Software Architecture - boxes with Name, Technology and Description inside
+#
+#   https://diagrams.mingrammer.com/docs/nodes/c4
+#
+
+from diagrams.c4 import Person, Container, Database, System, SystemBoundary, Relationship
+
+# ============================================================================ #
+#
 # Custom - for creating a custom object using a downloaded image
+#
+#   https://diagrams.mingrammer.com/docs/nodes/custom
 #
 
 from diagrams.custom import Custom
@@ -191,6 +204,8 @@ from diagrams.custom import Custom
 #
 #   https://diagrams.mingrammer.com/docs/getting-started/examples
 
+
+# https://www.graphviz.org/doc/info/attrs.html
 graph_attr = {
     "splines": "spline",  # rounded arrows, much nicer
 }
