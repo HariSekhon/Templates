@@ -225,9 +225,9 @@ with Diagram('Web Service',
              #
              #  https://www.graphviz.org/doc/info/attrs.html
              #
-             graph_attr=graph_attr
-             #node_attr=node_attr_settings_dict
-             #edge_attr=edge_attr_settings_dict
+             graph_attr=graph_attr,
+             #node_attr=node_attr,
+             #edge_attr=edge_attr,
              ):
 
     # >>  right arrow
