@@ -191,6 +191,9 @@ from diagrams.custom import Custom
 #
 #   https://diagrams.mingrammer.com/docs/getting-started/examples
 
+graph_attr = {
+    "splines": "spline",  # rounded arrows, much nicer
+}
 
 # diagram name results in 'web_service.png' as the output name
 # pylint: disable=W0104,W0106
@@ -207,7 +210,7 @@ with Diagram('Web Service',
              #
              #  https://www.graphviz.org/doc/info/attrs.html
              #
-             #graph_attr=graph_attr_settings_dict
+             graph_attr=graph_attr
              #node_attr=node_attr_settings_dict
              #edge_attr=edge_attr_settings_dict
              ):
