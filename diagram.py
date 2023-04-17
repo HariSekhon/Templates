@@ -17,12 +17,20 @@
 
 """
 
-Diagrams-as-Code Template
+[% NAME %]
 
 """
 
 __author__ = 'Hari Sekhon'
 __version__ = '0.1'
+
+# ============================================================================ #
+# The OG
+
+# from graphviz import Digraph
+# g = Digraph('G')
+# g.edge('Hello, World')
+# g
 
 # ============================================================================ #
 # https://diagrams.mingrammer.com/docs/getting-started/examples
@@ -80,7 +88,7 @@ from diagrams import Diagram, Cluster, Edge
 from diagrams.aws.compute import EC2, ECS, EKS, Lambda
 from diagrams.aws.database import RDS, Redshift, ElastiCache, Aurora
 from diagrams.aws.integration import SQS
-from diagrams.aws.network import ELB, Route53, VPC
+from diagrams.aws.network import ELB, Route53, CloudFront, VPC
 from diagrams.aws.storage import S3
 
 # ============================================================================ #
