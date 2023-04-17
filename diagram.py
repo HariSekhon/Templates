@@ -90,6 +90,7 @@ from diagrams.aws.database import RDS, Redshift, ElastiCache, Aurora
 from diagrams.aws.integration import SQS
 from diagrams.aws.network import ELB, Route53, CloudFront, VPC
 from diagrams.aws.storage import S3
+from diagrams.aws.general import Users
 
 # ============================================================================ #
 # Azure resources:
@@ -131,14 +132,19 @@ from diagrams.k8s.storage import PV, PVC, StorageClass
 #   https://diagrams.mingrammer.com/docs/nodes/onprem
 #
 
+from diagrams.onprem.aggregator import Fluentd
 from diagrams.onprem.analytics import Spark
+from diagrams.onprem.certificates import CertManager, LetsEncrypt
+from diagrams.onprem.client import Users
 from diagrams.onprem.compute import Server
 from diagrams.onprem.database import PostgreSQL
+from diagrams.onprem.gitops import ArgoCD
 from diagrams.onprem.inmemory import Redis
-from diagrams.onprem.aggregator import Fluentd
 from diagrams.onprem.monitoring import Grafana, Prometheus
 from diagrams.onprem.network import Nginx, Kong, Traefik
 from diagrams.onprem.queue import Kafka
+from diagrams.onprem.vcs import Github
+
 
 # ============================================================================ #
 # SaaS:
