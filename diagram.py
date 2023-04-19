@@ -227,7 +227,7 @@ graph_attr = {
 
 # diagram name results in 'web_service.png' as the output name
 # pylint: disable=W0104,W0106
-with Diagram('Web Service',
+with Diagram('[% NAME %]',
              #show=True,        # set to False to not auto-open the generated image file
              show=not bool(os.environ.get('CI', 0)),
              direction='LR',     # left-to-right, other options: TB, BT, LR, RL
