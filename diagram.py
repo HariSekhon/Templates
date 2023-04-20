@@ -230,6 +230,7 @@ graph_attr = {
 with Diagram('[% NAME %]',
              #show=True,        # set to False to not auto-open the generated image file
              show=not bool(os.environ.get('CI', 0)),
+             # direction seems to set graphviz graph_attr rankdir, which takes precedence if set
              direction='LR',     # left-to-right, other options: TB, BT, LR, RL
              #outformat='jpg',   # default: png
              #outformat=['jpg', 'png', 'dot']  # or create all 3 format output files
