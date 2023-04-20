@@ -234,7 +234,7 @@ with Diagram('[% NAME %]',
              direction='LR',     # left-to-right, other options: TB, BT, LR, RL
              #outformat='jpg',   # default: png
              #outformat=['jpg', 'png', 'dot']  # or create all 3 format output files
-             #filename='my_diagram',  # override the default filename, without the extension
+             #filename='images/[% NAME %]',  # override the default filename, without the extension
              #
              # GraphViz dot attributes are supported graph_attr, node_attr and edge_attr
              # create a dictionary{} of settings containing these attributes:
