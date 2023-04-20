@@ -135,6 +135,7 @@ from diagrams.k8s.storage import PV, PVC, StorageClass
 from diagrams.onprem.aggregator import Fluentd
 from diagrams.onprem.analytics import Spark
 from diagrams.onprem.certificates import CertManager, LetsEncrypt
+from diagrams.onprem.ci import Jenkins, GithubActions, CircleCI, ConcourseCI, Teamcity
 from diagrams.onprem.client import Users
 from diagrams.onprem.compute import Server
 from diagrams.onprem.database import PostgreSQL
@@ -143,7 +144,7 @@ from diagrams.onprem.inmemory import Redis
 from diagrams.onprem.monitoring import Grafana, Prometheus
 from diagrams.onprem.network import Nginx, Kong, Traefik
 from diagrams.onprem.queue import Kafka
-from diagrams.onprem.vcs import Github
+from diagrams.onprem.vcs import Git, Github
 
 
 # ============================================================================ #
