@@ -224,15 +224,15 @@ graph_attr = {
     "splines": "spline",  # rounded arrows, much nicer
 }
 
-# diagram name results in 'web_service.png' as the output name
+# diagram name results in '[% NAME %].png' lowercased with underscores if filename isn't specified
 # pylint: disable=W0104,W0106
 with Diagram('[% NAME %]',
              #show=True,        # set to False to not auto-open the generated image file
              show=not bool(os.environ.get('CI', 0)),
              direction='LR',     # left-to-right, other options: TB, BT, LR, RL
-             #outformat='jpg'  # default: png
+             #outformat='jpg',   # default: png
              #outformat=['jpg', 'png', 'dot']  # or create all 3 format output files
-             #filename='my_diagram'  # override the default filename, without the extension
+             #filename='my_diagram',  # override the default filename, without the extension
              #
              # GraphViz dot attributes are supported graph_attr, node_attr and edge_attr
              # create a dictionary{} of settings containing these attributes:
