@@ -66,7 +66,12 @@ push:
 
 .PHONY: clean
 clean:
-	find . -name '*.class' -o -name '*.py[oc]' -exec rm {} \;
+	@# buggy this doesn't work on mac, not even with -or and not even in gfind, so splitting up
+	@#find . -name '*.class' -o -name '*.py[oc]' -o -name '*.png' -o -name '*.svg' -exec rm -v {} \;
+	find . -name '*.class' -exec rm -v {} \;
+	find . -name '*.py[oc]' -exec rm -v {} \;
+	find . -name '*.png' -exec rm -v {} \;
+	find . -name '*.svg' -exec rm -v {} \;
 
 release:
 	@echo "Releasing $(RELEASE)"
