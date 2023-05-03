@@ -18,6 +18,8 @@
 #                    D2 Declarative Diagram Language Template
 # ============================================================================ #
 
+direction: right
+
 # object: name
 #
 # id_key: display_name_label
@@ -57,7 +59,7 @@
 #
 #
 # set shape to cloud instead of default rectangle
-id.shape: cloud
+#id.shape: cloud
 #id.style.fill: transparent
 
 # Connections - arrows
@@ -71,13 +73,13 @@ id.shape: cloud
 #
 #  must reference objects by id_key, not display_name_label
 
-one -> way
+#one -> way
 # or
-way <- one
+#way <- one
 
-two <-> way
+#two <-> way
 
-equal1 -- equal2
+#equal1 -- equal2
 
 # ===============
 # Object nesting:
@@ -180,6 +182,8 @@ README\.md: {
     - list item 3
     - list item 4
   |
+  tooltip: You should always have a README!!  # hover to see this - works better in svg or --watch - for PNG exports adds numbers and an appendix
+  link: https://github.com/HariSekhon/Templates  # clickable!
 }
 
 test\.sh: {
@@ -192,18 +196,21 @@ test\.sh: {
      #!/usr/bin/env bash
      echo testing
   |
+  #near: top-right  # https://d2lang.com/tour/positions
 }
 
 my_diagram\.py: {
   somecodeobjectid: |py
     import diagrams
   |
+  #near: center-right
 }
 
 my\.go: {
   somecodeobjectid2: |go
     import "fmt"
   |
+  #near: bottom-right
 }
 
 # ======================================
@@ -241,7 +248,6 @@ my\.go: {
 #
 # - define attributes and apply them to multiple objects
 
-direction: right
 classes: {
   load balancer: {
     label: load\nbalancer
