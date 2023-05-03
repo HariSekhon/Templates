@@ -296,16 +296,22 @@ cache lb.class: load balancer
 #
 # https://d2lang.com/tour/steps
 #
-# - makes 3 svg images, each building upon the last, can rotate them in html
+# - makes 3 svg images, each building upon the last
+# - or combine into 1 svg with a delay between moving through them to create moving images
+#
+#   d2 --animate-interval <millis_delay>
 
+# bug: animate requires something in the base to work, see:
+#
+#   https://github.com/terrastruct/d2/issues/1280
+
+#code
+#
 #steps: {
 #  1: {
-#    code
-#  }
-#  2: {
 #    code -> git commit
 #  }
-#  3: {
+#  2: {
 #    git commit -> git push
 #  }
 #}
