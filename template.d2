@@ -59,8 +59,8 @@ direction: right
 #
 #
 # set shape to cloud instead of default rectangle
-#id.shape: cloud
-#id.style.fill: transparent
+# id.shape: cloud
+# id.style.fill: transparent
 
 # Connections - arrows
 #
@@ -73,20 +73,20 @@ direction: right
 #
 #  must reference objects by id_key, not display_name_label
 
-#one -> way
+# one -> way
 # or
-#way <- one
+# way <- one
 
-#two <-> way
+# two <-> way
 
-#equal1 -- equal2
+# equal1 -- equal2
 
 # ===============
 # Object nesting:
 
 HA.style.double-border: true
 # declare objects inside the HA object
-HA.Master -> HA.Slave : replication {
+HA.Master -> HA.Slave: replication {
   style.animated: true
 }
 
@@ -121,8 +121,9 @@ Replica 1 -- Replica 2: Kept in sync
 
 # redundant links
 Internet -> DataCenter 1
-Internet -> DataCenter 1: backup link {  # : label for arrow
-  style.opacity: 0.5  # set the backup link to half the opacity
+Internet -> DataCenter 1: backup link {
+  # : label for arrow
+  style.opacity: 0.5 # set the backup link to half the opacity
   style.stroke-dash: 5
 }
 
@@ -162,7 +163,7 @@ a <-> b: arrow_label {
 #
 #   https://d2lang.com/tour/text
 #
-# - backslash escape dots for filenames
+# - quote or backslash escape dots for filenames
 # - double || to get one in code blocks have have pipe symbols |
 #
 
@@ -175,15 +176,15 @@ README: |md
 
 # the above is borderless - so enclose in parent object{}
 
-README\.md: {
+"README.md": {
   style.multiple: true
   |md
     # Header2
     - list item 3
     - list item 4
   |
-  tooltip: You should always have a README!!  # hover to see this - works better in svg or --watch - for PNG exports adds numbers and an appendix
-  link: https://github.com/HariSekhon/Templates  # clickable!
+  tooltip: You should always have a README!! # hover to see this - works better in svg or --watch - for PNG exports adds numbers and an appendix
+  link: https://github.com/HariSekhon/Templates # clickable!
 }
 
 test\.sh: {
@@ -193,24 +194,24 @@ test\.sh: {
   #
   someshellscriptid: |sh
 
-     #!/usr/bin/env bash
-     echo testing
+    #!/usr/bin/env bash
+    echo testing
   |
-  #near: top-right  # https://d2lang.com/tour/positions
+  # near: top-right  # https://d2lang.com/tour/positions
 }
 
 my_diagram\.py: {
   somecodeobjectid: |py
     import diagrams
   |
-  #near: center-right
+  # near: center-right
 }
 
 my\.go: {
   somecodeobjectid2: |go
     import "fmt"
   |
-  #near: bottom-right
+  # near: bottom-right
 }
 
 # ======================================
@@ -239,7 +240,6 @@ my\.go: {
 # Sequence diagrams for flows
 #
 #   https://d2lang.com/tour/sequence-diagrams
-
 
 # ======================================
 # Classes
