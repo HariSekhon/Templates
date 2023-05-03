@@ -18,7 +18,16 @@
 #                    D2 Declarative Diagram Language Template
 # ============================================================================ #
 
-direction: right
+# direction: right
+
+# this is just a regular object
+title: {
+  label: Normal deployment
+  near: top-center
+  shape: text
+  style.font-size: 40
+  style.underline: true
+}
 
 # object: name
 #
@@ -281,3 +290,29 @@ api1 -> cache lb
 api3 -> cache lb
 
 cache lb.class: load balancer
+
+# ======================================
+# Scenarios
+#
+#   https://d2lang.com/tour/scenarios
+#
+# - can use to create moving SVGs by adding to the base, overriding objects words and settings, changing opacity to make things appear/disappear etc.
+
+# ======================================
+# Steps
+#
+# https://d2lang.com/tour/steps
+#
+# - makes 3 svg images, each building upon the last, can rotate them in html
+
+#steps: {
+#  1: {
+#    code
+#  }
+#  2: {
+#    code -> git commit
+#  }
+#  3: {
+#    git commit -> git push
+#  }
+#}
