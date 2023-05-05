@@ -31,6 +31,22 @@
 FROM alpine:3
 #FROM --platform=linux/amd64 amazonlinux:2  # pin current version - safer than 'latest' which may upgrade and break build unexpectedly
 
+# ============================================================================ #
+# for new M1 Macs which otherwise fail to build with errors like this:
+#
+#   AWS CLI version: qemu-x86_64: Could not open '/lib64/ld-linux-x86-64.so.2': No such file or directory
+#
+# it's tempting to fix this via
+#
+#       FROM --platform=linux/amd64
+#
+# to avoid building as arm64 but this will trigger warnings from Hadolint as being non-portable
+#
+# Better to set this environment variable locally:
+#
+#       export DOCKER_DEFAULT_PLATFORM=linux/amd64
+
+# ============================================================================ #
 # Catch Errors Early in RUN commands
 #
 # Alpine / sh
