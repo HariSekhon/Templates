@@ -1,0 +1,60 @@
+%% #!/usr/bin/env mmdc -i
+%%
+%%  Author: Hari Sekhon
+%%  Date: [% DATE  #  2023-05-05 02:26:36 +0100 (Fri, 05 May 2023) %]
+%%
+%%  vim:ts=2:sts=2:sw=2:et
+%%
+%%  [% URL %]
+%%
+%%  [% LICENSE %]
+%%
+%%  [% MESSAGE %]
+%%
+%%  [% LINKEDIN %]
+%%
+
+%% ========================================================================== %%
+%%                       M e r m a i d J S   D i a g r a m
+%% ========================================================================== %%
+
+%% See Sample diagrams in the Live Editor
+
+%% https:%%mermaid.live/edit
+
+%% choose type of diagram:
+%%
+%%   sequenceDiagram
+%%   flowchart TD      # Flow Chart top down - 'graph' word seems to work too
+%%   classDiagram
+%%   stateDiagram-v2
+%%   erDiagram         # Entity Relationship
+%%   gantt
+%%   journey           # User Journey
+%%   gitGraph
+%%   pie title My Title
+%%   mindmap
+
+%% Different syntax for each type of diagram :'-(
+%%
+%% Start Here:
+%%
+%%    https://mermaid.js.org/syntax/flowchart.html
+
+%% ========================================================================== %%
+
+%% directives can be on one line or multiline json (except it accepts single quotes as well as double quotes)
+
+%% Themes and customizing themes:
+%%
+%%    https://mermaid.js.org/config/theming.html
+
+%%{init: { 'logLevel': 'debug', 'theme': 'dark' } }%%
+
+
+---
+title: Node
+---
+flowchart LR
+  id(content)
+  Start --> Stop
