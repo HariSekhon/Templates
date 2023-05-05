@@ -22,6 +22,8 @@
 
 %% https:%%mermaid.live/edit
 
+%% ========================================================================== %%
+
 %% choose type of diagram:
 %%
 %%   sequenceDiagram
@@ -35,11 +37,13 @@
 %%   pie title My Title
 %%   mindmap
 
-%% Different syntax for each type of diagram :'-(
+%% ========================================================================== %%
+
+%%  Different syntax for each type of diagram :'-(
 %%
-%% Start Here:
+%%  Start Here:
 %%
-%%    https://mermaid.js.org/syntax/flowchart.html
+%%      https://mermaid.js.org/syntax/flowchart.html
 
 %% ========================================================================== %%
 
@@ -51,6 +55,11 @@
 
 %%{init: { 'logLevel': 'debug', 'theme': 'dark' } }%%
 
+%% ========================================================================== %%
+%%                              Git Graph
+%% ========================================================================== %%
+
+%%  https://github.com/HariSekhon/Diagrams-as-Code/blob/master/README.md#github-flow-with-jira-ticket-integration
 
 ---
 title: Node
@@ -58,6 +67,13 @@ title: Node
 flowchart LR
   id(content)
   Start --> Stop
+
+
+%% ========================================================================== %%
+%%                      MermaidJS in GitHub Markdown
+%% ========================================================================== %%
+%%
+%%  https://github.com/HariSekhon/Diagrams-as-Code/blob/master/README.md#github-flow-with-jira-ticket-integration
 
 ### Some markdown
 ```mermaid
@@ -78,3 +94,31 @@ graph
    accDescr: My description here
    A-->B
 ```
+
+%% ========================================================================== %%
+%%                          Icon Cloud diagramas
+%% ========================================================================== %%
+%%
+%%          https://text-to-diagram.com/?example=icons&b=mermaid
+
+graph TD
+  subgraph aws
+    aws_db(<img src='https://icons.terrastruct.com/azure/Databases%20Service%20Color/Azure%20Database%20for%20PostgreSQL%20servers.svg' width='32' height='32' />)
+    cache(<img src='https://icons.terrastruct.com/azure/_Companies/Azure%20Cache%20Redis%20Product%20icon.svg' width='32' height='32' />)
+    ec2(<img src='https://icons.terrastruct.com/aws/_Group%20Icons/EC2-instance-container_light-bg.svg' width='32' height='32' />)
+
+    ec2 <-->|get persisted data| aws_db
+    ec2 <-->|get temporal data| cache
+  end
+
+  subgraph gcloud
+    gcloud_db(<img src='https://icons.terrastruct.com/azure/Databases%20Service%20Color/Azure%20Database%20for%20PostgreSQL%20servers.svg' width='32' height='32' />)
+  end
+
+  aws_db -->|backup| gcloud_db
+
+  dev(<img src='https://icons.terrastruct.com/essentials/005-programmer.svg' width='32' height='32' />)
+  github(<img src='https://icons.terrastruct.com/dev/github.svg' width='32' height='32' />)
+
+  dev -->|ssh| ec2
+  dev -->|version control| github
