@@ -58,6 +58,22 @@ classes: {
     #style.opacity: 0.5  # 0 - 1  # 0 is invisible, less than 1 is translucent
     #style.stroke-dash: 5  # 0 - 10
   }
+  git: {
+    label: Git
+    icon: https://icons.terrastruct.com/dev%2Fgit.svg
+    shape: image
+  }
+  github: {
+    label: GitHub
+    icon: https://icons.terrastruct.com/dev%2Fgithub.svg
+    # icon: https://icons.terrastruct.com/social%2F039-github.svg
+    shape: image
+  }
+  cicd: {
+    label: CI/CD
+    icon: https://diagrams.mingrammer.com/img/resources/onprem/ci/github-actions.png
+    shape: image
+  }
   load_balancer: {
     label: Load Balancer
     icon: https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FNetworking%2FCloud%20Load%20Balancing.svg
@@ -65,9 +81,101 @@ classes: {
     #icon: https://icons.terrastruct.com/azure%2FNetworking%20Service%20Color%2FLoad%20Balancers.svg
     shape: image
   }
+  k8s: {
+    label: Kubernetes
+    icon: https://icons.terrastruct.com/azure%2F_Companies%2FKubernetes.svg
+    shape: image
+  }
+  ingress: {
+    label: Kubernetes Ingress
+    icon: https://diagrams.mingrammer.com/img/resources/k8s/network/ing.png
+    shape: image
+  }
   service: {
-    label: Service
+    label: Kubernetes Service
     icon: https://diagrams.mingrammer.com/img/resources/k8s/network/svc.png
+    shape: image
+  }
+  pod: {
+    label: Kubernetes Pod
+    icon: https://diagrams.mingrammer.com/img/resources/k8s/compute/pod.png
+    shape: image
+  }
+  dns: {
+    label: DNS
+    icon: https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FNetworking%2FCloud%20DNS.svg
+    #icon: https://diagrams.mingrammer.com/img/resources/gcp/network/dns.pn
+    #icon: https://icons.terrastruct.com/azure%2FNetworking%20Service%20Color%2FDNS%20Zones.svg
+    #icon: https://icons.terrastruct.com/aws%2FNetworking%20&%20Content%20Delivery%2FAmazon-Route-53.svg
+    #icon: https://diagrams.mingrammer.com/img/resources/azure/network/dns-zones.png
+    shape: image
+  }
+  users: {
+    label: Users
+    icon: https://icons.terrastruct.com/essentials%2F359-users.svg
+    #icon: https://diagrams.mingrammer.com/img/resources/onprem/client/users.png
+    shape: image
+  }
+  nginx: {
+    label: Nginx
+    #icon: https://icons.terrastruct.com/dev%2Fnginx.svg
+    icon: https://diagrams.mingrammer.com/img/resources/onprem/network/nginx.png
+    shape: image
+  }
+  traefik: {
+    label: Traefik
+    icon: https://diagrams.mingrammer.com/img/resources/onprem/network/traefik.png
+    shape: image
+  }
+  gke: {
+    label: GKE
+    #icon: https://diagrams.mingrammer.com/img/resources/gcp/compute/kubernetes-engine.png
+    icon: https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FCompute%2FKubetnetes%20Engine.svg
+    shape: image
+  }
+  apache: {
+    label: Apache Httpd
+    icon: https://www.svgrepo.com/show/353400/apache.svg
+    #icon: https://icons.terrastruct.com/dev%2Fapache.svg
+    #icon: https://diagrams.mingrammer.com/img/resources/onprem/network/apache.png
+    #shape: image
+  }
+  grafana: {
+    label: Grafana
+    icon: https://diagrams.mingrammer.com/img/resources/onprem/monitoring/grafana.png
+    shape: image
+  }
+  opentsdb: {
+    label: OpenTSDB
+    icon: ./images/opentsdb.png
+    shape: image
+  }
+  hbase: {
+    label: Apache HBase
+    #icon: https://hbase.apache.org/images/hbase_logo_with_orca.png
+    #icon: https://hbase.apache.org/images/hbase_logo_with_orca_large.png
+    #icon: https://hbase.apache.org/images/jumping-orca_rotated.png
+    icon: https://diagrams.mingrammer.com/img/resources/onprem/database/hbase.png
+    shape: image
+  }
+  hadoop: {
+    label: Apache Hadoop
+    icon: https://diagrams.mingrammer.com/img/resources/onprem/analytics/hadoop.png
+    shape: image
+  }
+  server: {
+    label: Server
+    icon: https://icons.terrastruct.com/essentials%2F112-server.svg
+    shape: image
+  }
+  network: {
+    label: Network
+    icon: https://icons.terrastruct.com/essentials%2F092-network.svg
+    shape: image
+  }
+  storage: {
+    label: "HA Networked Storage\nfor Kubernetes\nPersistent Volumes"
+    icon: https://icons.terrastruct.com/azure%2FStorage%20Service%20Color%2FGeneral%20Storage.svg
     shape: image
   }
 }
