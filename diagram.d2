@@ -140,14 +140,14 @@ classes: {
 # ===============
 # Object nesting:
 
-HA.style.double-border: true
+#HA.style.double-border: true
 # declare objects inside the HA object
-HA.Master -> HA.Slave: replication {
-  style.animated: true
-}
+#HA.Master -> HA.Slave: replication {
+#  style.animated: true
+#}
 
 # https://d2lang.com/tour/style
-HA.Slave.style.opacity: 0.5
+#HA.Slave.style.opacity: 0.5
 
 # could also declare them inline
 # HA.Master2 -> HA.Slave2
@@ -157,9 +157,9 @@ HA.Slave.style.opacity: 0.5
 # }
 
 # Container labels
-gcloud: Google Cloud {
-  GKE.style.3d: true
-}
+#gcloud: Google Cloud {
+#  GKE.style.3d: true
+#}
 
 #aws: {
 #  # use 'label' reserved word instead of :label suffix
@@ -173,7 +173,7 @@ gcloud: Google Cloud {
 
 # label the connection
 
-Replica 1 -- Replica 2: Kept in sync
+#Replica 1 -- Replica 2: Kept in sync
 
 # redundant links
 #Internet -> DataCenter 1
