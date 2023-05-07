@@ -52,6 +52,7 @@ classes: {
     label: Display Name
     icon:
     shape: image
+    #style.3d: true
     #style.animated: true
     #style.underline: true
     #style.opacity: 0.5  # 0 - 1  # 0 is invisible, less than 1 is translucent
@@ -160,13 +161,13 @@ gcloud: Google Cloud {
   GKE.style.3d: true
 }
 
-aws: {
-  # use 'label' reserved word instead of :label suffix
-  label: Amazon Web Services
-  EKS.style.3d: true
-  # refer to something out of the current object using '_' to signify the parent namespace
-  _.gcloud.GKE <- EKS: migrate
-}
+#aws: {
+#  # use 'label' reserved word instead of :label suffix
+#  label: Amazon Web Services
+#  EKS.style.3d: true
+#  # refer to something out of the current object using '_' to signify the parent namespace
+#  _.gcloud.GKE <- EKS: migrate
+#}
 
 # ================
 
@@ -175,12 +176,12 @@ aws: {
 Replica 1 -- Replica 2: Kept in sync
 
 # redundant links
-Internet -> DataCenter 1
-Internet -> DataCenter 1: backup link {
-  # : label for arrow
-  style.opacity: 0.5 # set the backup link to half the opacity
-  style.stroke-dash: 5
-}
+#Internet -> DataCenter 1
+#Internet -> DataCenter 1: backup link {
+#  # : label for arrow
+#  style.opacity: 0.5 # set the backup link to half the opacity
+#  style.stroke-dash: 5
+#}
 
 # Stage One -> Stage Two -> Stage Three -> Stage Four
 # Stage Four -> Stage One: repeat
@@ -199,12 +200,12 @@ Internet -> DataCenter 1: backup link {
 #     cf-many, cf-many-required
 #
 
-a <-> b: arrow_label {
-  source-arrowhead: arrow_head_label
-  target-arrowhead: arrow_head_label2 {
-    shape: diamond
-  }
-}
+#a <-> b: arrow_label {
+#  source-arrowhead: arrow_head_label
+#  target-arrowhead: arrow_head_label2 {
+#    shape: diamond
+#  }
+#}
 
 # ======================================
 # Text
@@ -215,52 +216,52 @@ a <-> b: arrow_label {
 # - double || to get one in code blocks have have pipe symbols |
 #
 
-README: |md
-  # Header
-  - list item 1
-  - list item 2
-|
+#README: |md
+#  # Header
+#  - list item 1
+#  - list item 2
+#|
 # XXX: must terminate the block string with another pipe "|" symbol
 
 # the above is borderless - so enclose in parent object{}
 
-"README.md": {
-  style.multiple: true
-  |md
-    # Header2
-    - list item 3
-    - list item 4
-  |
-  tooltip: You should always have a README!! # hover to see this - works better in svg or --watch - for PNG exports adds numbers and an appendix
-  link: https://github.com/HariSekhon/Templates # clickable!
-}
-
-test\.sh: {
-  # must leave first line blank to prevent this error:
-  #
-  #     error on line 944 at column 3253: Attribute class redefined
-  #
-  someshellscriptid: |sh
-
-    #!/usr/bin/env bash
-    echo testing
-  |
-  # near: top-right  # https://d2lang.com/tour/positions
-}
-
-my_diagram\.py: {
-  somecodeobjectid: |py
-    import diagrams
-  |
-  # near: center-right
-}
-
-my\.go: {
-  somecodeobjectid2: |go
-    import "fmt"
-  |
-  # near: bottom-right
-}
+#"README.md": {
+#  style.multiple: true
+#  |md
+#    # Header2
+#    - list item 3
+#    - list item 4
+#  |
+#  tooltip: You should always have a README!! # hover to see this - works better in svg or --watch - for PNG exports adds numbers and an appendix
+#  link: https://github.com/HariSekhon/Templates # clickable!
+#}
+#
+#test\.sh: {
+#  # must leave first line blank to prevent this error:
+#  #
+#  #     error on line 944 at column 3253: Attribute class redefined
+#  #
+#  someshellscriptid: |sh
+#
+#    #!/usr/bin/env bash
+#    echo testing
+#  |
+#  # near: top-right  # https://d2lang.com/tour/positions
+#}
+#
+#my_diagram\.py: {
+#  somecodeobjectid: |py
+#    import diagrams
+#  |
+#  # near: center-right
+#}
+#
+#my\.go: {
+#  somecodeobjectid2: |go
+#    import "fmt"
+#  |
+#  # near: bottom-right
+#}
 
 # ======================================
 # SQL Tables for relationship diagrams
@@ -290,39 +291,39 @@ my\.go: {
 #
 #   https://github.com/terrastruct/d2/issues/1281
 
-classes: {
-  load balancer: {
-    label: load\nbalancer
-    width: 100
-    height: 200
-    style: {
-      stroke-width: 0
-      fill: "#44C7B1"
-      shadow: true
-      border-radius: 5
-    }
-  }
-  unhealthy: {
-    style: {
-      fill: "#FE7070"
-      stroke: "#F69E03"
-    }
-  }
-}
-
-web traffic -> web lb
-web lb.class: load balancer
-
-web lb -> api1
-web lb -> api2
-web lb -> api3
-
-api2.class: unhealthy
-
-api1 -> cache lb
-api3 -> cache lb
-
-cache lb.class: load balancer
+#classes: {
+#  load balancer: {
+#    label: load\nbalancer
+#    width: 100
+#    height: 200
+#    style: {
+#      stroke-width: 0
+#      fill: "#44C7B1"
+#      shadow: true
+#      border-radius: 5
+#    }
+#  }
+#  unhealthy: {
+#    style: {
+#      fill: "#FE7070"
+#      stroke: "#F69E03"
+#    }
+#  }
+#}
+#
+#web traffic -> web lb
+#web lb.class: load balancer
+#
+#web lb -> api1
+#web lb -> api2
+#web lb -> api3
+#
+#api2.class: unhealthy
+#
+#api1 -> cache lb
+#api3 -> cache lb
+#
+#cache lb.class: load balancer
 
 # ======================================
 # Scenarios
