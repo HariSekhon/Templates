@@ -50,7 +50,7 @@ title: {
 classes: {
   name: {
     label: Display Name
-    icon:
+    icon: images/d2_graphic.png
     shape: image
     #style.3d: true
     #style.animated: true
@@ -100,6 +100,12 @@ classes: {
     icon: https://diagrams.mingrammer.com/img/resources/onprem/ci/jenkins.png
     shape: image
   }
+  docker: {
+    label: Docker
+    #icon: https://diagrams.mingrammer.com/img/resources/onprem/container/docker.png
+    icon: https://icons.terrastruct.com/dev%2Fdocker.svg
+    shape: image
+  }
   load_balancer: {
     label: Load Balancer
     icon: https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FNetworking%2FCloud%20Load%20Balancing.svg
@@ -130,7 +136,7 @@ classes: {
   dns: {
     label: DNS
     icon: https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FNetworking%2FCloud%20DNS.svg
-    #icon: https://diagrams.mingrammer.com/img/resources/gcp/network/dns.pn
+    #icon: https://diagrams.mingrammer.com/img/resources/gcp/network/dns.png
     #icon: https://icons.terrastruct.com/azure%2FNetworking%20Service%20Color%2FDNS%20Zones.svg
     #icon: https://icons.terrastruct.com/aws%2FNetworking%20&%20Content%20Delivery%2FAmazon-Route-53.svg
     #icon: https://diagrams.mingrammer.com/img/resources/azure/network/dns-zones.png
@@ -155,8 +161,9 @@ classes: {
   }
   gke: {
     label: GKE
-    #icon: https://diagrams.mingrammer.com/img/resources/gcp/compute/kubernetes-engine.png
-    icon: https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FCompute%2FKubetnetes%20Engine.svg
+    #icon: https://icons.terrastruct.com/gcp%2FProducts%20and%20services%2FCompute%2FKubetnetes%20Engine.svg
+    # nicer: 3d, more distinguished from rest of d2 gcp icon set
+    icon: https://diagrams.mingrammer.com/img/resources/gcp/compute/kubernetes-engine.png
     shape: image
   }
   apache: {
