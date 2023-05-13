@@ -14,6 +14,7 @@
 [![Validation](https://github.com/HariSekhon/Templates/actions/workflows/validate.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/validate.yaml)
 [![Checkov](https://github.com/HariSekhon/Templates/actions/workflows/checkov.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/checkov.yaml)
 [![Kics](https://github.com/HariSekhon/Templates/actions/workflows/kics.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/kics.yaml)
+[![Grype](https://github.com/HariSekhon/Templates/actions/workflows/grype.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/grype.yaml)
 [![Semgrep](https://github.com/HariSekhon/Templates/actions/workflows/semgrep.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/semgrep.yaml)
 [![Semgrep Cloud](https://github.com/HariSekhon/Templates/actions/workflows/semgrep-cloud.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/semgrep-cloud.yaml)
 [![Trivy](https://github.com/HariSekhon/Templates/actions/workflows/trivy.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/trivy.yaml)
