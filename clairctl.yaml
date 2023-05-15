@@ -13,6 +13,8 @@
 #  https://www.linkedin.com/in/HariSekhon
 #
 
+# https://github.com/jgsqware/clairctl
+
 ---
 clair:
   port: 6060
