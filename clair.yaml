@@ -31,6 +31,7 @@ indexer:
   # libpq connection string
   #connstring: host=clair-postgresql.clair.svc.cluster.local port=5432 user=clair dbname=clair sslmode=disable
   # or URL
+  # XXX: trivy and grype don't catch this:-/
   connstring: postgres://clair:clair@clair-postgresql.clair.svc.cluster.local/clair?sslmode=disable
   scanlock_retry: 10
   layer_scan_concurrency: 5
