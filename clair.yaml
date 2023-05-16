@@ -24,20 +24,21 @@
 # XXX: in combo mode '*_addr' fields are ignored as everything runs in a single process
 
 ---
-introspection_addr: localhost:8089  # XXX: Edit to '0.0.0.0:8089' for Kubernetes - this is where Clair's metrics and health endpoints are exposed
-http_listen_addr: localhost:8080  # XXX: Edit to '0.0.0.0:8080' for Kubernetes
+introspection_addr: 0.0.0.0:8089  # where Clair's metrics and health endpoints are exposed
+http_listen_addr: 0.0.0.0:8080
 log_level: info  # debug, debug-color, warn, error, fatal, panic
 indexer:
   # libpq connection string
-  connstring: host=clair-postgres-0 port=5432 user=clair dbname=clair sslmode=disable
+  #connstring: host=clair-postgresql.clair.svc.cluster.local port=5432 user=clair dbname=clair sslmode=disable
   # or URL
-  #connstring: postgres://user:password@localhost/clair?sslmode=disable
+  connstring: postgres://clair:clair@clair-postgresql.clair.svc.cluster.local/clair?sslmode=disable
   scanlock_retry: 10
   layer_scan_concurrency: 5
   migrations: true
 matcher:
-  indexer_addr: localhost:8080  # XXX: Edit to 'clair-indexer:8080' for Kubernetes
-  connstring: host=clair-postgres-0 port=5432 user=clair dbname=clair sslmode=disable
+  indexer_addr: clair-clair.clair.svc.cluster.local:8080  # XXX: Edit
+  #connstring: host=clair-postgresql.clair.svc.cluster.local port=5432 user=clair dbname=clair sslmode=disable
+  connstring: postgres://clair:clair@clair-postgresql.clair.svc.cluster.local/clair?sslmode=disable
   max_conn_pool: 100
   run: ""
   migrations: true
@@ -66,18 +67,19 @@ matchers:
     - ubuntu
     - crda
   config:
-		#python:
-		#  ignore_vulns:
-		#    - CVE-XYZ
-		#    - CVE-ABC
+    #python:
+    #  ignore_vulns:
+    #    - CVE-XYZ
+    #    - CVE-ABC
     crda:
       url: https://gw.api.openshift.io/api/v2/
       source: clair-sample-instance
       key: 207c527cfc2a6b8dcf4fa43ad7a976da
 notifier:
-  indexer_addr: http://clair-indexer:8080/
-  matcher_addr: http://clair-matcher:8080/
-  connstring: host=clair-postgres-0 port=5432 user=clair dbname=clair sslmode=disable
+  indexer_addr: http://clair-clair.clair.svc.cluster.local:8080/  # XXX: Edit for distributed mode
+  matcher_addr: http://clair-clair.clair.svc.cluster.local:8080/  # XXX: Edit for distributed mode
+  #connstring: host=clair-postgresql.clair.svc.cluster.local port=5432 user=clair dbname=clair sslmode=disable
+  connstring: postgres://clair:clair@clair-postgresql.clair.svc.cluster.local/clair?sslmode=disable
   migrations: true
   delivery_interval: 1m
   poll_interval: 5m
