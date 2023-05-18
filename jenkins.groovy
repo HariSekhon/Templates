@@ -1,4 +1,3 @@
-#!/usr/bin/env groovy
 //
 //  Author: Hari Sekhon
 //  Date: [% DATE # 2012-10-14 13:19:29 +0100 (Sun, 14 Oct 2012) %]
