@@ -28,10 +28,19 @@ packer {
 }
 
 # ============================================================================ #
-#
+#                               V a r i a b l e s
+# ============================================================================ #
+
+# https://developer.hashicorp.com/packer/docs/templates/hcl_templates/variables
+
 #   -var-files values.pkrvars.hcl  containing foo = "value"
 #   *.auto.pkrvars.hcl
 #   PKR_VAR_foo=bar
+
+variable "foo" {
+  type = string
+  default = "inline_bar"
+}
 
 variable "docker_image" {
   type    = string
@@ -42,6 +51,30 @@ variable "docker_image" {
 
 variable "aws_region" {
   default = env("AWS_DEFAULT_REGION")
+}
+
+variable "availability_zone_names" {
+  type = list(string)
+  default = [
+    "eu-west-2a",
+    "eu-west-2b",
+    "eu-west-2c"
+  ]
+}
+
+variable "docker_ports" {
+  type = list(object({
+    internal = number
+    external = number
+    protocol = string
+  }))
+  default = [
+    {
+      internal = 8300
+      external = 8300
+      protocol = "tcp"
+    }
+  ]
 }
 
 variable "image_id" {
@@ -101,6 +134,8 @@ locals {
 
   #my_version = "${consul_key("myservice/version")}"
 
+  # requires VAULT_TOKEN and VAULT_ADDR environment variables to be set
+  #
   #foo2 = vault("/secret/data/hello", "foo")
 }
 
