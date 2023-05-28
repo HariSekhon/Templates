@@ -38,7 +38,7 @@ packer {
 #   PKR_VAR_foo=bar
 
 variable "foo" {
-  type = string
+  type    = string
   default = "inline_bar"
 }
 
@@ -121,11 +121,26 @@ variable "image_metadata" {
 }
 
 # ============================================================================ #
-# locals.pkr.hcl
+#                         L o c a l   V a r i a b l e s
+# ============================================================================ #
+
+# https://developer.hashicorp.com/packer/docs/templates/hcl_templates/locals
+
+# locals are like constants and unlike variables cannot be overridden at runtime
+
+# can't be used within data sources as of Packer 1.8
 
 locals {
   foo = "bar"
   #baz = "Foo is '${var.foo}'"
+
+  #default_name_prefix = "${var.project_name}-web"
+  #name_prefix         = "${var.name_prefix != "" ? var.name_prefix : local.default_name_prefix}"
+
+  common_tags = {
+    Component   = "awesome-app"
+    Environment = "production"
+  }
 
   # requires AWS profile / access key to be found, else errors out
   #
@@ -172,6 +187,22 @@ build {
     ]
     # max_retries = 5
     # timeout = "5m"
+  }
+
+  #provisioner "shell-local" {
+  provisioner "shell" {
+    # https://developer.hashicorp.com/packer/docs/templates/hcl_templates/contextual-variables
+    # can access:
+    #   source variables name and type
+    #   build variables name, ID, Host, Port, User and Password (for passing to Ansible),
+    #                   ConnType (eg. "ssh"), SSHPublicKey, SSHPrivateKey, PackerRunUUID,
+    #                   PackerHTTPIP / PackerHTTPPort / PackerHTTPAddr (IP:PORT) of the http file server packer runs to serve files to the VM
+    inline = [
+      "echo Build UUID ${build.PackerRunUUID}",
+      "echo Source '${source.name}' type '${source.type}'",
+      "echo Built using Packer version '${packer.version}' | tee /etc/packer-version"
+      #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem"  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
+    ]
   }
 
   # post-processors (plural) creates a serial post-processing where one post-processor's output is the next one's input
