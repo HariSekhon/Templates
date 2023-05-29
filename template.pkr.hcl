@@ -365,6 +365,8 @@ source "amazon-ebs" "basic-example" {
 
 # https://developer.hashicorp.com/packer/plugins/builders/vmware
 
+# https://developer.hashicorp.com/packer/plugins/builders/vsphere/vsphere-iso
+
 build {
   name = "learn-packer"
 
