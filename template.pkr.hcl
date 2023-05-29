@@ -37,9 +37,14 @@ packer {
       version = ">= 0.0.7"
       source  = "github.com/hashicorp/docker"
     }
-    vmware = {
-      version = ">= 1.0.8"
-      source  = "github.com/hashicorp/vmware"
+    #vmware = {
+    #  version = ">= 1.0.8"
+    #  source  = "github.com/hashicorp/vmware"
+    #}
+    # used to build remotely on ESXi
+    vsphere = {
+      version = ">= 1.1.1"
+      source  = "github.com/hashicorp/vsphere"
     }
   }
 }
@@ -251,8 +256,25 @@ source "virtualbox-iso" "basic-example" {
   memory               = 512   # MB, default: 512
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
-  ssh_username         = "packer"
-  ssh_password         = "packer"
+  # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
+  boot_wait = 10 # secs, default: 10
+  boot_command = [
+    "<tab><wait>",
+    " ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos8-ks.cfg<enter>"
+  ]
+  #boot_command = [
+  #  "<esc><esc><enter><wait>",
+  #  "/install/vmlinuz noapic ",
+  #  "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+  #  "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+  #  "hostname={{ .Name }} ",
+  #  "fb=false debconf/frontend=noninteractive ",
+  #  "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+  #  "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+  #  "initrd=/install/initrd.gz -- <enter>"
+  #]
+  ssh_username = "packer"
+  ssh_password = "packer"
   # needed to ensure filesystem is fsync'd
   shutdown_command        = "echo 'packer' | sudo -S shutdown -P now"
   rtc_time_base           = "UTC"
@@ -265,6 +287,45 @@ source "virtualbox-iso" "basic-example" {
   #  ["modifyvm", "{{.Name}}", "--cpus", "2"],
   #  ["modifyvm", "{{.Name}}", "--memory", "1024"],
   #]
+  export_opts = [
+    "--manifest",
+    "--vsys", "0",
+    #"--description", "${var.vm_description}",  # create variables if uncommenting these
+    #"--version", "${var.vm_version}"
+  ]
+  format = "ova"
+  #output_directory = "" # default: 'output-BUILDNAME', must not already exist
+  #output_filename  = "" # default: '${vm_name}'
+}
+
+# https://developer.hashicorp.com/packer/plugins/builders/virtualbox/ovf
+source "virtualbox-ovf" "basic-example" {
+  vm_name                 = "Some Name" # default: packer-BUILDNAME eg. packer-basic-example - name of the OVF file without the extension
+  source_path             = "source.ovf"
+  ssh_username            = "packer"
+  ssh_password            = "packer"
+  shutdown_command        = "echo 'packer' | sudo -S shutdown -P now"
+  virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
+  guest_additions_mode    = "upload"
+  guest_additions_path    = "VBoxGuestAdditions.iso"
+  # extra CLI customization
+  #vboxmanage = [
+  #  ["modifyvm", "{{.Name}}", "--cpus", "2"],
+  #  ["modifyvm", "{{.Name}}", "--memory", "1024"],
+  #]
+  export_opts = [
+    "--manifest",
+    "--vsys", "0",
+    #"--description", "${var.vm_description}",  # create variables if uncommenting these
+    #"--version", "${var.vm_version}"
+  ]
+  format = "ova"
+  #output_directory = "" # default: 'output-BUILDNAME', must not already exist
+  #output_filename  = "" # default: '${vm_name}'
+}
+
+build {
+  sources = ["sources.virtualbox-ovf.basic-example"]
 }
 
 # https://developer.hashicorp.com/packer/plugins/builders/docker
