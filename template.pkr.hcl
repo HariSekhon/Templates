@@ -25,27 +25,27 @@ packer {
       version = ">= 0.0.1"
       source  = "github.com/hashicorp/virtualbox"
     }
-    amazon = {
-      version = ">= 1.2.5"
-      source  = "github.com/hashicorp/amazon"
-    }
-    googlecompute = {
-      version = ">= 1.1.1"
-      source  = "github.com/hashicorp/googlecompute"
-    }
-    docker = {
-      version = ">= 0.0.7"
-      source  = "github.com/hashicorp/docker"
-    }
+    #amazon = {
+    #  version = ">= 1.2.5"
+    #  source  = "github.com/hashicorp/amazon"
+    #}
+    #googlecompute = {
+    #  version = ">= 1.1.1"
+    #  source  = "github.com/hashicorp/googlecompute"
+    #}
+    #docker = {
+    #  version = ">= 0.0.7"
+    #  source  = "github.com/hashicorp/docker"
+    #}
     #vmware = {
     #  version = ">= 1.0.8"
     #  source  = "github.com/hashicorp/vmware"
     #}
     # used to build remotely on ESXi
-    vsphere = {
-      version = ">= 1.1.1"
-      source  = "github.com/hashicorp/vsphere"
-    }
+    #vsphere = {
+    #  version = ">= 1.1.1"
+    #  source  = "github.com/hashicorp/vsphere"
+    #}
   }
 }
 
@@ -164,13 +164,13 @@ locals {
   root           = path.root
 
   # locals can access data sources but data sources cannot access locals, to prevent circular dependencies
-  source_ami_id   = data.amazon-ami.example.id
-  source_ami_name = data.amazon-ami.example.name
+  #source_ami_id   = data.amazon-ami.example.id
+  #source_ami_name = data.amazon-ami.example.name
 
-  value         = data.amazon-secretsmanager.basic-example.value
-  secret_string = data.amazon-secretsmanager.basic-example.secret_string
-  version_id    = data.amazon-secretsmanager.basic-example.version_id
-  secret_value  = jsondecode(data.amazon-secretsmanager.basic-example.secret_string)["packer_test_key"]
+  #value         = data.amazon-secretsmanager.basic-example.value
+  #secret_string = data.amazon-secretsmanager.basic-example.secret_string
+  #version_id    = data.amazon-secretsmanager.basic-example.version_id
+  #secret_value  = jsondecode(data.amazon-secretsmanager.basic-example.secret_string)["packer_test_key"]
 
   common_tags = {
     Component   = "awesome-app"
@@ -209,32 +209,32 @@ local "mylocal" {
 # https://developer.hashicorp.com/packer/plugins/datasources/amazon
 
 # https://developer.hashicorp.com/packer/plugins/datasources/amazon/ami
-data "amazon-ami" "example" {
-  filters = {
-    virtualization-type = "hvm"
-    name                = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*"
-    root-device-type    = "ebs"
-  }
-  owners      = ["099720109477"]
-  most_recent = true
-}
+#data "amazon-ami" "example" {
+#  filters = {
+#    virtualization-type = "hvm"
+#    name                = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*"
+#    root-device-type    = "ebs"
+#  }
+#  owners      = ["099720109477"]
+#  most_recent = true
+#}
 
 # https://developer.hashicorp.com/packer/plugins/datasources/amazon/secretsmanager
-data "amazon-secretsmanager" "basic-example" {
-  name          = "packer_test_secret"
-  key           = "packer_test_key"
-  version_stage = "example"
-}
+#data "amazon-secretsmanager" "basic-example" {
+#  name          = "packer_test_secret"
+#  key           = "packer_test_key"
+#  version_stage = "example"
+#}
 
 # foo = data.http.example.body
-data "http" "example" {
-  url = "https://checkpoint-api.hashicorp.com/v1/check/terraform"
-
-  # Optional request headers
-  request_headers = {
-    Accept = "application/json"
-  }
-}
+#data "http" "example" {
+#  url = "https://checkpoint-api.hashicorp.com/v1/check/terraform"
+#
+#  # Optional request headers
+#  request_headers = {
+#    Accept = "application/json"
+#  }
+#}
 
 
 # ============================================================================ #
@@ -244,20 +244,20 @@ data "http" "example" {
 # Create multiple sources to build near identical images for different platforms
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
-source "virtualbox-iso" "basic-example" {
-  vm_name = "Some Name" # default: packer-BUILDNAME eg. packer-basic-example - name of the OVF file without the extension
+source "virtualbox-iso" "NAME" {
+  vm_name = "NAME" # XXX: Edit default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
   # VBoxManage list ostypes
   #guest_os_type = "Ubuntu22_LTS_64"
   guest_os_type = "Ubuntu_64"
   # Browse to http://releases.ubuntu.com/ and pick the latest LTS release
   iso_url              = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
-  iso_checksum         = "sha:5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
+  iso_checksum         = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
   cpus                 = 1     # default: 1
   memory               = 512   # MB, default: 512
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
-  boot_wait = 10 # secs, default: 10
+  boot_wait = "10s" # default: 10s
   boot_command = [
     "<tab><wait>",
     " ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos8-ks.cfg<enter>"
@@ -299,8 +299,8 @@ source "virtualbox-iso" "basic-example" {
 }
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/ovf
-source "virtualbox-ovf" "basic-example" {
-  vm_name                 = "Some Name" # default: packer-BUILDNAME eg. packer-basic-example - name of the OVF file without the extension
+source "virtualbox-ovf" "NAME" {
+  vm_name                 = "NAME" # default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
   source_path             = "source.ovf"
   ssh_username            = "packer"
   ssh_password            = "packer"
@@ -324,27 +324,23 @@ source "virtualbox-ovf" "basic-example" {
   #output_filename  = "" # default: '${vm_name}'
 }
 
-build {
-  sources = ["sources.virtualbox-ovf.basic-example"]
-}
-
 # https://developer.hashicorp.com/packer/plugins/builders/docker
-source "docker" "ubuntu" {
-  image  = var.docker_image
-  commit = true
-}
+#source "docker" "ubuntu" {
+#  image  = var.docker_image
+#  commit = true
+#}
 
 # https://developer.hashicorp.com/packer/plugins/builders/vagrant
-source "vagrant" "ubuntu" {
-  source_path = "hashicorp/precise64"
-  provider    = "virtualbox"
-}
+#source "vagrant" "ubuntu" {
+#  source_path = "hashicorp/precise64"
+#  provider    = "virtualbox"
+#}
 
 # https://developer.hashicorp.com/packer/plugins/builders/amazon
-source "amazon-ebs" "basic-example" {
-  source_ami = locals.source_ami
-  // ...
-}
+#source "amazon-ebs" "basic-example" {
+#  source_ami = locals.source_ami
+#  // ...
+#}
 
 
 # ============================================================================ #
@@ -368,11 +364,12 @@ source "amazon-ebs" "basic-example" {
 # https://developer.hashicorp.com/packer/plugins/builders/vsphere/vsphere-iso
 
 build {
-  name = "learn-packer"
+  name = "NAME" # XXX: Edit
 
   # specify multiple sources defined above to build near identical images for different platforms
   sources = [
-    "source.docker.ubuntu"
+    "source.virtualbox-iso.NAME"
+    #"sources.virtualbox-ovf.NAME"
   ]
 
   provisioner "shell" {
@@ -458,25 +455,25 @@ build {
   }
 
   # post-processors (plural) creates a serial post-processing where one post-processor's output is the next one's input
-  post-processors {
-    # vagrant post-processor cannot be used with vagrant builder as it'll clash
-    post-processor "vagrant" {}
-    post-processor "compress" {}
-  }
+  #post-processors {
+  #  # vagrant post-processor cannot be used with vagrant builder as it'll clash
+  #  post-processor "vagrant" {}
+  #  post-processor "compress" {}
+  #}
 
+  # post-processor blocks run in parallel
+  #
   post-processor "checksum" {               # checksum image
     checksum_types      = ["md5", "sha512"] # checksum the artifact
     keep_input_artifact = true              # keep the artifact
   }
 
-  # these 2 post-processors happen in parallel
-  #
   # https://developer.hashicorp.com/packer/plugins/post-processors/docker/docker-tag
-  post-processor "docker-tag" {
-    repository = "learn-packer"
-    tags       = ["ubuntu", "mytag"]
-    only       = ["docker.ubuntu"]
-  }
+  #post-processor "docker-tag" {
+  #  repository = "myrepo"  # XXX: Edit
+  #  tags       = ["ubuntu", "mytag"]
+  #  only       = ["docker.ubuntu"]
+  #}
   #post-processor "docker-tag" {
   #  repository = "learn-packer"
   #  tags       = ["ubuntu-othersource", "packer-rocks"]
@@ -484,12 +481,12 @@ build {
   #}
 
   # happen in serial
-  post-processors {
-    post-processor "docker-import" {
-      repository = "swampdragons/testpush"
-      tag        = "0.7"
-    }
-    # https://developer.hashicorp.com/packer/plugins/post-processors/docker/docker-push
-    post-processor "docker-push" {}
-  }
+  #post-processors {
+  #  post-processor "docker-import" {
+  #    repository = "swampdragons/testpush"
+  #    tag        = "0.7"
+  #  }
+  #  # https://developer.hashicorp.com/packer/plugins/post-processors/docker/docker-push
+  #  post-processor "docker-push" {}
+  #}
 }
