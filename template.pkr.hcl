@@ -21,6 +21,18 @@ packer {
   # Data sources only available in 1.7+
   required_version = ">= 1.7.0, < 2.0.0"
   required_plugins {
+    virtualbox = {
+      version = ">= 0.0.1"
+      source  = "github.com/hashicorp/virtualbox"
+    }
+    amazon = {
+      version = ">= 1.2.5"
+      source  = "github.com/hashicorp/amazon"
+    }
+    googlecompute = {
+      version = ">= 1.1.1"
+      source  = "github.com/hashicorp/googlecompute"
+    }
     docker = {
       version = ">= 0.0.7"
       source  = "github.com/hashicorp/docker"
@@ -146,6 +158,11 @@ locals {
   source_ami_id   = data.amazon-ami.example.id
   source_ami_name = data.amazon-ami.example.name
 
+  value         = data.amazon-secretsmanager.basic-example.value
+  secret_string = data.amazon-secretsmanager.basic-example.secret_string
+  version_id    = data.amazon-secretsmanager.basic-example.version_id
+  secret_value  = jsondecode(data.amazon-secretsmanager.basic-example.secret_string)["packer_test_key"]
+
   common_tags = {
     Component   = "awesome-app"
     Environment = "production"
@@ -178,6 +195,11 @@ local "mylocal" {
 
 # locals can access data sources but data sources cannot access locals, to prevent circular dependencies
 
+# https://developer.hashicorp.com/packer/plugins/datasources/external/external
+
+# https://developer.hashicorp.com/packer/plugins/datasources/amazon
+
+# https://developer.hashicorp.com/packer/plugins/datasources/amazon/ami
 data "amazon-ami" "example" {
   filters = {
     virtualization-type = "hvm"
@@ -186,6 +208,13 @@ data "amazon-ami" "example" {
   }
   owners      = ["099720109477"]
   most_recent = true
+}
+
+# https://developer.hashicorp.com/packer/plugins/datasources/amazon/secretsmanager
+data "amazon-secretsmanager" "basic-example" {
+  name          = "packer_test_secret"
+  key           = "packer_test_key"
+  version_stage = "example"
 }
 
 # foo = data.http.example.body
@@ -204,12 +233,14 @@ data "http" "example" {
 # ============================================================================ #
 
 # Create multiple sources to build near identical images for different platforms
+
+# https://developer.hashicorp.com/packer/plugins/builders/docker
 source "docker" "ubuntu" {
   image  = var.docker_image
   commit = true
 }
 
-// in a source
+# https://developer.hashicorp.com/packer/plugins/builders/amazon
 source "amazon-ebs" "basic-example" {
   source_ami = locals.source_ami
   // ...
@@ -217,6 +248,21 @@ source "amazon-ebs" "basic-example" {
 
 
 # ============================================================================ #
+#                                   B u i l d
+# ============================================================================ #
+
+# https://developer.hashicorp.com/packer/plugins/builders/virtualbox
+
+# https://developer.hashicorp.com/packer/plugins/builders/vagrant
+
+# https://developer.hashicorp.com/packer/plugins/post-processors/vagrant/vagrant
+
+# https://developer.hashicorp.com/packer/plugins/builders/amazon
+
+# https://developer.hashicorp.com/packer/plugins/builders/azure
+
+# https://developer.hashicorp.com/packer/plugins/builders/googlecompute
+
 build {
   name = "learn-packer"
 
@@ -253,6 +299,17 @@ build {
     content     = "Built using Packer version '${packer.version}'"
     destination = "/etc/packer-version"
   }
+
+  # https://developer.hashicorp.com/packer/plugins/provisioners/ansible/ansible
+  #
+  #provisioner "ansible" {
+  #  playbook_file = "./playbook.yml"
+  #  ansible_env_vars = [
+  #    "ANSIBLE_HOST_KEY_CHECKING=False",
+  #    "ANSIBLE_SSH_ARGS='-o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s'",
+  #    #"ANSIBLE_NOCOLOR=True"
+  #  ]
+  #}
 
   # https://developer.hashicorp.com/packer/docs/provisioners/breakpoint
   #
@@ -308,6 +365,8 @@ build {
   }
 
   # these 2 post-processors happen in parallel
+  #
+  # https://developer.hashicorp.com/packer/plugins/post-processors/docker/docker-tag
   post-processor "docker-tag" {
     repository = "learn-packer"
     tags       = ["ubuntu", "mytag"]
@@ -325,6 +384,7 @@ build {
       repository = "swampdragons/testpush"
       tag        = "0.7"
     }
+    # https://developer.hashicorp.com/packer/plugins/post-processors/docker/docker-push
     post-processor "docker-push" {}
   }
 }
