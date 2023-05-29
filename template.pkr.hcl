@@ -245,7 +245,7 @@ local "mylocal" {
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
 source "virtualbox-iso" "NAME" {
-  vm_name = "NAME" # XXX: Edit default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
+  vm_name = "NAME" # XXX: Edit Name, default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
   # VBoxManage list ostypes
   #guest_os_type = "Ubuntu22_LTS_64"
   guest_os_type = "Ubuntu_64"
@@ -253,14 +253,15 @@ source "virtualbox-iso" "NAME" {
   iso_url              = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
   iso_checksum         = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
   cpus                 = 1     # default: 1
-  memory               = 512   # MB, default: 512
+  memory               = 15136 # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
   boot_wait = "10s" # default: 10s
   boot_command = [
-    "<tab><wait>",
-    " ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos8-ks.cfg<enter>"
+    #" <tab><wait>",
+    #" ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos8-ks.cfg<enter>"
+    #" autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/"
   ]
   #boot_command = [
   #  "<esc><esc><enter><wait>",
@@ -273,15 +274,21 @@ source "virtualbox-iso" "NAME" {
   #  "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
   #  "initrd=/install/initrd.gz -- <enter>"
   #]
+  #communicator = "none"  # doesn't work to to allow a first manual install to collect /var/log/installer/autoinstall-user-data, must instead use -debug
+  #guest_additions_mode    = "upload"
+  guest_additions_mode    = "disable"  # must be disabled when using communicator = 'none'
+  #guest_additions_path    = "VBoxGuestAdditions.iso"
+  # doesn't work to set this higher to allow a first manual install to collect /var/log/installer/autoinstall-user-data
+  # gets an SSH authentication error a couple minutes in and kills the VM regardless
+  #ssh_timeout  = "30m"  # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username = "packer"
   ssh_password = "packer"
   # needed to ensure filesystem is fsync'd
   shutdown_command        = "echo 'packer' | sudo -S shutdown -P now"
   rtc_time_base           = "UTC"
-  virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
+  #virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
+  virtualbox_version_file = "" # must be an empty string when using communicator = 'none'
   bundle_iso              = false           # keep the ISO attached
-  guest_additions_mode    = "upload"
-  guest_additions_path    = "VBoxGuestAdditions.iso"
   # extra CLI customization
   #vboxmanage = [
   #  ["modifyvm", "{{.Name}}", "--cpus", "2"],
@@ -364,25 +371,13 @@ source "virtualbox-iso" "NAME" {
 # https://developer.hashicorp.com/packer/plugins/builders/vsphere/vsphere-iso
 
 build {
-  name = "NAME" # XXX: Edit
+  name = "NAME"
 
   # specify multiple sources defined above to build near identical images for different platforms
   sources = [
     "source.virtualbox-iso.NAME"
     #"sources.virtualbox-ovf.NAME"
   ]
-
-  provisioner "shell" {
-    environment_vars = [
-      "FOO=hello world",
-    ]
-    inline = [
-      "echo Adding file to Docker Container",
-      "echo \"FOO is $FOO\" > example.txt",
-    ]
-    # max_retries = 5
-    # timeout = "5m"
-  }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/file
   #
@@ -396,10 +391,10 @@ build {
   #  destination = "/etc/conf/"
   #}
 
-  provisioner "file" {
-    content     = "Built using Packer version '${packer.version}'"
-    destination = "/etc/packer-version"
-  }
+  #provisioner "file" {
+  #  content     = "Built using Packer version '${packer.version}'"
+  #  destination = "/etc/packer-version"
+  #}
 
   # https://developer.hashicorp.com/packer/plugins/provisioners/ansible/ansible
   #
@@ -416,10 +411,10 @@ build {
   #
   #   when -debug switch this pauses to be able to debug the build
   #
-  provisioner "breakpoint" {
-    disable = false
-    note    = "this is a breakpoint to be able to inspect the VM contents"
-  }
+  #provisioner "breakpoint" {
+  #  disable = false
+  #  note    = "this is a breakpoint to be able to inspect the VM contents"
+  #}
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell-local
   #
@@ -438,21 +433,23 @@ build {
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
   #
-  provisioner "shell" {
-    #script = "/path/to/script.sh"
-    #script = "./script.sh"
-    #scripts = [
-    #  "/path/to/script.sh",
-    #  "./script.sh"
-    #]
-    environment_vars = [
-      "FOO=bar"
-    ]
-    inline = [
-      "echo Built using Packer version '${packer.version}' | tee /etc/packer-version"
-      #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem"  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
-    ]
-  }
+  #provisioner "shell" {
+  #  #script = "/path/to/script.sh"
+  #  #script = "./script.sh"
+  #  #scripts = [
+  #  #  "/path/to/script.sh",
+  #  #  "./script.sh"
+  #  #]
+  #  environment_vars = [
+  #    "FOO=bar"
+  #  ]
+  #  inline = [
+  #    "echo Built using Packer version '${packer.version}' | tee /etc/packer-version"
+  #    #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem"  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
+  #  ]
+  #  # max_retries = 5
+  #  # timeout = "5m"
+  #}
 
   # post-processors (plural) creates a serial post-processing where one post-processor's output is the next one's input
   #post-processors {
