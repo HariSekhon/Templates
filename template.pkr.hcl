@@ -247,10 +247,10 @@ source "virtualbox-iso" "basic-example" {
   # Browse to http://releases.ubuntu.com/ and pick the latest LTS release
   iso_url              = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
   iso_checksum         = "sha:5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
-  cpus                 = 1
-  memory               = 512   # MB
+  cpus                 = 1     # default: 1
+  memory               = 512   # MB, default: 512
   disk_size            = 40000 # default: 40000 MB = around 40GB
-  disk_additional_size = []    # add MiB sizes, disks will be called vm_name-# where # is the incrementing integer
+  disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   ssh_username         = "packer"
   ssh_password         = "packer"
   # needed to ensure filesystem is fsync'd
@@ -260,6 +260,11 @@ source "virtualbox-iso" "basic-example" {
   bundle_iso              = false           # keep the ISO attached
   guest_additions_mode    = "upload"
   guest_additions_path    = "VBoxGuestAdditions.iso"
+  # extra CLI customization
+  #vboxmanage = [
+  #  ["modifyvm", "{{.Name}}", "--cpus", "2"],
+  #  ["modifyvm", "{{.Name}}", "--memory", "1024"],
+  #]
 }
 
 # https://developer.hashicorp.com/packer/plugins/builders/docker
