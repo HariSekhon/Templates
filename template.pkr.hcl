@@ -238,10 +238,40 @@ data "http" "example" {
 
 # Create multiple sources to build near identical images for different platforms
 
+# https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
+source "virtualbox-iso" "basic-example" {
+  vm_name = "Some Name" # default: packer-BUILDNAME eg. packer-basic-example - name of the OVF file without the extension
+  # VBoxManage list ostypes
+  #guest_os_type = "Ubuntu22_LTS_64"
+  guest_os_type = "Ubuntu_64"
+  # Browse to http://releases.ubuntu.com/ and pick the latest LTS release
+  iso_url              = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
+  iso_checksum         = "sha:5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
+  cpus                 = 1
+  memory               = 512   # MB
+  disk_size            = 40000 # default: 40000 MB = around 40GB
+  disk_additional_size = []    # add MiB sizes, disks will be called vm_name-# where # is the incrementing integer
+  ssh_username         = "packer"
+  ssh_password         = "packer"
+  # needed to ensure filesystem is fsync'd
+  shutdown_command        = "echo 'packer' | sudo -S shutdown -P now"
+  rtc_time_base           = "UTC"
+  virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
+  bundle_iso              = false           # keep the ISO attached
+  guest_additions_mode    = "upload"
+  guest_additions_path    = "VBoxGuestAdditions.iso"
+}
+
 # https://developer.hashicorp.com/packer/plugins/builders/docker
 source "docker" "ubuntu" {
   image  = var.docker_image
   commit = true
+}
+
+# https://developer.hashicorp.com/packer/plugins/builders/vagrant
+source "vagrant" "ubuntu" {
+  source_path = "hashicorp/precise64"
+  provider    = "virtualbox"
 }
 
 # https://developer.hashicorp.com/packer/plugins/builders/amazon
@@ -361,6 +391,7 @@ build {
 
   # post-processors (plural) creates a serial post-processing where one post-processor's output is the next one's input
   post-processors {
+    # vagrant post-processor cannot be used with vagrant builder as it'll clash
     post-processor "vagrant" {}
     post-processor "compress" {}
   }
