@@ -1,0 +1,184 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2023-05-29 21:23:52 +0100 (Mon, 29 May 2023)
+#
+#  vim:ts=4:sts=4:sw=4:et
+#
+#  https://github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                  A u t o I n s t a l l   f o r   U b u n t u
+# ============================================================================ #
+
+# https://ubuntu.com/server/docs/install/autoinstall-reference
+
+#cloud-config
+autoinstall:
+  apt:
+    disable_components: []
+    fallback: abort
+    geoip: true
+    mirror-selection:
+      primary:
+      - country-mirror
+      - arches:
+        - amd64
+        - i386
+        uri: http://archive.ubuntu.com/ubuntu
+      - arches:
+        - s390x
+        - arm64
+        - armhf
+        - powerpc
+        - ppc64el
+        - riscv64
+        uri: http://ports.ubuntu.com/ubuntu-ports
+    preserve_sources_list: false
+  codecs:
+    install: false
+  drivers:
+    install: false
+  identity:
+    hostname: server1
+    password: $6$catWBT5LQkwTxa5H$OUaC8WRq/GmeyjnIyHRcwH8/Dt1HINgPxDM6Tot7lw1qiiHg7Cxos0w5h/luc0xfI5N88xgAzo//E.4q1Tufb1
+    realname: hari
+    username: hari
+  kernel:
+    package: linux-generic
+  keyboard:
+    layout: gb
+    toggle: null
+    variant: ''
+  locale: en_GB.UTF-8
+  network:
+    ethernets:
+      enp0s3:
+        dhcp4: true
+    version: 2
+  snaps:
+  - channel: stable
+    classic: true
+    name: aws-cli
+  - channel: stable
+    classic: false
+    name: docker
+  - channel: stable
+    classic: false
+    name: doctl
+  - channel: stable
+    classic: false
+    name: etcd
+  - channel: stable
+    classic: true
+    name: google-cloud-sdk
+  - channel: stable
+    classic: false
+    name: juju
+  - channel: stable
+    classic: true
+    name: keepalived
+  - channel: stable
+    classic: true
+    name: microk8s
+  - channel: stable
+    classic: false
+    name: postgresql10
+  - channel: stable
+    classic: false
+    name: prometheus
+  - channel: stable
+    classic: false
+    name: stress-ng
+  source:
+    id: ubuntu-server-minimal
+    search_drivers: false
+  ssh:
+    allow-pw: false
+    authorized-keys:
+    - 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvihSRU+YjBKvKiacDfUoZ7ghoVMcwNh4cWIYUNFGZosXOzNtyOcBpIb71TCgLFhOd+aMWKXCEC67BpNSIjt+a/FLD27AwmgVHv6cPlE3G0JJ9zmIrNmx9511dshTsxUW2O0SbYG+3InuO7FUkSrld+kA1OucyjgmZU7/+Cs9shpAEOaIVYmGlpDGRucAHpwtckvdgRTtnA3WNZ/Qg1vU6Ik4Xm03vjrW6lSiuTffYO1kbdcMQ4IZBlzfmovOtXQ0PomvN5NMCpgOyQuoNlvyS11tOXoqNiWOkiLE15XEzAQth9hHbNiH8jHJbAtkHqWWh0KK4IUyNGvoL6QfNxsTlw==
+      harisekhon@github/3807063 # ssh-import-id gh:harisekhon'
+    - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDQe6MuFOGBezYp/PoAr0x4ptWVFlkYyE6VVooEQ1DpQ5tcOcrsFIX/qW7nnZkOUsjxpXSN90sNrP7uOUa0IaU5MxDE0mMr+13HXUUmloA5HbIdbRi2wGTGaXE/uVXBEZKeD6+LD1AHM8dgEOgWF/j+XUQ0zcarg6Q45bE54my+9pWwQzciVa8LVdRYK+Rct5YR6Vo2cbjYAZ44G4d0Fq/k6nYwd0UhQfYcXP7R+bPBiiXDrECK/xn/OauYVY2QunfcfKyVBAWgpTkCDi+Nw6GFvgHwTd7WJ/IqZy9Lqyz2ymqn2yRyiHiKlH65+5RuP+9otpx9YshuBUyRrF4NGhNfm9LQ9vbckpk67h7I8w4nkh6w77N6wg+dlDDv42H6dPpX0IrSLmEsxeCWp5W+C4rHSlw62Yhsw2nO2bw251Qyb/UwGTk87pxg9jLjlp5YL0bcwONYX0ZSUPNoId4z1FNKcOmo1B5oRmwyQq2ua9hvieMhivQpqHa7IxB8MPOOtY8=
+      harisekhon@github/76141680 # ssh-import-id gh:harisekhon'
+    install-server: true
+  storage:
+    config:
+    - ptable: gpt
+      serial: VBOX_HARDDISK_VBb6dd3e08-4a760e17
+      path: /dev/sda
+      wipe: superblock-recursive
+      preserve: false
+      name: ''
+      grub_device: true
+      type: disk
+      id: disk-sda
+    - device: disk-sda
+      size: 1048576
+      flag: bios_grub
+      number: 1
+      preserve: false
+      grub_device: false
+      offset: 1048576
+      path: /dev/sda1
+      type: partition
+      id: partition-0
+    - device: disk-sda
+      size: 2147483648
+      wipe: superblock
+      number: 2
+      preserve: false
+      grub_device: false
+      offset: 2097152
+      path: /dev/sda2
+      type: partition
+      id: partition-1
+    - fstype: ext4
+      volume: partition-1
+      preserve: false
+      type: format
+      id: format-0
+    - device: disk-sda
+      size: 39792410624
+      wipe: superblock
+      number: 3
+      preserve: false
+      grub_device: false
+      offset: 2149580800
+      path: /dev/sda3
+      type: partition
+      id: partition-2
+    - name: ubuntu-vg
+      devices:
+      - partition-2
+      preserve: false
+      type: lvm_volgroup
+      id: lvm_volgroup-0
+    - name: ubuntu-lv
+      volgroup: lvm_volgroup-0
+      size: 19893583872B
+      wipe: superblock
+      preserve: false
+      path: /dev/ubuntu-vg/ubuntu-lv
+      type: lvm_partition
+      id: lvm_partition-0
+    - fstype: ext4
+      volume: lvm_partition-0
+      preserve: false
+      type: format
+      id: format-1
+    - path: /
+      device: format-1
+      type: mount
+      id: mount-1
+    - path: /boot
+      device: format-0
+      type: mount
+      id: mount-0
+  updates: security
+  version: 1
