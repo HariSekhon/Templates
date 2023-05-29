@@ -18,6 +18,7 @@
 # ============================================================================ #
 
 packer {
+  # Data sources only available in 1.7+
   required_version = ">= 1.7.0, < 2.0.0"
   required_plugins {
     docker = {
@@ -137,6 +138,14 @@ locals {
   #default_name_prefix = "${var.project_name}-web"
   #name_prefix         = "${var.name_prefix != "" ? var.name_prefix : local.default_name_prefix}"
 
+  settings_file  = "${path.cwd}/settings.txt" # path.cwd  = 'packer' commands's $PWD
+  scripts_folder = "${path.root}/scripts"     # path.root = is the dirname(file.pkr.hcl)
+  root           = path.root
+
+  # locals can access data sources but data sources cannot access locals, to prevent circular dependencies
+  source_ami_id   = data.amazon-ami.example.id
+  source_ami_name = data.amazon-ami.example.name
+
   common_tags = {
     Component   = "awesome-app"
     Environment = "production"
@@ -160,6 +169,28 @@ local "mylocal" {
   sensitive  = true
 }
 
+
+# ============================================================================ #
+#                            D a t a   S o u r c e s
+# ============================================================================ #
+
+# https://developer.hashicorp.com/packer/docs/templates/hcl_templates/datasources
+
+# locals can access data sources but data sources cannot access locals, to prevent circular dependencies
+
+data "amazon-ami" "example" {
+  filters = {
+    virtualization-type = "hvm"
+    name                = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*"
+    root-device-type    = "ebs"
+  }
+  owners      = ["099720109477"]
+  most_recent = true
+}
+
+
+# ============================================================================ #
+#                                 S o u r c e s
 # ============================================================================ #
 
 # Create multiple sources to build near identical images for different platforms
@@ -167,6 +198,13 @@ source "docker" "ubuntu" {
   image  = var.docker_image
   commit = true
 }
+
+// in a source
+source "amazon-ebs" "basic-example" {
+  source_ami = locals.source_ami
+  // ...
+}
+
 
 # ============================================================================ #
 build {
