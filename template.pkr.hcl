@@ -37,6 +37,10 @@ packer {
       version = ">= 0.0.7"
       source  = "github.com/hashicorp/docker"
     }
+    vmware = {
+      version = ">= 1.0.8"
+      source  = "github.com/hashicorp/vmware"
+    }
   }
 }
 
@@ -262,6 +266,8 @@ source "amazon-ebs" "basic-example" {
 # https://developer.hashicorp.com/packer/plugins/builders/azure
 
 # https://developer.hashicorp.com/packer/plugins/builders/googlecompute
+
+# https://developer.hashicorp.com/packer/plugins/builders/vmware
 
 build {
   name = "learn-packer"
