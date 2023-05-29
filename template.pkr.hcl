@@ -188,6 +188,16 @@ data "amazon-ami" "example" {
   most_recent = true
 }
 
+# foo = data.http.example.body
+data "http" "example" {
+  url = "https://checkpoint-api.hashicorp.com/v1/check/terraform"
+
+  # Optional request headers
+  request_headers = {
+    Accept = "application/json"
+  }
+}
+
 
 # ============================================================================ #
 #                                 S o u r c e s
@@ -227,8 +237,35 @@ build {
     # timeout = "5m"
   }
 
-  #provisioner "shell-local" {
-  provisioner "shell" {
+  # https://developer.hashicorp.com/packer/docs/provisioners/file
+  #
+  #provisioner "file" {
+  #  source = "app.tar.gz"
+  #  destination = "/tmp/app.tar.gz"
+  #}
+  #
+  #provisioner "file" {
+  #  sources = ["file1.txt", "file2.txt"]
+  #  destination = "/etc/conf/"
+  #}
+
+  provisioner "file" {
+    content     = "Built using Packer version '${packer.version}'"
+    destination = "/etc/packer-version"
+  }
+
+  # https://developer.hashicorp.com/packer/docs/provisioners/breakpoint
+  #
+  #   when -debug switch this pauses to be able to debug the build
+  #
+  provisioner "breakpoint" {
+    disable = false
+    note    = "this is a breakpoint to be able to inspect the VM contents"
+  }
+
+  # https://developer.hashicorp.com/packer/docs/provisioners/shell-local
+  #
+  provisioner "shell-local" {
     # https://developer.hashicorp.com/packer/docs/templates/hcl_templates/contextual-variables
     # can access:
     #   source variables name and type
@@ -238,6 +275,22 @@ build {
     inline = [
       "echo Build UUID ${build.PackerRunUUID}",
       "echo Source '${source.name}' type '${source.type}'",
+    ]
+  }
+
+  # https://developer.hashicorp.com/packer/docs/provisioners/shell
+  #
+  provisioner "shell" {
+    #script = "/path/to/script.sh"
+    #script = "./script.sh"
+    #scripts = [
+    #  "/path/to/script.sh",
+    #  "./script.sh"
+    #]
+    environment_vars = [
+      "FOO=bar"
+    ]
+    inline = [
       "echo Built using Packer version '${packer.version}' | tee /etc/packer-version"
       #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem"  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
     ]
