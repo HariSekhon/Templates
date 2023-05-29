@@ -299,30 +299,30 @@ source "virtualbox-iso" "NAME" {
 }
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/ovf
-source "virtualbox-ovf" "NAME" {
-  vm_name                 = "NAME" # default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
-  source_path             = "source.ovf"
-  ssh_username            = "packer"
-  ssh_password            = "packer"
-  shutdown_command        = "echo 'packer' | sudo -S shutdown -P now"
-  virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
-  guest_additions_mode    = "upload"
-  guest_additions_path    = "VBoxGuestAdditions.iso"
-  # extra CLI customization
-  #vboxmanage = [
-  #  ["modifyvm", "{{.Name}}", "--cpus", "2"],
-  #  ["modifyvm", "{{.Name}}", "--memory", "1024"],
-  #]
-  export_opts = [
-    "--manifest",
-    "--vsys", "0",
-    #"--description", "${var.vm_description}",  # create variables if uncommenting these
-    #"--version", "${var.vm_version}"
-  ]
-  format = "ova"
-  #output_directory = "" # default: 'output-BUILDNAME', must not already exist
-  #output_filename  = "" # default: '${vm_name}'
-}
+#source "virtualbox-ovf" "NAME" {
+#  vm_name                 = "NAME" # default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
+#  source_path             = "source.ovf"
+#  ssh_username            = "packer"
+#  ssh_password            = "packer"
+#  shutdown_command        = "echo 'packer' | sudo -S shutdown -P now"
+#  virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
+#  guest_additions_mode    = "upload"
+#  guest_additions_path    = "VBoxGuestAdditions.iso"
+#  # extra CLI customization
+#  #vboxmanage = [
+#  #  ["modifyvm", "{{.Name}}", "--cpus", "2"],
+#  #  ["modifyvm", "{{.Name}}", "--memory", "1024"],
+#  #]
+#  export_opts = [
+#    "--manifest",
+#    "--vsys", "0",
+#    #"--description", "${var.vm_description}",  # create variables if uncommenting these
+#    #"--version", "${var.vm_version}"
+#  ]
+#  format = "ova"
+#  #output_directory = "" # default: 'output-BUILDNAME', must not already exist
+#  #output_filename  = "" # default: '${vm_name}'
+#}
 
 # https://developer.hashicorp.com/packer/plugins/builders/docker
 #source "docker" "ubuntu" {
