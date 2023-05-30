@@ -33,8 +33,11 @@ autoinstall:
     - arches:
       - default
       uri: http://ports.ubuntu.com/ubuntu-ports
+  disable_root: true
   drivers:
     install: false
+  early-commands:
+    - systemctl stop sshd  # stop sshd during the installer or else packer will try to connect too early
   identity:
     hostname: server1
     password: $6$SKgUj12luWUiaMpN$pSRLDN.ExoNlBfNm4b5r8RtukZOkyr4mClu0A/hA7ghxAfPQfDw9jb8NvPyl64exP6EZMRAkzwMAyu3ycrrsm0
@@ -46,12 +49,28 @@ autoinstall:
     layout: gb
     toggle: null
     variant: ''
+  late-commands:
+    - 'echo "packer ALL=(ALL) NOPASSWD: ALL" > /target/etc/sudoers.d/packer'
   locale: en_GB.UTF-8
   network:
     ethernets:
       enp0s3:
         dhcp4: true
     version: 2
+  packages:
+    - curl
+    - iptables
+    - iputils-ping
+    - less
+    - net-utils
+    - ntp
+    - ntpdate
+    - procps
+    - psmisc
+    - screen
+    - traceroute
+    - tmux
+    - vim
   #proxy: http://proxy_host:proxy_port/
   shutdown: poweroff
   snaps:
@@ -95,6 +114,7 @@ autoinstall:
   ssh:
     # needed by Packer to log in and finish configuring
     allow-pw: true
+    allow_public_ssh_keys: true
     authorized-keys:
     - 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvihSRU+YjBKvKiacDfUoZ7ghoVMcwNh4cWIYUNFGZosXOzNtyOcBpIb71TCgLFhOd+aMWKXCEC67BpNSIjt+a/FLD27AwmgVHv6cPlE3G0JJ9zmIrNmx9511dshTsxUW2O0SbYG+3InuO7FUkSrld+kA1OucyjgmZU7/+Cs9shpAEOaIVYmGlpDGRucAHpwtckvdgRTtnA3WNZ/Qg1vU6Ik4Xm03vjrW6lSiuTffYO1kbdcMQ4IZBlzfmovOtXQ0PomvN5NMCpgOyQuoNlvyS11tOXoqNiWOkiLE15XEzAQth9hHbNiH8jHJbAtkHqWWh0KK4IUyNGvoL6QfNxsTlw==
       harisekhon@github/3807063 # ssh-import-id gh:harisekhon'
@@ -102,72 +122,8 @@ autoinstall:
       harisekhon@github/76141680 # ssh-import-id gh:harisekhon'
     install-server: true
   storage:
-    config:
-    - ptable: gpt
-      path: /dev/sda
-      wipe: superblock-recursive
-      preserve: false
-      name: ''
-      grub_device: true
-      type: disk
-      id: disk-sda
-    - device: disk-sda
-      size: 1048576
-      flag: bios_grub
-      number: 1
-      preserve: false
-      grub_device: false
-      offset: 1048576
-      type: partition
-      id: partition-0
-    - device: disk-sda
-      size: 2147483648
-      wipe: superblock
-      number: 2
-      preserve: false
-      grub_device: false
-      offset: 2097152
-      type: partition
-      id: partition-1
-    - fstype: ext4
-      volume: partition-1
-      preserve: false
-      type: format
-      id: format-0
-    - device: disk-sda
-      size: 39792410624
-      wipe: superblock
-      number: 3
-      preserve: false
-      grub_device: false
-      offset: 2149580800
-      type: partition
-      id: partition-2
-    - name: ubuntu-vg
-      devices:
-      - partition-2
-      preserve: false
-      type: lvm_volgroup
-      id: lvm_volgroup-0
-    - name: ubuntu-lv
-      volgroup: lvm_volgroup-0
-      size: 19893583872B
-      wipe: superblock
-      preserve: false
-      type: lvm_partition
-      id: lvm_partition-0
-    - fstype: ext4
-      volume: lvm_partition-0
-      preserve: false
-      type: format
-      id: format-1
-    - path: /
-      device: format-1
-      type: mount
-      id: mount-1
-    - path: /boot
-      device: format-0
-      type: mount
-      id: mount-0
+    layout:
+      name: lvm
+  timezone: UTC
   updates: security
   version: 1
