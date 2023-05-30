@@ -257,6 +257,7 @@ source "virtualbox-iso" "NAME" {
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
+  #http_directory       = "${path.root}" # doesn't work
   # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
   boot_wait = "5s" # default: 10s
   boot_command = [
@@ -287,7 +288,7 @@ source "virtualbox-iso" "NAME" {
   #guest_additions_path    = "VBoxGuestAdditions.iso"
   # doesn't work to set this higher to allow a first manual install to collect /var/log/installer/autoinstall-user-data
   # gets an SSH authentication error a couple minutes in and kills the VM regardless
-  ssh_timeout  = "10m"  # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  ssh_timeout  = "10m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username = "packer"
   ssh_password = "packer"
   # needed to ensure filesystem is fsync'd
@@ -302,6 +303,7 @@ source "virtualbox-iso" "NAME" {
     #["modifyvm", "{{.Name}}", "--memory", "1024"],
     # Error executing command: VBoxManage error: VBoxManage: error: Machine 'NAME' is not currently running.
     #["sharedfolder", "add", "{{.Name}}", "--name", "vboxsf", "--hostpath", "~/vboxsf", "--automount", "--transient"],
+    ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"], # XXX: workaround for auto-installer hanging at AppArmour Load
   ]
   export_opts = [
     "--manifest",
@@ -318,7 +320,7 @@ source "virtualbox-iso" "NAME" {
 #source "virtualbox-ovf" "NAME" {
 #  vm_name                 = "NAME" # default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
 #  source_path             = "source.ovf"
-#  ssh_username            = "packer"
+#  ssh_username            = "packer
 #  ssh_password            = "packer"
 #  shutdown_command        = "echo 'packer' | sudo -S shutdown -P now"
 #  virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
@@ -469,10 +471,11 @@ build {
     environment_vars = [
       "FOO=bar"
     ]
+    execute_command = "echo 'packer' | sudo -S -E bash '{{ .Path }}'"
     inline = [
       "env",
-      # pre-authorize sudo
-      "echo 'packer' | sudo -S echo",
+      # pre-authorize sudo - or run whole shell as root using execute_command above
+      #"echo 'packer' | sudo -S echo",
       "echo Built using Packer version '${packer.version}' | sudo tee /etc/packer-version",
       #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem",  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
       "sudo mkdir -pv /mnt/vboxsf",
