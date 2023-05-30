@@ -17,4 +17,4 @@
 #                  A u t o I n s t a l l   f o r   U b u n t u
 # ============================================================================ #
 
-# Stub
+# Stub - necessary for Cloud Init to respect user-data for Ubuntu's AutoInstaller
