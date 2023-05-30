@@ -13,6 +13,9 @@
 #  https://www.linkedin.com/in/HariSekhon
 #
 
+# Uses Ubuntu Autoinstaller - 'packer' command must be run from the same directory as the provided
+#                             adjacent 'user-data' and 'meta-data' files to be served via HTTP for CloudInit
+
 # ============================================================================ #
 #                                  P a c k e r
 # ============================================================================ #
@@ -245,13 +248,13 @@ local "mylocal" {
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
 source "virtualbox-iso" "ubuntu" {
-  #vm_name = "ubuntu" # XXX: Edit Name, default: packer-BUILDNAME eg. packer-ubuntu - name of the OVF file without the extension
+  vm_name = "ubuntu" # name of the OVF file without the extension, default: packer-<buildname>-<epoch> eg. packer-ubuntu-1685455208
   # VBoxManage list ostypes
   #guest_os_type = "Ubuntu22_LTS_64"
   guest_os_type = "Ubuntu_64"
   # Browse to http://releases.ubuntu.com/ and pick the latest LTS release
-  iso_url              = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
-  iso_checksum         = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
+  iso_url      = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
+  iso_checksum = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
   # for M1/M2 Macs:
   #iso_url              = "https://cdimage.ubuntu.com/releases/22.04/release/ubuntu-22.04.2-live-server-arm64.iso"
   #iso_checksum         = "12eed04214d8492d22686b72610711882ddf6222b4dc029c24515a85c4874e95"
@@ -325,7 +328,7 @@ source "virtualbox-iso" "ubuntu" {
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/ovf
 #source "virtualbox-ovf" "ubuntu" {
-#  #vm_name                = "ubuntu" # default: packer-BUILDNAME eg. packer-ubuntu - name of the OVF file without the extension
+#  vm_name                 = "ubuntu"
 #  source_path             = "source.ovf"
 #  ssh_username            = "packer
 #  ssh_password            = "packer"
