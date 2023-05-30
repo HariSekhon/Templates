@@ -62,14 +62,20 @@ autoinstall:
     - iptables
     - iputils-ping
     - less
+    - net-tools
     - ntp
     - ntpdate
     - procps
     - psmisc
     - screen
+    - tcpdump
+    - time
     - traceroute
     - tmux
     - vim
+    - wget
+    - zip
+    - unzip
   #proxy: http://proxy_host:proxy_port/
   snaps:
   - channel: stable
