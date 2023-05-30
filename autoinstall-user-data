@@ -70,13 +70,13 @@ autoinstall:
     - psmisc
     - screen
     - tcpdump
-    - time
+    #- time
     - traceroute
     - tmux
     - vim
     - wget
-    - zip
-    - unzip
+    #- zip
+    #- unzip
   #proxy: http://proxy_host:proxy_port/
   snaps:
   - channel: stable
