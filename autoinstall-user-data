@@ -40,6 +40,7 @@ autoinstall:
     - systemctl stop sshd  # stop sshd during the installer or else packer will try to connect too early
   identity:
     hostname: server1
+    # pw is 'packer' to match Packer settings in template.pkr.hcl
     password: $6$SKgUj12luWUiaMpN$pSRLDN.ExoNlBfNm4b5r8RtukZOkyr4mClu0A/hA7ghxAfPQfDw9jb8NvPyl64exP6EZMRAkzwMAyu3ycrrsm0
     realname: packer
     username: packer
