@@ -250,8 +250,11 @@ source "virtualbox-iso" "NAME" {
   #guest_os_type = "Ubuntu22_LTS_64"
   guest_os_type = "Ubuntu_64"
   # Browse to http://releases.ubuntu.com/ and pick the latest LTS release
-  iso_url              = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
-  iso_checksum         = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
+  #iso_url              = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
+  #iso_checksum         = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
+  # for M1/M2 Macs:
+  iso_url              = "https://cdimage.ubuntu.com/releases/22.04/release/ubuntu-22.04.2-live-server-arm64.iso"
+  iso_checksum         = "12eed04214d8492d22686b72610711882ddf6222b4dc029c24515a85c4874e95"
   cpus                 = 1     # default: 1
   memory               = 15136 # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
   disk_size            = 40000 # default: 40000 MB = around 40GB
