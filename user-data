@@ -62,7 +62,6 @@ autoinstall:
     - iptables
     - iputils-ping
     - less
-    - net-utils
     - ntp
     - ntpdate
     - procps
