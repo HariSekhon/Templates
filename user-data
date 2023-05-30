@@ -72,7 +72,6 @@ autoinstall:
     - tmux
     - vim
   #proxy: http://proxy_host:proxy_port/
-  shutdown: poweroff
   snaps:
   - channel: stable
     classic: true
