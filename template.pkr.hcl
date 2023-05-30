@@ -226,7 +226,7 @@ local "mylocal" {
 #  version_stage = "example"
 #}
 
-# foo = data.http.example.body
+# foo = data.http.NAME.body
 #data "http" "NAME" {
 #  url = "https://checkpoint-api.hashicorp.com/v1/check/terraform"
 #
