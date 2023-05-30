@@ -164,13 +164,13 @@ locals {
   root           = path.root
 
   # locals can access data sources but data sources cannot access locals, to prevent circular dependencies
-  #source_ami_id   = data.amazon-ami.example.id
-  #source_ami_name = data.amazon-ami.example.name
+  #source_ami_id   = data.amazon-ami.NAME.id
+  #source_ami_name = data.amazon-ami.NAME.name
 
-  #value         = data.amazon-secretsmanager.basic-example.value
-  #secret_string = data.amazon-secretsmanager.basic-example.secret_string
-  #version_id    = data.amazon-secretsmanager.basic-example.version_id
-  #secret_value  = jsondecode(data.amazon-secretsmanager.basic-example.secret_string)["packer_test_key"]
+  #value         = data.amazon-secretsmanager.NAME.value
+  #secret_string = data.amazon-secretsmanager.NAME.secret_string
+  #version_id    = data.amazon-secretsmanager.NAME.version_id
+  #secret_value  = jsondecode(data.amazon-secretsmanager.NAME.secret_string)["packer_test_key"]
 
   common_tags = {
     Component   = "awesome-app"
@@ -209,7 +209,7 @@ local "mylocal" {
 # https://developer.hashicorp.com/packer/plugins/datasources/amazon
 
 # https://developer.hashicorp.com/packer/plugins/datasources/amazon/ami
-#data "amazon-ami" "example" {
+#data "amazon-ami" "NAME" {
 #  filters = {
 #    virtualization-type = "hvm"
 #    name                = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*"
@@ -220,14 +220,14 @@ local "mylocal" {
 #}
 
 # https://developer.hashicorp.com/packer/plugins/datasources/amazon/secretsmanager
-#data "amazon-secretsmanager" "basic-example" {
+#data "amazon-secretsmanager" "NAME" {
 #  name          = "packer_test_secret"
 #  key           = "packer_test_key"
 #  version_stage = "example"
 #}
 
 # foo = data.http.example.body
-#data "http" "example" {
+#data "http" "NAME" {
 #  url = "https://checkpoint-api.hashicorp.com/v1/check/terraform"
 #
 #  # Optional request headers
@@ -288,7 +288,7 @@ source "virtualbox-iso" "NAME" {
   #guest_additions_path    = "VBoxGuestAdditions.iso"
   # doesn't work to set this higher to allow a first manual install to collect /var/log/installer/autoinstall-user-data
   # gets an SSH authentication error a couple minutes in and kills the VM regardless
-  ssh_timeout  = "10m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  ssh_timeout  = "15m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username = "packer"
   ssh_password = "packer"
   # needed to ensure filesystem is fsync'd
@@ -343,19 +343,19 @@ source "virtualbox-iso" "NAME" {
 #}
 
 # https://developer.hashicorp.com/packer/plugins/builders/docker
-#source "docker" "ubuntu" {
+#source "docker" "NAME" {
 #  image  = var.docker_image
 #  commit = true
 #}
 
 # https://developer.hashicorp.com/packer/plugins/builders/vagrant
-#source "vagrant" "ubuntu" {
+#source "vagrant" "NAME" {
 #  source_path = "hashicorp/precise64"
 #  provider    = "virtualbox"
 #}
 
 # https://developer.hashicorp.com/packer/plugins/builders/amazon
-#source "amazon-ebs" "basic-example" {
+#source "amazon-ebs" "NAME" {
 #  source_ami = locals.source_ami
 #  // ...
 #}
