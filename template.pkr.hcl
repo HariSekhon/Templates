@@ -164,8 +164,8 @@ locals {
   root           = path.root
 
   # locals can access data sources but data sources cannot access locals, to prevent circular dependencies
-  #source_ami_id   = data.amazon-ami.NAME.id
-  #source_ami_name = data.amazon-ami.NAME.name
+  #source_ami_id   = data.amazon-ami.ubuntu.id
+  #source_ami_name = data.amazon-ami.ubuntu.name
 
   #value         = data.amazon-secretsmanager.NAME.value
   #secret_string = data.amazon-secretsmanager.NAME.secret_string
@@ -209,7 +209,7 @@ local "mylocal" {
 # https://developer.hashicorp.com/packer/plugins/datasources/amazon
 
 # https://developer.hashicorp.com/packer/plugins/datasources/amazon/ami
-#data "amazon-ami" "NAME" {
+#data "amazon-ami" "ubuntu" {
 #  filters = {
 #    virtualization-type = "hvm"
 #    name                = "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*"
@@ -244,8 +244,8 @@ local "mylocal" {
 # Create multiple sources to build near identical images for different platforms
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
-source "virtualbox-iso" "NAME" {
-  vm_name = "NAME" # XXX: Edit Name, default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
+source "virtualbox-iso" "ubuntu" {
+  #vm_name = "ubuntu" # XXX: Edit Name, default: packer-BUILDNAME eg. packer-ubuntu - name of the OVF file without the extension
   # VBoxManage list ostypes
   #guest_os_type = "Ubuntu22_LTS_64"
   guest_os_type = "Ubuntu_64"
@@ -324,8 +324,8 @@ source "virtualbox-iso" "NAME" {
 }
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/ovf
-#source "virtualbox-ovf" "NAME" {
-#  vm_name                 = "NAME" # default: packer-BUILDNAME eg. packer-NAME - name of the OVF file without the extension
+#source "virtualbox-ovf" "ubuntu" {
+#  #vm_name                = "ubuntu" # default: packer-BUILDNAME eg. packer-ubuntu - name of the OVF file without the extension
 #  source_path             = "source.ovf"
 #  ssh_username            = "packer
 #  ssh_password            = "packer"
@@ -356,7 +356,7 @@ source "virtualbox-iso" "NAME" {
 #}
 
 # https://developer.hashicorp.com/packer/plugins/builders/vagrant
-#source "vagrant" "NAME" {
+#source "vagrant" "ubuntu" {
 #  source_path = "hashicorp/precise64"
 #  provider    = "virtualbox"
 #}
@@ -389,12 +389,12 @@ source "virtualbox-iso" "NAME" {
 # https://developer.hashicorp.com/packer/plugins/builders/vsphere/vsphere-iso
 
 build {
-  name = "NAME"
+  name = "ubuntu"
 
   # specify multiple sources defined above to build near identical images for different platforms
   sources = [
-    "source.virtualbox-iso.NAME"
-    #"sources.virtualbox-ovf.NAME"
+    "source.virtualbox-iso.ubuntu"
+    #"sources.virtualbox-ovf.ubuntu"
   ]
 
   # doesn't help to put a breakpoint here because Packer insists on testing for SSH and as soon as it gets auth rejected destroys the VM anyway
