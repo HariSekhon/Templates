@@ -305,8 +305,12 @@ source "virtualbox-iso" "NAME" {
     #["modifyvm", "{{.Name}}", "--cpus", "2"],
     #["modifyvm", "{{.Name}}", "--memory", "1024"],
     # Error executing command: VBoxManage error: VBoxManage: error: Machine 'NAME' is not currently running.
+    # do this in shell-local later
     #["sharedfolder", "add", "{{.Name}}", "--name", "vboxsf", "--hostpath", "~/vboxsf", "--automount", "--transient"],
     ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"], # XXX: workaround for auto-installer hanging at AppArmour Load
+    # doesn't work - just set global preferences to 300% scale
+    #["setextradata", "{{.Name}}", "CustomVideoMode1", "1400x1050x16"]  # make resolution bigger
+    #["controlvm", "{{.Name}}", "setvideomodehint", "1400", "1050", "32"]  # doesn't work because VM isn't running at this point, and would require a reboot
   ]
   export_opts = [
     "--manifest",
@@ -453,6 +457,8 @@ build {
       "echo Source '${source.name}' type '${source.type}'",
       "echo Creating ~/vboxsf",
       "mkdir -p -v ~/vboxsf",
+      "echo Adding shared folder to VM",
+      "VBoxManage sharedfolder add {{.Name}} --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
   }
 
