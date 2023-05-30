@@ -256,12 +256,19 @@ source "virtualbox-iso" "NAME" {
   memory               = 15136 # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
+  http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
   # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
-  boot_wait = "10s" # default: 10s
+  boot_wait = "5s" # default: 10s
   boot_command = [
     #" <tab><wait>",
     #" ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos8-ks.cfg<enter>"
     #" autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/"
+    "c<wait>",
+    # XXX: must single quotes the ds=... arg to prevent grub from interpreting the semicolon as a terminator
+    # https://cloudinit.readthedocs.io/en/latest/reference/datasources/nocloud.html
+    "linux /casper/vmlinuz autoinstall 'ds=nocloud-net;s=http://{{.HTTPIP}}:{{.HTTPPort}}/' <enter><wait>",
+    "initrd /casper/initrd <enter><wait>",
+    "boot <enter>"
   ]
   #boot_command = [
   #  "<esc><esc><enter><wait>",
@@ -280,7 +287,7 @@ source "virtualbox-iso" "NAME" {
   #guest_additions_path    = "VBoxGuestAdditions.iso"
   # doesn't work to set this higher to allow a first manual install to collect /var/log/installer/autoinstall-user-data
   # gets an SSH authentication error a couple minutes in and kills the VM regardless
-  #ssh_timeout  = "30m"  # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  ssh_timeout  = "10m"  # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username = "packer"
   ssh_password = "packer"
   # needed to ensure filesystem is fsync'd
@@ -290,10 +297,12 @@ source "virtualbox-iso" "NAME" {
   #virtualbox_version_file = "" # must be an empty string when using communicator = 'none'
   bundle_iso = false # keep the ISO attached
   # extra CLI customization
-  #vboxmanage = [
-  #  ["modifyvm", "{{.Name}}", "--cpus", "2"],
-  #  ["modifyvm", "{{.Name}}", "--memory", "1024"],
-  #]
+  vboxmanage = [
+    #["modifyvm", "{{.Name}}", "--cpus", "2"],
+    #["modifyvm", "{{.Name}}", "--memory", "1024"],
+    # Error executing command: VBoxManage error: VBoxManage: error: Machine 'NAME' is not currently running.
+    #["sharedfolder", "add", "{{.Name}}", "--name", "vboxsf", "--hostpath", "~/vboxsf", "--automount", "--transient"],
+  ]
   export_opts = [
     "--manifest",
     "--vsys", "0",
@@ -379,6 +388,12 @@ build {
     #"sources.virtualbox-ovf.NAME"
   ]
 
+  # doesn't help to put a breakpoint here because Packer insists on testing for SSH and as soon as it gets auth rejected destroys the VM anyway
+  #provisioner "breakpoint" {
+  #  disable = false
+  #  note    = "this is a breakpoint to be able to inspect the VM contents"
+  #}
+
   # https://developer.hashicorp.com/packer/docs/provisioners/file
   #
   #provisioner "file" {
@@ -391,6 +406,9 @@ build {
   #  destination = "/etc/conf/"
   #}
 
+  # Packer doesn't have permissions to make changes to root owned paths - do it via shell sudo
+  #
+  # Upload failed: scp: /etc/packer-version: Permission denied
   #provisioner "file" {
   #  content     = "Built using Packer version '${packer.version}'"
   #  destination = "/etc/packer-version"
@@ -428,28 +446,44 @@ build {
     inline = [
       "echo Build UUID ${build.PackerRunUUID}",
       "echo Source '${source.name}' type '${source.type}'",
+      "echo Creating ~/vboxsf",
+      "mkdir -p -v ~/vboxsf",
     ]
+  }
+
+  provisioner "file" {
+    source      = "/var/log/installer/autoinstall-user-data"
+    destination = "autoinstall-user-data"
+    direction   = "download"
   }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
   #
-  #provisioner "shell" {
-  #  #script = "/path/to/script.sh"
-  #  #script = "./script.sh"
-  #  #scripts = [
-  #  #  "/path/to/script.sh",
-  #  #  "./script.sh"
-  #  #]
-  #  environment_vars = [
-  #    "FOO=bar"
-  #  ]
-  #  inline = [
-  #    "echo Built using Packer version '${packer.version}' | tee /etc/packer-version"
-  #    #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem"  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
-  #  ]
-  #  # max_retries = 5
-  #  # timeout = "5m"
-  #}
+  provisioner "shell" {
+    #script = "/path/to/script.sh"
+    #script = "./script.sh"
+    #scripts = [
+    #  "/path/to/script.sh",
+    #  "./script.sh"
+    #]
+    environment_vars = [
+      "FOO=bar"
+    ]
+    inline = [
+      "env",
+      # pre-authorize sudo
+      "echo 'packer' | sudo -S echo",
+      "echo Built using Packer version '${packer.version}' | sudo tee /etc/packer-version",
+      #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem",  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
+      "sudo mkdir -pv /mnt/vboxsf",
+      "echo Mounting /mnt/vboxsf",
+      "sudo mount -t vboxsf vboxsf /mnt/vboxsf",
+      # mount point is owned by root
+      "sudo cp -fv /var/log/installer/autoinstall-user-data /mnt/vboxsf/",
+    ]
+    # max_retries = 5
+    # timeout = "5m"
+  }
 
   # post-processors (plural) creates a serial post-processing where one post-processor's output is the next one's input
   #post-processors {
