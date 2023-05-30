@@ -2,7 +2,7 @@
 #  Author: Hari Sekhon
 #  Date: 2023-05-29 21:23:52 +0100 (Mon, 29 May 2023)
 #
-#  vim:ts=4:sts=4:sw=4:et
+#  vim:ts=2:sts=2:sw=2:et
 #
 #  https://github.com/HariSekhon/Templates
 #
@@ -23,33 +23,23 @@
 autoinstall:
   apt:
     disable_components: []
-    fallback: abort
     geoip: true
-    mirror-selection:
-      primary:
-      - country-mirror
-      - arches:
-        - amd64
-        - i386
-        uri: http://archive.ubuntu.com/ubuntu
-      - arches:
-        - s390x
-        - arm64
-        - armhf
-        - powerpc
-        - ppc64el
-        - riscv64
-        uri: http://ports.ubuntu.com/ubuntu-ports
     preserve_sources_list: false
-  codecs:
-    install: false
+    primary:
+    - arches:
+      - amd64
+      - i386
+      uri: http://gb.archive.ubuntu.com/ubuntu
+    - arches:
+      - default
+      uri: http://ports.ubuntu.com/ubuntu-ports
   drivers:
     install: false
   identity:
     hostname: server1
-    password: $6$catWBT5LQkwTxa5H$OUaC8WRq/GmeyjnIyHRcwH8/Dt1HINgPxDM6Tot7lw1qiiHg7Cxos0w5h/luc0xfI5N88xgAzo//E.4q1Tufb1
-    realname: hari
-    username: hari
+    password: $6$SKgUj12luWUiaMpN$pSRLDN.ExoNlBfNm4b5r8RtukZOkyr4mClu0A/hA7ghxAfPQfDw9jb8NvPyl64exP6EZMRAkzwMAyu3ycrrsm0
+    realname: packer
+    username: packer
   kernel:
     package: linux-generic
   keyboard:
@@ -97,10 +87,12 @@ autoinstall:
     classic: false
     name: stress-ng
   source:
-    id: ubuntu-server-minimal
+    #id: ubuntu-server-minimal
+    id: ubuntu-server
     search_drivers: false
   ssh:
-    allow-pw: false
+    # needed by Packer to log in and finish configuring
+    allow-pw: true
     authorized-keys:
     - 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvihSRU+YjBKvKiacDfUoZ7ghoVMcwNh4cWIYUNFGZosXOzNtyOcBpIb71TCgLFhOd+aMWKXCEC67BpNSIjt+a/FLD27AwmgVHv6cPlE3G0JJ9zmIrNmx9511dshTsxUW2O0SbYG+3InuO7FUkSrld+kA1OucyjgmZU7/+Cs9shpAEOaIVYmGlpDGRucAHpwtckvdgRTtnA3WNZ/Qg1vU6Ik4Xm03vjrW6lSiuTffYO1kbdcMQ4IZBlzfmovOtXQ0PomvN5NMCpgOyQuoNlvyS11tOXoqNiWOkiLE15XEzAQth9hHbNiH8jHJbAtkHqWWh0KK4IUyNGvoL6QfNxsTlw==
       harisekhon@github/3807063 # ssh-import-id gh:harisekhon'
@@ -110,7 +102,6 @@ autoinstall:
   storage:
     config:
     - ptable: gpt
-      serial: VBOX_HARDDISK_VBb6dd3e08-4a760e17
       path: /dev/sda
       wipe: superblock-recursive
       preserve: false
@@ -125,7 +116,6 @@ autoinstall:
       preserve: false
       grub_device: false
       offset: 1048576
-      path: /dev/sda1
       type: partition
       id: partition-0
     - device: disk-sda
@@ -135,7 +125,6 @@ autoinstall:
       preserve: false
       grub_device: false
       offset: 2097152
-      path: /dev/sda2
       type: partition
       id: partition-1
     - fstype: ext4
@@ -150,7 +139,6 @@ autoinstall:
       preserve: false
       grub_device: false
       offset: 2149580800
-      path: /dev/sda3
       type: partition
       id: partition-2
     - name: ubuntu-vg
@@ -164,7 +152,6 @@ autoinstall:
       size: 19893583872B
       wipe: superblock
       preserve: false
-      path: /dev/ubuntu-vg/ubuntu-lv
       type: lvm_partition
       id: lvm_partition-0
     - fstype: ext4
