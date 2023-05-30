@@ -53,6 +53,7 @@ autoinstall:
   late-commands:
     - 'echo "packer ALL=(ALL) NOPASSWD: ALL" > /target/etc/sudoers.d/packer'
     - 'ssh-import-id gh:harisekhon'
+    - 'printf "%-30s %s\n" "Build Date:" "`date`" >> /etc/build_release'
   locale: en_GB.UTF-8
   network:
     ethernets:
