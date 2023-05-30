@@ -13,8 +13,10 @@
 #  https://www.linkedin.com/in/HariSekhon
 #
 
-# Uses Ubuntu Autoinstaller - 'packer' command must be run from the same directory as the provided
-#                             adjacent 'user-data' and 'meta-data' files to be served via HTTP for CloudInit
+# Uses Debian Preseed and Ubuntu Autoinstaller
+#
+# 'packer' command must be run from the same directory as the provided
+# adjacent Debian 'preseed.cfg' and Ubuntu 'user-data' and 'meta-data' files to be served via HTTP for CloudInit
 
 # ============================================================================ #
 #                                  P a c k e r
@@ -259,7 +261,7 @@ source "virtualbox-iso" "ubuntu" {
   #iso_url              = "https://cdimage.ubuntu.com/releases/22.04/release/ubuntu-22.04.2-live-server-arm64.iso"
   #iso_checksum         = "12eed04214d8492d22686b72610711882ddf6222b4dc029c24515a85c4874e95"
   cpus                 = 1     # default: 1
-  memory               = 15136 # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
+  memory               = 1536  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
@@ -269,7 +271,7 @@ source "virtualbox-iso" "ubuntu" {
   boot_command = [
     #" <tab><wait>",
     #" ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos8-ks.cfg<enter>"
-    #" autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/"
+    #" autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ <enter>"
     "c<wait>",
     # XXX: must single quotes the ds=... arg to prevent grub from interpreting the semicolon as a terminator
     # https://cloudinit.readthedocs.io/en/latest/reference/datasources/nocloud.html
@@ -320,6 +322,50 @@ source "virtualbox-iso" "ubuntu" {
     "--vsys", "0",
     #"--description", "${var.vm_description}",  # create variables if uncommenting these
     #"--version", "${var.vm_version}"
+  ]
+  format = "ova"
+  #output_directory = "" # default: 'output-BUILDNAME', must not already exist
+  #output_filename  = "" # default: '${vm_name}'
+}
+
+# https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
+source "virtualbox-iso" "debian" {
+  vm_name = "debian"
+  guest_os_type = "Debian_64"
+  # https://www.debian.org/CD/http-ftp/
+  iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-11.7.0-amd64-DVD-1.iso"  # 4.7GB
+  iso_checksum = "cfbb1387d92c83f49420eca06e2d11a23e5a817a21a5d614339749634709a32f"
+  #iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.7.0-amd64-netinst.iso"  # 300MB
+  #iso_checksum = "eb3f96fd607e4b67e80f4fc15670feb7d9db5be50f4ca8d0bf07008cb025766b"
+  # for M1/M2 Macs:
+  #iso_url              = "https://cdimage.debian.org/debian-cd/current/arm64/iso-dvd/debian-11.7.0-arm64-DVD-1.iso"   # 4.7GB
+  #iso_checksum         = "3b0d304379b671d7b7091631765f87e1cbb96b9f03f8e9a595a2bf540c789f3f"
+  #iso_url              = "https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-11.7.0-arm64-netinst.iso"  # 300MB
+  #iso_checksum         = "174caba674fe3172938439257156b9cb8940bb5fd5ddf124256e81ec00ec460d"
+  cpus                 = 1     # default: 1
+  memory               = 1536  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
+  disk_size            = 40000 # default: 40000 MB = around 40GB
+  disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
+  http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
+  # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
+  boot_wait = "5s" # default: 10s
+  boot_command = [
+    "<down><wait>",
+    "<tab><wait>",
+    " auto=true url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg <enter>"
+  ]
+  ssh_timeout  = "15m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  ssh_username = "packer"
+  ssh_password = "packer"
+  shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
+  rtc_time_base    = "UTC"
+  bundle_iso = false # keep the ISO attached
+  vboxmanage = [
+    ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"], # XXX: workaround for auto-installer hanging at AppArmour Load
+  ]
+  export_opts = [
+    "--manifest",
+    "--vsys", "0",
   ]
   format = "ova"
   #output_directory = "" # default: 'output-BUILDNAME', must not already exist
@@ -392,11 +438,12 @@ source "virtualbox-iso" "ubuntu" {
 # https://developer.hashicorp.com/packer/plugins/builders/vsphere/vsphere-iso
 
 build {
-  name = "ubuntu"
+  name = "debian-ubuntu"
 
   # specify multiple sources defined above to build near identical images for different platforms
   sources = [
-    "source.virtualbox-iso.ubuntu"
+    "source.virtualbox-iso.debian",
+    "source.virtualbox-iso.ubuntu",
     #"sources.virtualbox-ovf.ubuntu"
   ]
 
@@ -456,20 +503,29 @@ build {
     #                   ConnType (eg. "ssh"), SSHPublicKey, SSHPrivateKey, PackerRunUUID,
     #                   PackerHTTPIP / PackerHTTPPort / PackerHTTPAddr (IP:PORT) of the http file server packer runs to serve files to the VM
     inline = [
+      "env | grep PACKER || :",
       "echo Build UUID ${build.PackerRunUUID}",
       "echo Source '${source.name}' type '${source.type}'",
       "echo Creating ~/vboxsf",
       "mkdir -p -v ~/vboxsf",
       "echo Adding shared folder to VM",
-      "VBoxManage sharedfolder add {{.Name}} --name vboxsf --hostpath ~/vboxsf --automount --transient",
+      # errors out with 'line 11: no: No such file or directory'
+      #"VBoxManage sharedfolder add {{.Name}} --name vboxsf --hostpath ~/vboxsf --automount --transient",
+      # works but now the build does Debian and Ubuntu can't rely on this
+      #"VBoxManage sharedfolder add $PACKER_BUILD_NAME --name vboxsf --hostpath ~/vboxsf --automount --transient",
+      "VBoxManage sharedfolder add debian --name vboxsf --hostpath ~/vboxsf --automount --transient",
+      "VBoxManage sharedfolder add ubuntu --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
   }
 
-  provisioner "file" {
-    source      = "/var/log/installer/autoinstall-user-data"
-    destination = "autoinstall-user-data"
-    direction   = "download"
-  }
+  # breaks on Debian now it's added
+  #provisioner "file" {
+  #  source      = "/var/log/installer/autoinstall-user-data"
+  #  # if you let this overwrite the real on, it'l break subsequent runs like so because it'll remove the early commands to stop the SSHd server daemon during installer:
+  #  # Error waiting for SSH: Packer experienced an authentication error when trying to connect via SSH. This can happen if your username/password are wrong. You may want to double-check your credentials as part of your debugging process. original error: ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain
+  #  destination = "autoinstall-user-data.new"
+  #  direction   = "download"
+  #}
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
   #
