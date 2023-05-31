@@ -251,6 +251,10 @@ local "mylocal" {
 
 # Create multiple sources to build near identical images for different platforms
 
+# Debian's installer is the fastest and most lightweight
+# Ubuntu and Fedora are allocated more resources to try to prevent them stalling / crashing
+# Fedora's anaconda installer is the most resource hungry and unrealiable when resource constrained
+
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
 source "virtualbox-iso" "ubuntu" {
   vm_name = "ubuntu" # name of the OVF file without the extension, default: packer-<buildname>-<epoch> eg. packer-ubuntu-1685455208
