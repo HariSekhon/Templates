@@ -84,6 +84,14 @@ ubuntu:
 	VBoxManage unregistervm ubuntu --delete 2>/dev/null || :
 	packer build --force --only=ubuntu.* template.pkr.hcl
 
+.PHONY: autoinstall-lint
+autoinstall-lint:
+	docker run -ti -v "$$PWD:/pwd" -w /pwd -e DEBIAN_FRONTEND=noninteractive ubuntu:latest bash -c 'apt-get update && apt-get install cloud-init -y && echo && cloud-init schema --config-file autoinstall-user-data'
+
+.PHONY: lint
+lint: autoinstall-lint
+	@:
+
 .PHONY: clean
 clean:
 	@# buggy this doesn't work on mac, not even with -or and not even in gfind, so splitting up
