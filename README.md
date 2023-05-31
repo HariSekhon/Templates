@@ -56,7 +56,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - [Groovy](https://groovy-lang.org/) - [template.groovy](https://github.com/HariSekhon/Templates/blob/master/template.groovy)
 - [Perl](https://www.perl.org/) - [template.pl](https://github.com/HariSekhon/Templates/blob/master/template.pl), [template.pm](https://github.com/HariSekhon/Templates/blob/master/template.pm)
 - [Python](https://www.python.org/) / [Jython](https://www.jython.org/) - [template.py](https://github.com/HariSekhon/Templates/blob/master/template.py) / `template.jy`
-- [Ruby](https://www.ruby-lang.org/en/) / [JRuby](https://www.jruby.org/) - [template.rb](https://github.com/HariSekhon/Templates/blob/master/template.rb), [template.jrb](https://github.com/HariSekhon/Templates/blob/master/template.jrb)
+- [Ruby](https://www.ruby-lang.org/en/) / [JRuby](https://www.jruby.org/) - [template.rb](https://github.com/HariSekhon/Templates/blob/master/template.rb), [template.jrb](https://github.com/HariSekhon/Templates/blob/master/template.jrb), [Gemfile](https://github.com/HariSekhon/Templates/blob/master/Gemfile)
 - [Scala](https://www.scala-lang.org/) - [template.scala](https://github.com/HariSekhon/Templates/blob/master/template.scala)
 - [Bash](https://www.gnu.org/software/bash/) - [template.sh](https://github.com/HariSekhon/Templates/blob/master/template.sh)
 - [Puppet](https://puppet.com/) - [template.pp](https://github.com/HariSekhon/Templates/blob/master/template.pp)
