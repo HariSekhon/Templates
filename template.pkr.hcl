@@ -371,8 +371,8 @@ source "virtualbox-iso" "fedora" {
   vm_name       = "fedora"
   guest_os_type = "Fedora_64"
   # https://alt.fedoraproject.org/alt/
-  iso_url              = "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/x86_64/iso/Fedora-Server-dvd-x86_64-38-1.6.iso"
-  iso_checksum         = "09dee2cd626a269aefc67b69e63a30bd0baa52d4"
+  iso_url      = "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/x86_64/iso/Fedora-Server-dvd-x86_64-38-1.6.iso"
+  iso_checksum = "09dee2cd626a269aefc67b69e63a30bd0baa52d4"
   # ARM
   #iso_url              = "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/iso/Fedora-Server-dvd-aarch64-38-1.6.iso" # 2.8GB
   #iso_checksum         = "4cdf077eddaeedf1180cdf3e14213da2abc10ceb"
@@ -392,7 +392,7 @@ source "virtualbox-iso" "fedora" {
     "<up><wait>",
     "e",
     "<down><down><down><left>",
-    " inst.text <f10>"  # trigger text mode install
+    " inst.text <f10>" # trigger text mode install
   ]
   ssh_timeout      = "45m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username     = "packer"
