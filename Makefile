@@ -73,6 +73,11 @@ clean:
 	find . -name '*.png' -exec rm -v {} \;
 	find . -name '*.svg' -exec rm -v {} \;
 
+.PHONY: wc
+wc:
+	 find . -maxdepth 1 -type f | xargs wc -l
+
+.PHONY: release
 release:
 	@echo "Releasing $(RELEASE)"
 	git tag --force $(RELEASE)
