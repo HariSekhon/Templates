@@ -396,6 +396,9 @@ source "virtualbox-iso" "fedora" {
   #]
   # Kickstart automated install
   boot_command = [
+    "<up><wait>",
+    "e",
+    "<down><down><down><left>",
     "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/anaconda-ks.cfg"
   ]
   ssh_timeout      = "15m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
