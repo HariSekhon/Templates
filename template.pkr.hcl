@@ -388,16 +388,17 @@ source "virtualbox-iso" "fedora" {
   #  "<up><wait><enter>",
   #]
   # trigger text mode install
-  boot_command = [
-    "<up><wait>",
-    "e",
-    "<down><down><down><left>",
-    " inst.text <f10>" # trigger text mode install
-  ]
   #boot_command = [
-  #  "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/anaconda-ks.cfg"
+  #  "<up><wait>",
+  #  "e",
+  #  "<down><down><down><left>",
+  #  " inst.text <f10>" # trigger text mode install
   #]
-  ssh_timeout      = "45m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  # Kickstart automated install
+  boot_command = [
+    "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/anaconda-ks.cfg"
+  ]
+  ssh_timeout      = "15m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username     = "packer"
   ssh_password     = "packer"
   shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
