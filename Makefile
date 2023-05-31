@@ -88,8 +88,17 @@ ubuntu:
 autoinstall-lint:
 	docker run -ti -v "$$PWD:/pwd" -w /pwd -e DEBIAN_FRONTEND=noninteractive ubuntu:latest bash -c 'apt-get update && apt-get install cloud-init -y && echo && cloud-init schema --config-file autoinstall-user-data'
 
+.PHONY: kickstart-lint
+kickstart-lint:
+	docker run -ti -v "$$PWD:/pwd" -w /pwd fedora:latest bash -c 'dnf install pykickstart -y && ksvalidator anaconda-ks.cfg'
+
+.PHONY: preseed-lint
+preseed-lint:
+	docker run -ti -v "$$PWD:/pwd" -w /pwd -e DEBIAN_FRONTEND=noninteractive debian:latest bash -c 'apt-get update && apt-get install debconf -y && echo && debconf-set-selections -c preseed.cfg'
+
+# if you really want to check it locally before pushing - otherwise just let the CI/CD workflows run and check the README badge statuses
 .PHONY: lint
-lint: autoinstall-lint
+lint: autoinstall-lint kickstart-lint preseed-lint
 	@:
 
 .PHONY: clean
