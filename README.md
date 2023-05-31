@@ -146,18 +146,22 @@ You can run this as-is to get portable OVA format Virtual Machines of all 3 dist
 ```shell
 packer build template.pkr.hcl
 ```
-although your machine may struggle to run all 3 VMs running installers at the same time, so you can run just one like this:
+
+Although your machine may struggle to run all 3 VMs running installers at the same time, so you can run just one like this:
 
 ```
 packer build --only=ubuntu.* template.pkr.hcl
 ```
 
-obviously when you use this for production you'd just copy the template and delete the bits you don't want (it's faster and less error prone than typing, or pasting and fixing)
+For convenience you may just type `make ubuntu`, or debian or fedora, to quickly delete any leftover VM/files and run it.
+
+For production just copy the template and delete the bits you don't want (it's faster and less error prone than typing, or pasting and fixing).
 
 - Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - uses the following:
 - Redhat Kickstart - [anaconda-ks.cfg](https://github.com/HariSekhon/Templates/blob/master/anaconda-ks.cfg)
 - Debian Preseed - [preseed.cfg](https://github.com/HariSekhon/Templates/blob/master/preseed.cfg)
 - Ubuntu AutoInstall - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
+
 
 ## Related Repositories
 
