@@ -61,7 +61,7 @@ autoinstall:
     # Import my SSH key from GitHub
     - curtin in-target --target=/target -- ssh-import-id gh:harisekhon
     - printf "%-30s %s\n" "Build Date:" "`date`" >> /target/etc/build_release
-    - sed -i 's/^ca:/#ca:/' /target/etc/inittab
+    #- sed -i 's/^ca:/#ca:/' /target/etc/inittab
   locale: en_GB.UTF-8
   network:
     ethernets:
