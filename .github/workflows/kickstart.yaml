@@ -56,7 +56,7 @@ jobs:
         #name: Git Checkout  # better to show the action@version
 
       - name: Install pykickstart
-        run: dnf install pykickstart
+        run: dnf install pykickstart -y
 
       - name: Validate Kickstart
         run: ksvalidator anaconda-ks.cfg
