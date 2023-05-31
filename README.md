@@ -31,35 +31,35 @@
 
 Code & DevOps Config templates for many popular programming languages and DevOps tools including:
 
-- [Kubernetes](https://kubernetes.io/) - advanced K8s templates eg.
+- Kubernetes - advanced K8s templates eg.
 [deployment.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/deployment.yaml),
 [statefulset.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/statefulset.yaml),
 [service.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/service.yaml),
 [ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
-- [Terraform](https://www.terraform.io/) -
+- Terraform -
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
 [variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
 [terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - see this [bundle trick](https://github.com/HariSekhon/Templates/#new-terraform)
-- [Docker](https://www.docker.com/) - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
-- [AWS](https://aws.amazon.com/) - various templates
-- [GCP](https://cloud.google.com/) - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
-- [Jenkins](https://www.jenkins.io/) - [Jenkinsfile](https://github.com/HariSekhon/Jenkins/blob/master/Jenkinsfile) (advanced) and [jenkins/vars/](https://github.com/HariSekhon/Jenkins/tree/master/vars) Jenkins Shared Library
-- [GitHub Actions](https://github.com/features/actions) - [github-action.yaml](https://github.com/HariSekhon/GitHub-Actions/blob/master/main.yaml) (advanced) and [github-actions/.github/workflows](https://github.com/HariSekhon/GitHub-Actions/tree/master/.github/workflows) GitHub Workflows Library
-- [Circle CI](https://circleci.com/) - [circleci-config.yml](https://github.com/HariSekhon/Templates/blob/master/circleci-config.yml) (advanced)
-- [Vagrant](https://www.vagrantup.com/) - [Vagrantfile](https://github.com/HariSekhon/Templates/blob/master/Vagrantfile)
-- [Make](https://www.gnu.org/software/make/) - [Makefile](https://github.com/HariSekhon/Templates/blob/master/Makefile)
-- [Maven](https://maven.apache.org/) - [pom.xml](https://github.com/HariSekhon/Templates/blob/master/pom.xml)
-- [SBT](https://www.scala-sbt.org/) - [build.sbt](https://github.com/HariSekhon/Templates/blob/master/build.sbt)
-- [Gradle](https://gradle.org/) - [build.gradle](https://github.com/HariSekhon/Templates/blob/master/build.gradle)
-- [Golang](https://golang.org/) - [template.go](https://github.com/HariSekhon/Templates/blob/master/template.go)
-- [Groovy](https://groovy-lang.org/) - [template.groovy](https://github.com/HariSekhon/Templates/blob/master/template.groovy)
-- [Perl](https://www.perl.org/) - [template.pl](https://github.com/HariSekhon/Templates/blob/master/template.pl), [template.pm](https://github.com/HariSekhon/Templates/blob/master/template.pm)
-- [Python](https://www.python.org/) / [Jython](https://www.jython.org/) - [template.py](https://github.com/HariSekhon/Templates/blob/master/template.py) / `template.jy`
-- [Ruby](https://www.ruby-lang.org/en/) / [JRuby](https://www.jruby.org/) - [template.rb](https://github.com/HariSekhon/Templates/blob/master/template.rb), [template.jrb](https://github.com/HariSekhon/Templates/blob/master/template.jrb), [Gemfile](https://github.com/HariSekhon/Templates/blob/master/Gemfile)
-- [Scala](https://www.scala-lang.org/) - [template.scala](https://github.com/HariSekhon/Templates/blob/master/template.scala)
-- [Bash](https://www.gnu.org/software/bash/) - [template.sh](https://github.com/HariSekhon/Templates/blob/master/template.sh)
-- [Puppet](https://puppet.com/) - [template.pp](https://github.com/HariSekhon/Templates/blob/master/template.pp)
+- Docker - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
+- AWS - various templates
+- GCP - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
+- Jenkins - [Jenkinsfile](https://github.com/HariSekhon/Jenkins/blob/master/Jenkinsfile) (advanced) and [jenkins/vars/](https://github.com/HariSekhon/Jenkins/tree/master/vars) Jenkins Shared Library
+- GitHub Actions - [github-action.yaml](https://github.com/HariSekhon/GitHub-Actions/blob/master/main.yaml) (advanced) and [github-actions/.github/workflows](https://github.com/HariSekhon/GitHub-Actions/tree/master/.github/workflows) GitHub Workflows Library
+- Circle CI - [circleci-config.yml](https://github.com/HariSekhon/Templates/blob/master/circleci-config.yml) (advanced)
+- Vagrant - [Vagrantfile](https://github.com/HariSekhon/Templates/blob/master/Vagrantfile)
+- Make - [Makefile](https://github.com/HariSekhon/Templates/blob/master/Makefile)
+- Maven - [pom.xml](https://github.com/HariSekhon/Templates/blob/master/pom.xml)
+- SBT - [build.sbt](https://github.com/HariSekhon/Templates/blob/master/build.sbt)
+- Gradle - [build.gradle](https://github.com/HariSekhon/Templates/blob/master/build.gradle)
+- Golang - [template.go](https://github.com/HariSekhon/Templates/blob/master/template.go)
+- Groovy - [template.groovy](https://github.com/HariSekhon/Templates/blob/master/template.groovy)
+- Perl - [template.pl](https://github.com/HariSekhon/Templates/blob/master/template.pl), [template.pm](https://github.com/HariSekhon/Templates/blob/master/template.pm)
+- Python / [Jython](https://www.jython.org/) - [template.py](https://github.com/HariSekhon/Templates/blob/master/template.py) / `template.jy`
+- Ruby / [JRuby](https://www.jruby.org/) - [template.rb](https://github.com/HariSekhon/Templates/blob/master/template.rb), [template.jrb](https://github.com/HariSekhon/Templates/blob/master/template.jrb), [Gemfile](https://github.com/HariSekhon/Templates/blob/master/Gemfile)
+- Scala - [template.scala](https://github.com/HariSekhon/Templates/blob/master/template.scala)
+- Bash - [template.sh](https://github.com/HariSekhon/Templates/blob/master/template.sh)
+- Puppet - [template.pp](https://github.com/HariSekhon/Templates/blob/master/template.pp)
 - RHEL / CentOS / Fedora anaconda Kickstart automated install - [anaconda-ks.cfg](https://github.com/HariSekhon/Templates/blob/master/anaconda-ks.cfg)
 - Debian Preseed automated install - [preseed.cfg](https://github.com/HariSekhon/Templates/blob/master/preseed.cfg)
 - Ubuntu AutoInstall CloudInit - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
