@@ -265,7 +265,7 @@ source "virtualbox-iso" "ubuntu" {
   #     Could not read from the boot medium!
   #     Please insert a bootable medium and reboot.
   #
-  # Switching back to x86_64 works but is even slower than on an older Intel Mac, probably due to the software emulation
+  # Switching back to x86_64 works but is even slower than on an older Intel Mac, probably due to the software emulation, and often ends up aborting due to the Beta nature of the 7.0 Virtualbox release for arm
   #
   #iso_url              = "https://cdimage.ubuntu.com/releases/22.04/release/ubuntu-22.04.2-live-server-arm64.iso"
   #iso_checksum         = "12eed04214d8492d22686b72610711882ddf6222b4dc029c24515a85c4874e95"
@@ -340,7 +340,7 @@ source "virtualbox-iso" "debian" {
   #     Could not read from the boot medium!
   #     Please insert a bootable medium and reboot.
   #
-  # Switching back to x86_64 works but is even slower than on an older Intel Mac, probably due to the software emulation
+  # Switching back to x86_64 works but is even slower than on an older Intel Mac, probably due to the software emulation, and often ends up aborting due to the Beta nature of the 7.0 Virtualbox release for arm
   #
   #iso_url              = "https://cdimage.debian.org/debian-cd/current/arm64/iso-dvd/debian-11.7.0-arm64-DVD-1.iso"   # 4.7GB
   #iso_checksum         = "3b0d304379b671d7b7091631765f87e1cbb96b9f03f8e9a595a2bf540c789f3f"
@@ -393,7 +393,7 @@ source "virtualbox-iso" "fedora" {
   #     Could not read from the boot medium!
   #     Please insert a bootable medium and reboot.
   #
-  # Switching back to x86_64 works but is even slower than on an older Intel Mac, probably due to the software emulation
+  # Switching back to x86_64 works but is even slower than on an older Intel Mac, probably due to the software emulation, and often ends up aborting due to the Beta nature of the 7.0 Virtualbox release for arm
   #
   #iso_url              = "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/iso/Fedora-Server-dvd-aarch64-38-1.6.iso" # 2.8GB
   #iso_checksum         = "4cdf077eddaeedf1180cdf3e14213da2abc10ceb"
