@@ -13,7 +13,7 @@
 #
 
 ---
-name: Kickstart
+name: Redhat Kickstart
 
 on:
   push:
