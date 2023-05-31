@@ -255,8 +255,8 @@ local "mylocal" {
 # Ubuntu and Fedora are allocated more resources to try to prevent them stalling / crashing
 # Fedora's anaconda installer is the most resource hungry and unrealiable when resource constrained
 
-# WARNING: XXX: Do not build on ARM M1/M2 Macs using VirtualBox 7.0 - as of 2023 VirtualBox 7.0 Beta and extremely buggy, slow,
-#               results in "Aborted" VMs and missing bootloader keystrokes - it is unworkable on ARM as of this date
+# WARNING: XXX: Do not build on ARM M1/M2 Macs using VirtualBox 7.0 - as of 2023 VirtualBox 7.0 Beta is extremely buggy, slow,
+#               results in "Aborted" VMs and so slow it even misses bootloader keystrokes - it is unworkable on ARM as of this date
 
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
 source "virtualbox-iso" "ubuntu" {
