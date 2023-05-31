@@ -13,7 +13,7 @@
 #
 
 ---
-name: Packer
+name: HashiCorp Packer
 
 on:
   push:
