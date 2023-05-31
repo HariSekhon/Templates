@@ -285,7 +285,7 @@ source "virtualbox-iso" "ubuntu" {
   #guest_additions_path    = "VBoxGuestAdditions.iso"
   # doesn't work to set this higher to allow a first manual install to collect /var/log/installer/autoinstall-user-data
   # gets an SSH authentication error a couple minutes in and kills the VM regardless
-  ssh_timeout  = "15m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  ssh_timeout  = "20m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username = "packer"
   ssh_password = "packer"
   # needed to ensure filesystem is fsync'd
@@ -346,7 +346,7 @@ source "virtualbox-iso" "debian" {
     # preseed-md5=... add later
     "fb=true auto=true url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg hostname={{.Name}} domain=local <enter>"
   ]
-  ssh_timeout      = "15m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  ssh_timeout      = "20m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username     = "packer"
   ssh_password     = "packer"
   shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
@@ -403,7 +403,7 @@ source "virtualbox-iso" "fedora" {
     # leave a space from last arg
     " inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/anaconda-ks.cfg <f10>"
   ]
-  ssh_timeout      = "15m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  ssh_timeout      = "20m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username     = "packer"
   ssh_password     = "packer"
   shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
