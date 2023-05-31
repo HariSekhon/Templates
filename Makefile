@@ -69,6 +69,21 @@ packer:
 	for x in debian fedora ubuntu; do VBoxManage unregistervm "$$x" --delete 2>/dev/null || : ; done
 	packer build --force template.pkr.hcl
 
+.PHONY: debian
+debian:
+	VBoxManage unregistervm debian --delete 2>/dev/null || :
+	packer build --force --only=debian.* template.pkr.hcl
+
+.PHONY: fedora
+fedora:
+	VBoxManage unregistervm fedora --delete 2>/dev/null || :
+	packer build --force --only=fedora.* template.pkr.hcl
+
+.PHONY: ubuntu
+ubuntu:
+	VBoxManage unregistervm ubuntu --delete 2>/dev/null || :
+	packer build --force --only=ubuntu.* template.pkr.hcl
+
 .PHONY: clean
 clean:
 	@# buggy this doesn't work on mac, not even with -or and not even in gfind, so splitting up
