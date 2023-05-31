@@ -64,6 +64,11 @@ tests: test
 push:
 	git push
 
+.PHONY: packer
+packer:
+	for x in debian fedora ubuntu; do VBoxManage unregistervm "$$x" --delete 2>/dev/null || : ; done
+	packer build --force template.pkr.hcl
+
 .PHONY: clean
 clean:
 	@# buggy this doesn't work on mac, not even with -or and not even in gfind, so splitting up
