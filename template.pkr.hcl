@@ -260,8 +260,8 @@ source "virtualbox-iso" "ubuntu" {
   # ARM
   #iso_url              = "https://cdimage.ubuntu.com/releases/22.04/release/ubuntu-22.04.2-live-server-arm64.iso"
   #iso_checksum         = "12eed04214d8492d22686b72610711882ddf6222b4dc029c24515a85c4874e95"
-  cpus                 = 1     # default: 1
-  memory               = 1536  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
+  cpus                 = 2     # default: 1
+  memory               = 2048  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
@@ -331,8 +331,8 @@ source "virtualbox-iso" "debian" {
   #iso_checksum         = "3b0d304379b671d7b7091631765f87e1cbb96b9f03f8e9a595a2bf540c789f3f"
   #iso_url              = "https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-11.7.0-arm64-netinst.iso"  # 300MB
   #iso_checksum         = "174caba674fe3172938439257156b9cb8940bb5fd5ddf124256e81ec00ec460d"
-  cpus                 = 1     # default: 1
-  memory               = 1536  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
+  cpus                 = 2     # default: 1
+  memory               = 2048  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
@@ -376,8 +376,8 @@ source "virtualbox-iso" "fedora" {
   # ARM
   #iso_url              = "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/iso/Fedora-Server-dvd-aarch64-38-1.6.iso" # 2.8GB
   #iso_checksum         = "4cdf077eddaeedf1180cdf3e14213da2abc10ceb"
-  cpus                 = 1     # default: 1
-  memory               = 1536  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
+  cpus                 = 2     # default: 1
+  memory               = 2048  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
