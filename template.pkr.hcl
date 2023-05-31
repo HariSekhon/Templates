@@ -394,6 +394,9 @@ source "virtualbox-iso" "fedora" {
     "<down><down><down><left>",
     " inst.text <f10>" # trigger text mode install
   ]
+  #boot_command = [
+  #  "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/anaconda-ks.cfg"
+  #]
   ssh_timeout      = "45m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username     = "packer"
   ssh_password     = "packer"
@@ -693,11 +696,12 @@ build {
 
   sources = ["source.virtualbox-iso.fedora"]
 
-  provisioner "file" {
-    source      = "/root/anaconda-ks.cfg"
-    destination = "anaconda-ks.cfg.new"
-    direction   = "download"
-  }
+  # Packer gets permission denied, get it via sudo in shell
+  #provisioner "file" {
+  #  source      = "/root/anaconda-ks.cfg"
+  #  destination = "anaconda-ks.cfg.new"
+  #  direction   = "download"
+  #}
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell-local
   #
@@ -717,6 +721,7 @@ build {
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
   #
   provisioner "shell" {
+    # needed to test for existing of logs in /root to copy out to vboxsf shared folder
     execute_command = "echo 'packer' | sudo -S -E bash '{{ .Path }}'"
     inline = [
       "env",
@@ -724,11 +729,12 @@ build {
       #"echo 'packer' | sudo -S echo",
       "echo Built using Packer version '${packer.version}' | sudo tee /etc/packer-version",
       #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem",  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
-      "sudo mkdir -pv /mnt/vboxsf",
+      "mkdir -pv /mnt/vboxsf",
       "echo Mounting /mnt/vboxsf",
-      "sudo mount -t vboxsf vboxsf /mnt/vboxsf",
+      "mount -t vboxsf vboxsf /mnt/vboxsf",
       # mount point is owned by root
-      "sudo cp -fv /root/anaconda-ks.cfg /mnt/vboxsf/",
+      "cp -fv /root/anaconda-ks.cfg /mnt/vboxsf/",
+      "for x in ks-pre.log ks-post.log; do if [ -f /root/$x ]; then cp -fv /root/$x /mnt/vboxsf/; fi; done"
     ]
     # max_retries = 5
     # timeout = "5m"
