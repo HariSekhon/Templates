@@ -13,13 +13,16 @@
 #  https://www.linkedin.com/in/HariSekhon
 #
 
-# Uses Debian Preseed and Ubuntu Autoinstaller
+# Uses adjacent Redhat Kickstart, Debian Preseed & Ubuntu Autoinstaller
 #
-# 'packer' command must be run from the same directory as the provided
-# adjacent Debian 'preseed.cfg' and Ubuntu 'user-data' and 'meta-data' files to be served via HTTP for CloudInit
+# 'packer' command must be run from the same directory as the provided adjacent files which are auto-served via HTTP:
+#
+# - Redhat Kickstart     - anaconda-ks.cfg
+# - Debian Preseed       - preseed.cfg
+# - Ubuntu AutoInstaller - autoinstall-user-data and meta-data files
 
 # ============================================================================ #
-#                                  P a c k e r
+#                        H a s h i C o r p   P a c k e r
 # ============================================================================ #
 
 packer {
