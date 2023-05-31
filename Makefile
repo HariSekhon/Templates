@@ -69,6 +69,12 @@ packer:
 	for x in debian fedora ubuntu; do VBoxManage unregistervm "$$x" --delete 2>/dev/null || : ; done
 	packer build --force template.pkr.hcl
 
+.PHONY: packer-serial
+packer-serial:
+	$(MAKE) debian
+	$(MAKE) ubuntu
+	$(MAKE) fedora
+
 .PHONY: debian
 debian:
 	VBoxManage unregistervm debian --delete 2>/dev/null || :
