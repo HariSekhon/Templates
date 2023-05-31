@@ -20,7 +20,7 @@
 [![Trivy](https://github.com/HariSekhon/Templates/actions/workflows/trivy.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/trivy.yaml)
 [![Redhat Kickstart](https://github.com/HariSekhon/Templates/actions/workflows/kickstart.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/kickstart.yaml)
 [![Debian Preseed](https://github.com/HariSekhon/Templates/actions/workflows/preseed.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/preseed.yaml)
-[![Ubuntu AutoInstall CloudInit](https://github.com/HariSekhon/Templates/actions/workflows/autoinstall-user-data.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/autoinstall-user-data.yaml)
+[![Ubuntu AutoInstall Cloud-Init](https://github.com/HariSekhon/Templates/actions/workflows/autoinstall-user-data.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/autoinstall-user-data.yaml)
 [![HashiCorp Packer](https://github.com/HariSekhon/Templates/actions/workflows/packer.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/packer.yaml)
 
 [![Repo on Azure DevOps](https://img.shields.io/badge/repo-Azure%20DevOps-0078D7?logo=azure%20devops)](https://dev.azure.com/harisekhon/GitHub/_git/Templates)
@@ -64,7 +64,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - Puppet - [template.pp](https://github.com/HariSekhon/Templates/blob/master/template.pp)
 - Redhat Kickstart automated install - [anaconda-ks.cfg](https://github.com/HariSekhon/Templates/blob/master/anaconda-ks.cfg)
 - Debian Preseed automated install - [preseed.cfg](https://github.com/HariSekhon/Templates/blob/master/preseed.cfg)
-- Ubuntu AutoInstall CloudInit - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
+- Ubuntu AutoInstall Cloud-Init - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
 - MermaidJS - [template.mmd](https://raw.githubusercontent.com/HariSekhon/Templates/master/template.mmd)
 - D2 Lang - [diagram.d2](https://github.com/HariSekhon/Templates/blob/master/diagram.d2)
 - Python Diagrams - [diagram.py](https://github.com/HariSekhon/Templates/blob/master/diagram.py)
