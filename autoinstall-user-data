@@ -52,8 +52,10 @@ autoinstall:
     variant: ''
   late-commands:
     - 'echo "packer ALL=(ALL) NOPASSWD: ALL" > /target/etc/sudoers.d/packer'
+    # Import my SSH key from GitHub
     - 'ssh-import-id gh:harisekhon'
     - 'printf "%-30s %s\n" "Build Date:" "`date`" >> /etc/build_release'
+    - sed -i 's/^ca:/#ca:/' /etc/inittab
   locale: en_GB.UTF-8
   network:
     ethernets:
