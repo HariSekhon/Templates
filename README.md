@@ -18,6 +18,9 @@
 [![Semgrep](https://github.com/HariSekhon/Templates/actions/workflows/semgrep.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/semgrep.yaml)
 [![Semgrep Cloud](https://github.com/HariSekhon/Templates/actions/workflows/semgrep-cloud.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/semgrep-cloud.yaml)
 [![Trivy](https://github.com/HariSekhon/Templates/actions/workflows/trivy.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/trivy.yaml)
+[![Redhat Kickstart](https://github.com/HariSekhon/Templates/actions/workflows/kickstart.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/kickstart.yaml)
+[![Debian Preseed](https://github.com/HariSekhon/Templates/actions/workflows/preseed.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/preseed.yaml)
+[![Ubuntu AutoInstall CloudInit](https://github.com/HariSekhon/Templates/actions/workflows/autoinstall-user-data.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/autoinstall-user-data.yaml)
 
 [![Repo on Azure DevOps](https://img.shields.io/badge/repo-Azure%20DevOps-0078D7?logo=azure%20devops)](https://dev.azure.com/harisekhon/GitHub/_git/Templates)
 [![Repo on GitHub](https://img.shields.io/badge/repo-GitHub-2088FF?logo=github)](https://github.com/HariSekhon/Templates)
