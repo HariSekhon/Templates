@@ -66,6 +66,7 @@ push:
 
 .PHONY: packer
 packer:
+	for x in debian fedora ubuntu; do VBoxManage unregistervm "$$x" --delete 2>/dev/null || : ; done
 	packer build --force template.pkr.hcl
 
 .PHONY: clean
