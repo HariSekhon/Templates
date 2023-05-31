@@ -35,14 +35,14 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 [deployment.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/deployment.yaml),
 [statefulset.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/statefulset.yaml),
 [service.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/service.yaml),
-[ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
+[ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml), [skaffold.yaml](https://github.com/HariSekhon/Templates/blob/master/skaffold.yaml), [helmfile.yaml](https://github.com/HariSekhon/Templates/blob/master/helmfile.yaml), [k3d.yaml](https://github.com/HariSekhon/Templates/blob/master/k3d.yaml), [kind.yaml](https://github.com/HariSekhon/Templates/blob/master/kind.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
 - Terraform -
 [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
 [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
 [variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
 [terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - see this [bundle trick](https://github.com/HariSekhon/Templates/#new-terraform)
 - Docker - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
-- AWS - various templates
+- AWS - various - `aws_*`, [buildspec.yml](https://github.com/HariSekhon/Templates/blob/master/buildspec.yml), `ec*`, [eksctl.yaml](https://github.com/HariSekhon/Templates/blob/master/eksctl.yaml), `lambda*`, `s3*`
 - GCP - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
 - Jenkins - [Jenkinsfile](https://github.com/HariSekhon/Jenkins/blob/master/Jenkinsfile) (advanced) and [jenkins/vars/](https://github.com/HariSekhon/Jenkins/tree/master/vars) Jenkins Shared Library
 - GitHub Actions - [github-action.yaml](https://github.com/HariSekhon/GitHub-Actions/blob/master/main.yaml) (advanced) and [github-actions/.github/workflows](https://github.com/HariSekhon/GitHub-Actions/tree/master/.github/workflows) GitHub Workflows Library
@@ -63,6 +63,9 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - RHEL / CentOS / Fedora anaconda Kickstart automated install - [anaconda-ks.cfg](https://github.com/HariSekhon/Templates/blob/master/anaconda-ks.cfg)
 - Debian Preseed automated install - [preseed.cfg](https://github.com/HariSekhon/Templates/blob/master/preseed.cfg)
 - Ubuntu AutoInstall CloudInit - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
+- MermaidJS - [template.mmd](https://raw.githubusercontent.com/HariSekhon/Templates/master/template.mmd)
+- D2 Lang - [diagram.d2](https://github.com/HariSekhon/Templates/blob/master/diagram.d2)
+- Python Diagrams - [diagram.py](https://github.com/HariSekhon/Templates/blob/master/diagram.py)
 - SQL - [template.sql](https://github.com/HariSekhon/Templates/blob/master/template.sql)
 - XML - [template.xml](https://github.com/HariSekhon/Templates/blob/master/template.xml)
 - YAML - [template.yaml](https://github.com/HariSekhon/Templates/blob/master/template.yaml)
