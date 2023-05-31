@@ -22,18 +22,21 @@
 # https://ubuntu.com/server/docs/install/autoinstall-reference
 
 autoinstall:
+  # wait for user input in these sections for additional customization - can use this to further refine using a generated autoinstall-user-data
+  #interactive-sections:
+  #   - storage
   apt:
     disable_components: []
     geoip: true
     preserve_sources_list: false
     primary:
-    - arches:
-      - amd64
-      - i386
-      uri: http://gb.archive.ubuntu.com/ubuntu
-    - arches:
-      - default
-      uri: http://ports.ubuntu.com/ubuntu-ports
+      - arches:
+          - amd64
+          - i386
+        uri: http://gb.archive.ubuntu.com/ubuntu
+      - arches:
+          - default
+        uri: http://ports.ubuntu.com/ubuntu-ports
   drivers:
     install: false
   early-commands:
@@ -83,39 +86,39 @@ autoinstall:
     #- unzip
   #proxy: http://proxy_host:proxy_port/
   snaps:
-  - channel: stable
-    classic: true
-    name: aws-cli
-  - channel: stable
-    classic: false
-    name: docker
-  - channel: stable
-    classic: false
-    name: doctl
-  - channel: stable
-    classic: false
-    name: etcd
-  - channel: stable
-    classic: true
-    name: google-cloud-sdk
-  - channel: stable
-    classic: false
-    name: juju
-  - channel: stable
-    classic: true
-    name: keepalived
-  - channel: stable
-    classic: true
-    name: microk8s
-  - channel: stable
-    classic: false
-    name: postgresql10
-  - channel: stable
-    classic: false
-    name: prometheus
-  - channel: stable
-    classic: false
-    name: stress-ng
+    - channel: stable
+      classic: true
+      name: aws-cli
+    - channel: stable
+      classic: false
+      name: docker
+    - channel: stable
+      classic: false
+      name: doctl
+    - channel: stable
+      classic: false
+      name: etcd
+    - channel: stable
+      classic: true
+      name: google-cloud-sdk
+    - channel: stable
+      classic: false
+      name: juju
+    - channel: stable
+      classic: true
+      name: keepalived
+    - channel: stable
+      classic: true
+      name: microk8s
+    - channel: stable
+      classic: false
+      name: postgresql10
+    - channel: stable
+      classic: false
+      name: prometheus
+    - channel: stable
+      classic: false
+      name: stress-ng
   source:
     #id: ubuntu-server-minimal
     id: ubuntu-server
@@ -125,14 +128,14 @@ autoinstall:
     allow-pw: true
     allow_public_ssh_keys: true
     authorized-keys:
-    - 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvihSRU+YjBKvKiacDfUoZ7ghoVMcwNh4cWIYUNFGZosXOzNtyOcBpIb71TCgLFhOd+aMWKXCEC67BpNSIjt+a/FLD27AwmgVHv6cPlE3G0JJ9zmIrNmx9511dshTsxUW2O0SbYG+3InuO7FUkSrld+kA1OucyjgmZU7/+Cs9shpAEOaIVYmGlpDGRucAHpwtckvdgRTtnA3WNZ/Qg1vU6Ik4Xm03vjrW6lSiuTffYO1kbdcMQ4IZBlzfmovOtXQ0PomvN5NMCpgOyQuoNlvyS11tOXoqNiWOkiLE15XEzAQth9hHbNiH8jHJbAtkHqWWh0KK4IUyNGvoL6QfNxsTlw==
-      harisekhon@github/3807063 # ssh-import-id gh:harisekhon'
-    - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDQe6MuFOGBezYp/PoAr0x4ptWVFlkYyE6VVooEQ1DpQ5tcOcrsFIX/qW7nnZkOUsjxpXSN90sNrP7uOUa0IaU5MxDE0mMr+13HXUUmloA5HbIdbRi2wGTGaXE/uVXBEZKeD6+LD1AHM8dgEOgWF/j+XUQ0zcarg6Q45bE54my+9pWwQzciVa8LVdRYK+Rct5YR6Vo2cbjYAZ44G4d0Fq/k6nYwd0UhQfYcXP7R+bPBiiXDrECK/xn/OauYVY2QunfcfKyVBAWgpTkCDi+Nw6GFvgHwTd7WJ/IqZy9Lqyz2ymqn2yRyiHiKlH65+5RuP+9otpx9YshuBUyRrF4NGhNfm9LQ9vbckpk67h7I8w4nkh6w77N6wg+dlDDv42H6dPpX0IrSLmEsxeCWp5W+C4rHSlw62Yhsw2nO2bw251Qyb/UwGTk87pxg9jLjlp5YL0bcwONYX0ZSUPNoId4z1FNKcOmo1B5oRmwyQq2ua9hvieMhivQpqHa7IxB8MPOOtY8=
-      harisekhon@github/76141680 # ssh-import-id gh:harisekhon'
+      - 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvihSRU+YjBKvKiacDfUoZ7ghoVMcwNh4cWIYUNFGZosXOzNtyOcBpIb71TCgLFhOd+aMWKXCEC67BpNSIjt+a/FLD27AwmgVHv6cPlE3G0JJ9zmIrNmx9511dshTsxUW2O0SbYG+3InuO7FUkSrld+kA1OucyjgmZU7/+Cs9shpAEOaIVYmGlpDGRucAHpwtckvdgRTtnA3WNZ/Qg1vU6Ik4Xm03vjrW6lSiuTffYO1kbdcMQ4IZBlzfmovOtXQ0PomvN5NMCpgOyQuoNlvyS11tOXoqNiWOkiLE15XEzAQth9hHbNiH8jHJbAtkHqWWh0KK4IUyNGvoL6QfNxsTlw== harisekhon@github/3807063 # ssh-import-id gh:harisekhon'
+      - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDQe6MuFOGBezYp/PoAr0x4ptWVFlkYyE6VVooEQ1DpQ5tcOcrsFIX/qW7nnZkOUsjxpXSN90sNrP7uOUa0IaU5MxDE0mMr+13HXUUmloA5HbIdbRi2wGTGaXE/uVXBEZKeD6+LD1AHM8dgEOgWF/j+XUQ0zcarg6Q45bE54my+9pWwQzciVa8LVdRYK+Rct5YR6Vo2cbjYAZ44G4d0Fq/k6nYwd0UhQfYcXP7R+bPBiiXDrECK/xn/OauYVY2QunfcfKyVBAWgpTkCDi+Nw6GFvgHwTd7WJ/IqZy9Lqyz2ymqn2yRyiHiKlH65+5RuP+9otpx9YshuBUyRrF4NGhNfm9LQ9vbckpk67h7I8w4nkh6w77N6wg+dlDDv42H6dPpX0IrSLmEsxeCWp5W+C4rHSlw62Yhsw2nO2bw251Qyb/UwGTk87pxg9jLjlp5YL0bcwONYX0ZSUPNoId4z1FNKcOmo1B5oRmwyQq2ua9hvieMhivQpqHa7IxB8MPOOtY8= harisekhon@github/76141680 # ssh-import-id gh:harisekhon'
     install-server: true
   storage:
     layout:
       name: lvm
+      match:
+        size: largest
   timezone: UTC
   updates: security
   version: 1
