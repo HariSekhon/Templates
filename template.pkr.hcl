@@ -392,6 +392,7 @@ source "virtualbox-iso" "fedora" {
   #  "<up><wait>",
   #  "e",
   #  "<down><down><down><left>",
+  #  # leave a space from last arg
   #  " inst.text <f10>" # trigger text mode install
   #]
   # Kickstart automated install
@@ -399,6 +400,7 @@ source "virtualbox-iso" "fedora" {
     "<up><wait>",
     "e",
     "<down><down><down><left>",
+    # leave a space from last arg
     " inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/anaconda-ks.cfg"
   ]
   ssh_timeout      = "15m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
