@@ -146,6 +146,11 @@ You can run this as-is to get portable OVA format Virtual Machines of all 3 dist
 ```shell
 packer build template.pkr.hcl
 ```
+although your machine may struggle to run all 3 VMs running installers at the same time, so you can run just one like this:
+
+```
+packer build --only=ubuntu.* template.pkr.hcl
+```
 
 - Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - uses the following:
 - Redhat Kickstart - [anaconda-ks.cfg](https://github.com/HariSekhon/Templates/blob/master/anaconda-ks.cfg)
