@@ -49,8 +49,8 @@ env:
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
-  preseed:
-    name: Preseed
+  cloudinit:
+    name: Cloud-Init
     timeout-minutes: 10
     runs-on: ubuntu-latest
     container: ubuntu
