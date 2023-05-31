@@ -59,6 +59,8 @@ ARG NAME_VERSION
 
 ENV PATH $PATH:/NAME/bin
 
+ENV DEBIAN_FRONTEND noninteractive
+
 ENV PYTHONPATH /app
 
 # stops Python generating .pyc files in the container
