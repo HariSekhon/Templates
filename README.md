@@ -152,7 +152,7 @@ although your machine may struggle to run all 3 VMs running installers at the sa
 packer build --only=ubuntu.* template.pkr.hcl
 ```
 
-obviously in the real world you'd just copy the template and delete the bits you don't want (it's faster than typing, or pasting and fixing)
+obviously when you use this for production you'd just copy the template and delete the bits you don't want (it's faster and less error prone than typing, or pasting and fixing)
 
 - Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - uses the following:
 - Redhat Kickstart - [anaconda-ks.cfg](https://github.com/HariSekhon/Templates/blob/master/anaconda-ks.cfg)
