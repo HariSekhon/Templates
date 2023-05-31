@@ -56,4 +56,6 @@ jobs:
         #name: Git Checkout  # better to show the action@version
 
       - name: Validate template.pkr.hcl
-        run: packer validate template.pkr.hcl
+        run: |
+          packer init     template.pkr.hcl
+          packer validate template.pkr.hcl
