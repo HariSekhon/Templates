@@ -260,7 +260,11 @@ source "virtualbox-iso" "ubuntu" {
   # Browse to http://releases.ubuntu.com/ and pick the latest LTS release
   iso_url      = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
   iso_checksum = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
-  # ARM
+  # ARM - DO NOT USE EVEN ON M1/M2 Macs - as of VirtualBox 7.0 in 2023 it seems to be emulating x86_64, not arm64, and results in the following error:
+  #
+  #     Could not read from the boot medium!
+  #     Please insert a bootable medium and reboot.
+  #
   #iso_url              = "https://cdimage.ubuntu.com/releases/22.04/release/ubuntu-22.04.2-live-server-arm64.iso"
   #iso_checksum         = "12eed04214d8492d22686b72610711882ddf6222b4dc029c24515a85c4874e95"
   cpus                 = 3     # default: 1
@@ -329,7 +333,11 @@ source "virtualbox-iso" "debian" {
   iso_checksum = "cfbb1387d92c83f49420eca06e2d11a23e5a817a21a5d614339749634709a32f"
   #iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.7.0-amd64-netinst.iso"  # 300MB
   #iso_checksum = "eb3f96fd607e4b67e80f4fc15670feb7d9db5be50f4ca8d0bf07008cb025766b"
-  # ARM
+  # ARM - DO NOT USE EVEN ON M1/M2 Macs - as of VirtualBox 7.0 in 2023 it seems to be emulating x86_64, not arm64, and results in the following error:
+  #
+  #     Could not read from the boot medium!
+  #     Please insert a bootable medium and reboot.
+  #
   #iso_url              = "https://cdimage.debian.org/debian-cd/current/arm64/iso-dvd/debian-11.7.0-arm64-DVD-1.iso"   # 4.7GB
   #iso_checksum         = "3b0d304379b671d7b7091631765f87e1cbb96b9f03f8e9a595a2bf540c789f3f"
   #iso_url              = "https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-11.7.0-arm64-netinst.iso"  # 300MB
@@ -376,7 +384,12 @@ source "virtualbox-iso" "fedora" {
   # https://alt.fedoraproject.org/alt/
   iso_url      = "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/x86_64/iso/Fedora-Server-dvd-x86_64-38-1.6.iso"
   iso_checksum = "09dee2cd626a269aefc67b69e63a30bd0baa52d4"
-  # ARM
+  # ARM - DO NOT USE EVEN ON M1/M2 Macs - as of VirtualBox 7.0 in 2023 it seems to be emulating x86_64, not arm64, and results in the following error:
+  #
+  #
+  #     Could not read from the boot medium!
+  #     Please insert a bootable medium and reboot.
+  #
   #iso_url              = "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/iso/Fedora-Server-dvd-aarch64-38-1.6.iso" # 2.8GB
   #iso_checksum         = "4cdf077eddaeedf1180cdf3e14213da2abc10ceb"
   cpus                 = 3     # default: 1
