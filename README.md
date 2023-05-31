@@ -89,6 +89,9 @@ You can give an exact filename like `Dockerfile`, `Makefile`, `Jenkinsfile`, `do
 Examples:
 
 ```shell
+new Makefile
+```
+```shell
 new Dockerfile
 ```
 ```shell
