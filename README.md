@@ -158,12 +158,22 @@ packer build --only=ubuntu.* template.pkr.hcl
 
 For convenience you may just type `make ubuntu`, or debian or fedora, to quickly delete any leftover VM/files and run it.
 
-For production just copy the template and delete the bits you don't want (it's faster and less error prone than typing, or pasting and fixing).
-
 - Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - uses the following:
 - Redhat Kickstart - [anaconda-ks.cfg](https://github.com/HariSekhon/Templates/blob/master/anaconda-ks.cfg)
 - Debian Preseed - [preseed.cfg](https://github.com/HariSekhon/Templates/blob/master/preseed.cfg)
 - Ubuntu AutoInstall - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
+
+For production just copy the templates you want:
+
+```
+new mybuild.pkr.hcl
+```
+
+and delete the bits you don't want (it's faster and less error prone than typing, or pasting and fixing). Don't forget to copy and edit the install automation:
+
+```
+new preseed.cfg
+```
 
 
 ## Related Repositories
