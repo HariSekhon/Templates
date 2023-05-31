@@ -61,7 +61,7 @@ jobs:
       - name: Install Cloud-Init
         run: |
           apt-get update
-          apt-get install cloudinit -y
+          apt-get install cloud-init -y
 
       - name: Validate AutoInstall User Data
         run: cloud-init schema --config-file autoinstall-user-data
