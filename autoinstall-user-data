@@ -26,6 +26,8 @@ autoinstall:
   # wait for user input in these sections for additional customization - can use this to further refine using a generated autoinstall-user-data
   #interactive-sections:
   #   - storage
+  refresh-installer:
+    update: yes
   apt:
     disable_components: []
     geoip: true
@@ -57,9 +59,9 @@ autoinstall:
   late-commands:
     - 'echo "packer ALL=(ALL) NOPASSWD: ALL" > /target/etc/sudoers.d/packer'
     # Import my SSH key from GitHub
-    - 'ssh-import-id gh:harisekhon'
-    - 'printf "%-30s %s\n" "Build Date:" "`date`" >> /etc/build_release'
-    - sed -i 's/^ca:/#ca:/' /etc/inittab
+    - curtin in-target --target=/target -- ssh-import-id gh:harisekhon
+    - printf "%-30s %s\n" "Build Date:" "`date`" >> /target/etc/build_release
+    - sed -i 's/^ca:/#ca:/' /target/etc/inittab
   locale: en_GB.UTF-8
   network:
     ethernets:
@@ -67,6 +69,7 @@ autoinstall:
         dhcp4: true
     version: 2
   packages:
+    #- build-essential
     - curl
     - iptables
     - iputils-ping
@@ -74,6 +77,8 @@ autoinstall:
     - net-tools
     - ntp
     - ntpdate
+    - open-vm-tools
+    - openssh-server
     - procps
     - psmisc
     - screen
