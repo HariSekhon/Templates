@@ -21,6 +21,7 @@
 
 # https://ubuntu.com/server/docs/install/autoinstall-reference
 
+---
 autoinstall:
   # wait for user input in these sections for additional customization - can use this to further refine using a generated autoinstall-user-data
   #interactive-sections:
