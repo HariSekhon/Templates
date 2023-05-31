@@ -64,6 +64,10 @@ tests: test
 push:
 	git push
 
+.PHONY: packer
+packer:
+	packer build --force template.pkr.hcl
+
 .PHONY: clean
 clean:
 	@# buggy this doesn't work on mac, not even with -or and not even in gfind, so splitting up
