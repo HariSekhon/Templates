@@ -43,7 +43,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 [variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
 [terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - see this [bundle trick](https://github.com/HariSekhon/Templates/#new-terraform)
 - Docker - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
-- HashiCorp Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - run as-is to build portable OVA Virtual Machines of Debian, Ubuntu and Fedora using 100% automated installs, see [Packer](https://github.com/HariSekhon/Templates#packer) section below
+- HashiCorp Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - run as-is to build portable OVA Virtual Machines of Debian, Ubuntu and RHEL-based distros using 100% automated installs, see [Packer](https://github.com/HariSekhon/Templates#packer) section below
 - AWS - various - `aws_*`, [buildspec.yml](https://github.com/HariSekhon/Templates/blob/master/buildspec.yml), `ec*`, [eksctl.yaml](https://github.com/HariSekhon/Templates/blob/master/eksctl.yaml), `lambda*`, `s3*`
 - GCP - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
 - Jenkins - [Jenkinsfile](https://github.com/HariSekhon/Jenkins/blob/master/Jenkinsfile) (advanced) and [jenkins/vars/](https://github.com/HariSekhon/Jenkins/tree/master/vars) Jenkins Shared Library
@@ -141,7 +141,7 @@ new tf
 
 Creates portable OVA format Virtual Machines using 100% automated installations of Ubuntu, Debian and RHEL/Fedora using their native installers:
 
-You can run this as-is to get portable OVA format Virtual Machines of all 3 distros:
+You can run this as-is to get portable OVA format Virtual Machines of all 3 distros (builds Fedora instead of RHEL since CentOS is EOL):
 
 ```shell
 packer build template.pkr.hcl
