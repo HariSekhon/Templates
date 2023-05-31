@@ -64,4 +64,4 @@ jobs:
           apt-get install cloudinit -y
 
       - name: Validate AutoInstall User Data
-        run: cloud-init devel schema --config-file autoinstall-user-data
+        run: cloud-init schema --config-file autoinstall-user-data
