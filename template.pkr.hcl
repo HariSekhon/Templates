@@ -521,7 +521,6 @@ build {
 
   # specify multiple sources defined above to build near identical images for different platforms
   sources = [
-    #"source.virtualbox-iso.debian",  # moved to its own build to download the preseed.cfg
     "source.virtualbox-iso.ubuntu",
     #"sources.virtualbox-ovf.ubuntu"
   ]
