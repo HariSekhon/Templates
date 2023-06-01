@@ -255,6 +255,67 @@ local "mylocal" {
 # Ubuntu and Fedora are allocated more resources to try to prevent them stalling / crashing
 # Fedora's anaconda installer is the most resource hungry and unrealiable when resource constrained
 
+# https://developer.hashicorp.com/packer/plugins/builders/qemu
+source "qemu" "ubuntu" {
+  vm_name     = "ubuntu"             # name of the OVF file without the extension, default: packer-<buildname>-<epoch> eg. packer-ubuntu-1685455208
+  qemu_binary = "qemu-system-x86_64" # default: qemu-system-x86_64, change for ARM eg. Mac M1/M2
+  #use_default_display = true  # might be needed on Mac to avoid errors about sdl not being available
+  accelerator = "kvm"
+  # VBoxManage list ostypes
+  #guest_os_type = "Ubuntu22_LTS_64"
+  #guest_os_type = "Ubuntu_64"
+  # Browse to http://releases.ubuntu.com/ and pick the latest LTS release
+  iso_url      = "http://releases.ubuntu.com/jammy/ubuntu-22.04.2-live-server-amd64.iso"
+  iso_checksum = "5e38b55d57d94ff029719342357325ed3bda38fa80054f9330dc789cd2d43931"
+  # ARM
+  #iso_url              = "https://cdimage.ubuntu.com/releases/22.04/release/ubuntu-22.04.2-live-server-arm64.iso"
+  #iso_checksum         = "12eed04214d8492d22686b72610711882ddf6222b4dc029c24515a85c4874e95"
+  #cpus                 = 3     # default: 1
+  memory               = 3072  # MB, default: 512 - too low RAM results in 'Kernel panic - not syncing: No working init found.'
+  disk_size            = 40960 # default: 40960, uses MB if no suffix, but suffixes cause this comment to fail validation with this error: 'An argument definition must end with a newline.'
+  disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
+  http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
+  #http_directory       = "${path.root}" # doesn't work
+  # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
+  boot_wait = "5s" # default: 10s
+  boot_command = [
+    #"<tab><wait>",
+    #"ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos8-ks.cfg<enter>"
+    #"autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ <enter>"
+    "c<wait>",
+    # XXX: must single quotes the ds=... arg to prevent grub from interpreting the semicolon as a terminator
+    # https://cloudinit.readthedocs.io/en/latest/reference/datasources/nocloud.html
+    "linux /casper/vmlinuz autoinstall 'ds=nocloud-net;s=http://{{.HTTPIP}}:{{.HTTPPort}}/' <enter><wait>",
+    "initrd /casper/initrd <enter><wait>",
+    "boot <enter>"
+  ]
+  #communicator = "none"  # doesn't work to to allow a first manual install to collect /var/log/installer/autoinstall-user-data, must instead use -debug
+  #guest_additions_mode    = "upload"
+  #guest_additions_mode    = "disable"  # must be disabled when using communicator = 'none'
+  #guest_additions_path    = "VBoxGuestAdditions.iso"
+  # doesn't work to set this higher to allow a first manual install to collect /var/log/installer/autoinstall-user-data
+  # gets an SSH authentication error a couple minutes in and kills the VM regardless
+  ssh_timeout  = "30m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
+  ssh_username = "packer"
+  ssh_password = "packer"
+  # needed to ensure filesystem is fsync'd
+  shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
+  net_device       = "virtio-net"
+  disk_interface   = "virtio"
+  #format            = "qcow2"
+  format = "ova"
+  #disk_compression  = true # default: false
+  #rtc_time_base    = "UTC"
+  #bundle_iso = false # keep the ISO attached
+  qemuargs = []
+  #output_directory = "" # default: 'output-BUILDNAME', must not already exist
+  #output_filename  = "" # default: '${vm_name}'
+}
+
+# ============================================================================ #
+#                      V i r t u a l B o x   S o u r c e s
+# ============================================================================ #
+
 # WARNING: XXX: Do not build on ARM M1/M2 Macs using VirtualBox 7.0 - as of 2023 VirtualBox 7.0 Beta is extremely buggy, slow,
 #               results in "Aborted" VMs and so slow it even misses bootloader keystrokes - it is unworkable on ARM as of this date
 
@@ -451,6 +512,7 @@ source "virtualbox-iso" "fedora" {
   #output_filename  = "" # default: '${vm_name}'
 }
 
+# ============================================================================ #
 # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/ovf
 #source "virtualbox-ovf" "ubuntu" {
 #  vm_name                 = "ubuntu"
