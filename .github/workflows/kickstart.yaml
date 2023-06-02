@@ -41,14 +41,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.ref }}-${{ github.workflow }}
-  cancel-in-progress: true
-
-defaults:
-  run:
-    shell: bash -euxo pipefail {0}
-
 jobs:
   kickstart:
     name: Kickstart
