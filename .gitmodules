@@ -12,3 +12,6 @@
 	path = github-actions
 	url = https://github.com/HariSekhon/GitHub-Actions
 	branch = master
+[submodule "packer-templates"]
+	path = packer-templates
+	url = https://github.com/HariSekhon/Packer-templates
