@@ -43,7 +43,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 [variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
 [terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - see this [bundle trick](https://github.com/HariSekhon/Templates/#new-terraform)
 - Docker - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
-- HashiCorp Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - run as-is to build portable OVA Virtual Machines of Debian, Ubuntu and RHEL-based distros using 100% automated installs, see [Packer](https://github.com/HariSekhon/Templates#packer) section below
+- HashiCorp Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - build portable Virtual Machines of Debian, Ubuntu and RHEL-based distros using 100% automated installs via Kickstart, Preseed, AutoInstaller. See [Packer-templates](https://github.com/HariSekhon/Packer-templates)
 - AWS - various - `aws_*`, [buildspec.yml](https://github.com/HariSekhon/Templates/blob/master/buildspec.yml), `ec*`, [eksctl.yaml](https://github.com/HariSekhon/Templates/blob/master/eksctl.yaml), `lambda*`, `s3*`
 - GCP - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
 - Jenkins - [Jenkinsfile](https://github.com/HariSekhon/Jenkins/blob/master/Jenkinsfile) (advanced) and [jenkins/vars/](https://github.com/HariSekhon/Jenkins/tree/master/vars) Jenkins Shared Library
@@ -142,38 +142,14 @@ new tf
 
 ### Packer
 
-Creates portable OVA format Virtual Machines using 100% automated installations of Ubuntu, Debian and RHEL/Fedora using their native installers:
-
-You can run this as-is to get portable OVA format Virtual Machines of all 3 distros (builds Fedora instead of RHEL since CentOS is EOL):
-
-```shell
-packer build template.pkr.hcl
-```
-
-Although your machine may struggle to run all 3 VMs running installers at the same time, so you can run just one like this:
-
-```
-packer build --only=ubuntu.* template.pkr.hcl
-```
-
-For convenience you may just type `make ubuntu`, or debian or fedora, to quickly delete any leftover VM/files and run it.
+Creates portable Virtual Machines in OVA format using 100% automated installs of Ubuntu, Debian and RHEL/Fedora using their native installers:
 
 - Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - uses the following:
 - Redhat Kickstart - [anaconda-ks.cfg](https://github.com/HariSekhon/Templates/blob/master/anaconda-ks.cfg)
 - Debian Preseed - [preseed.cfg](https://github.com/HariSekhon/Templates/blob/master/preseed.cfg)
 - Ubuntu AutoInstall - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
 
-For production just copy the templates you want:
-
-```
-new mybuild.pkr.hcl
-```
-
-and delete the bits you don't want (it's faster and less error prone than typing, or pasting and fixing). Don't forget to copy and edit the install automation:
-
-```
-new preseed.cfg
-```
+See [Packer-templates](https://github.com/HariSekhon/Packer-templates) for more details and split out ready-to-run templates for each distro.
 
 
 ## Related Repositories
