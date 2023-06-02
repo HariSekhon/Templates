@@ -52,15 +52,4 @@ defaults:
 jobs:
   kickstart:
     name: Kickstart
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    container: fedora
-    steps:
-      - uses: actions/checkout@v3
-        #name: Git Checkout  # better to show the action@version
-
-      - name: Install pykickstart
-        run: dnf install pykickstart -y
-
-      - name: Validate Kickstart
-        run: ksvalidator anaconda-ks.cfg
+    uses: HariSekhon/GitHub-Actions/.github/workflows/kickstart.yaml@master
