@@ -55,17 +55,4 @@ env:
 jobs:
   preseed:
     name: Preseed
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    container: debian
-    steps:
-      - uses: actions/checkout@v3
-        #name: Git Checkout  # better to show the action@version
-
-      - name: Install Debconf
-        run: |
-          apt-get update
-          apt-get install debconf -y
-
-      - name: Validate Preseed
-        run: debconf-set-selections -c preseed.cfg
+    uses: HariSekhon/GitHub-Actions/.github/workflows/preseed.yaml@master
