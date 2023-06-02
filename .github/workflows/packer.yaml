@@ -46,4 +46,4 @@ jobs:
     name: Packer
     uses: HariSekhon/GitHub-Actions/.github/workflows/packer.yaml@master
     with:
-      file: template.pkr.hcl
+      files: template.pkr.hcl
