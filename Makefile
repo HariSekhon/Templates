@@ -65,12 +65,12 @@ push:
 	git push
 
 .PHONY: packer
-packer:
+packer-parallel:
 	for x in debian fedora ubuntu; do VBoxManage unregistervm "$$x" --delete 2>/dev/null || : ; done
 	packer build --force template.pkr.hcl
 
-.PHONY: packer-serial
-packer-serial:
+.PHONY: packer
+packer:
 	$(MAKE) debian
 	@echo
 	$(MAKE) ubuntu
