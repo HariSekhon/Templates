@@ -72,7 +72,9 @@ packer:
 .PHONY: packer-serial
 packer-serial:
 	$(MAKE) debian
+	@echo
 	$(MAKE) ubuntu
+	@echo
 	$(MAKE) fedora
 
 .PHONY: debian
@@ -104,8 +106,12 @@ preseed-lint:
 
 # if you really want to check it locally before pushing - otherwise just let the CI/CD workflows run and check the README badge statuses
 .PHONY: lint
-lint: autoinstall-lint kickstart-lint preseed-lint
-	@:
+lint:
+	$(MAKE) autoinstall-lint
+	@echo
+	$(MAKE) kickstart-lint
+	@echo
+	$(MAKE) preseed-lint
 
 .PHONY: clean
 clean:
