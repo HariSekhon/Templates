@@ -76,6 +76,8 @@ packer:
 	$(MAKE) ubuntu
 	@echo
 	$(MAKE) fedora
+	@echo
+	@echo "Linting passed"
 
 .PHONY: debian
 debian:
