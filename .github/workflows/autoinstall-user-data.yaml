@@ -55,17 +55,4 @@ env:
 jobs:
   cloudinit:
     name: Cloud-Init
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    container: ubuntu
-    steps:
-      - uses: actions/checkout@v3
-        #name: Git Checkout  # better to show the action@version
-
-      - name: Install Cloud-Init
-        run: |
-          apt-get update
-          apt-get install cloud-init -y
-
-      - name: Validate AutoInstall User Data
-        run: cloud-init schema --config-file autoinstall-user-data
+    uses: HariSekhon/GitHub-Actions/.github/workflows/autoinstall-user-data.yaml@master
