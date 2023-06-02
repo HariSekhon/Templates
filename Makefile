@@ -123,6 +123,7 @@ clean:
 	find . -name '*.py[oc]' -exec rm -v {} \;
 	find . -name '*.png' -exec rm -v {} \;
 	find . -name '*.svg' -exec rm -v {} \;
+	@rm -frv -- output-* *.checksum
 
 .PHONY: wc
 wc:
