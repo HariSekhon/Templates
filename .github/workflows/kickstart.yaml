@@ -45,3 +45,5 @@ jobs:
   kickstart:
     name: Kickstart
     uses: HariSekhon/GitHub-Actions/.github/workflows/kickstart.yaml@master
+    with:
+      files: anaconda-ks.cfg ks.cfg kickstart.cfg
