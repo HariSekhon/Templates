@@ -149,7 +149,7 @@ Creates portable Virtual Machines in OVA format using 100% automated installs of
 - Debian Preseed - [preseed.cfg](https://github.com/HariSekhon/Templates/blob/master/preseed.cfg)
 - Ubuntu AutoInstall - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
 
-See [Packer-templates](https://github.com/HariSekhon/Packer-templates) for more details and split out ready-to-run templates for each distro.
+See [Packer-templates](https://github.com/HariSekhon/Packer-templates) for more details and ready-to-run templates for each distro.
 
 
 ## Related Repositories
