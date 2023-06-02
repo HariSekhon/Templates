@@ -52,14 +52,6 @@ defaults:
 jobs:
   packer:
     name: Packer
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    container: hashicorp/packer:light
-    steps:
-      - uses: actions/checkout@v3
-        #name: Git Checkout  # better to show the action@version
-
-      - name: Validate template.pkr.hcl
-        run: |
-          packer init     template.pkr.hcl
-          packer validate template.pkr.hcl
+    uses: HariSekhon/GitHub-Actions/.github/workflows/packer.yaml@master
+    with:
+      file: template.pkr.hcl
