@@ -589,7 +589,7 @@ build {
 
   provisioner "file" {
     source = "/var/log/installer/autoinstall-user-data"
-    # if you let this overwrite the real on, it'l break subsequent runs like so because it'll remove the early commands to stop the SSHd server daemon during installer:
+    # if you let this overwrite the real one, it'l break subsequent runs like so because it'll remove the early commands to stop the SSHd server daemon during installer:
     # Error waiting for SSH: Packer experienced an authentication error when trying to connect via SSH. This can happen if your username/password are wrong. You may want to double-check your credentials as part of your debugging process. original error: ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain
     destination = "autoinstall-user-data.new"
     direction   = "download"
