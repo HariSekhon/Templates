@@ -81,7 +81,6 @@ autoinstall:
     - openssh-server
     - procps
     - psmisc
-    - screen
     - tcpdump
     #- time
     - traceroute
