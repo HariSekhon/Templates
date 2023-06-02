@@ -37,9 +37,9 @@ vpc:
   # use an existing VPC by providing the subnets
   subnets:
     private:
-      eu-west-2a: { id: subnet-xxxxxxxxxxxxxxxxx }
-      eu-west-2b: { id: subnet-xxxxxxxxxxxxxxxxx }
-      eu-west-2c: { id: subnet-xxxxxxxxxxxxxxxxx }
+      eu-west-2a: {id: subnet-xxxxxxxxxxxxxxxxx}
+      eu-west-2b: {id: subnet-xxxxxxxxxxxxxxxxx}
+      eu-west-2c: {id: subnet-xxxxxxxxxxxxxxxxx}
 
 nodeGroups:
   - name: ng-1
