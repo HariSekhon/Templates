@@ -705,6 +705,7 @@ build {
   post-processor "checksum" {               # checksum image
     checksum_types      = ["md5", "sha512"] # checksum the artifact
     keep_input_artifact = true              # keep the artifact
+    output              = "output-{{.BuildName}}/{{.BuildName}}.{{.ChecksumType}}"  # default: packer_{{.BuildName}}_{{.BuilderType}}_{{.ChecksumType}}.checksum, at top level not in the directory with the .ova, and it keeps appending to it
   }
 
   # https://developer.hashicorp.com/packer/plugins/post-processors/docker/docker-tag
@@ -783,6 +784,7 @@ build {
   post-processor "checksum" {               # checksum image
     checksum_types      = ["md5", "sha512"] # checksum the artifact
     keep_input_artifact = true              # keep the artifact
+    output              = "output-{{.BuildName}}/{{.BuildName}}.{{.ChecksumType}}"  # default: packer_{{.BuildName}}_{{.BuilderType}}_{{.ChecksumType}}.checksum, at top level not in the directory with the .ova, and it keeps appending to it
   }
 }
 
