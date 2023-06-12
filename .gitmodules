@@ -16,3 +16,6 @@
 	path = packer-templates
 	url = https://github.com/HariSekhon/Packer-templates
 	branch = main
+[submodule "vagrant-templates"]
+	path = vagrant-templates
+	url = https://github.com/HariSekhon/Vagrant-templates
