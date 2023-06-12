@@ -289,9 +289,11 @@ source "qemu" "ubuntu" {
     "initrd /casper/initrd <enter><wait>",
     "boot <enter>"
   ]
+  # XXX: need to set communicator to none to buy time to default autoinstaller issues otherwise default SSHd gets started and Packer creds get rejected so kills the VM
   #communicator = "none"  # doesn't work to to allow a first manual install to collect /var/log/installer/autoinstall-user-data, must instead use -debug
-  #guest_additions_mode    = "upload"
   #guest_additions_mode    = "disable"  # must be disabled when using communicator = 'none'
+  #virtualbox_version_file = "" # must be an empty string when using communicator = 'none'
+  #guest_additions_mode    = "upload"
   #guest_additions_path    = "VBoxGuestAdditions.iso"
   # doesn't work to set this higher to allow a first manual install to collect /var/log/installer/autoinstall-user-data
   # gets an SSH authentication error a couple minutes in and kills the VM regardless
@@ -357,8 +359,9 @@ source "virtualbox-iso" "ubuntu" {
     "boot <enter>"
   ]
   #communicator = "none"  # doesn't work to to allow a first manual install to collect /var/log/installer/autoinstall-user-data, must instead use -debug
-  #guest_additions_mode    = "upload"
+  #virtualbox_version_file = "" # must be an empty string when using communicator = 'none'
   #guest_additions_mode    = "disable"  # must be disabled when using communicator = 'none'
+  #guest_additions_mode    = "upload"
   #guest_additions_path    = "VBoxGuestAdditions.iso"
   # doesn't work to set this higher to allow a first manual install to collect /var/log/installer/autoinstall-user-data
   # gets an SSH authentication error a couple minutes in and kills the VM regardless
@@ -369,7 +372,6 @@ source "virtualbox-iso" "ubuntu" {
   shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
   rtc_time_base    = "UTC"
   #virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
-  #virtualbox_version_file = "" # must be an empty string when using communicator = 'none'
   bundle_iso = false # keep the ISO attached
   # extra CLI customization
   vboxmanage = [
