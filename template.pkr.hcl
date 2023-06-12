@@ -291,6 +291,7 @@ source "qemu" "ubuntu" {
   ]
   # XXX: need to set communicator to none to buy time to default autoinstaller issues otherwise default SSHd gets started and Packer creds get rejected so kills the VM
   #communicator = "none"  # doesn't work to to allow a first manual install to collect /var/log/installer/autoinstall-user-data, must instead use -debug
+  #shutdown_timeout = "2h"  # prevent the VM from being killed after 5 mins waiting for shutdown
   #guest_additions_mode    = "disable"  # must be disabled when using communicator = 'none'
   #virtualbox_version_file = "" # must be an empty string when using communicator = 'none'
   #guest_additions_mode    = "upload"
@@ -359,6 +360,7 @@ source "virtualbox-iso" "ubuntu" {
     "boot <enter>"
   ]
   #communicator = "none"  # doesn't work to to allow a first manual install to collect /var/log/installer/autoinstall-user-data, must instead use -debug
+  #shutdown_timeout = "2h"  # prevent the VM from being killed after 5 mins waiting for shutdown
   #virtualbox_version_file = "" # must be an empty string when using communicator = 'none'
   #guest_additions_mode    = "disable"  # must be disabled when using communicator = 'none'
   #guest_additions_mode    = "upload"
