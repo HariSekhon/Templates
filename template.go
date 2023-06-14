@@ -24,6 +24,7 @@ import (
 	//"log"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -96,11 +97,20 @@ func main() {
 	nameAddress := map[string]string{"name": name, "address": address}
 	jsonData, err := json.Marshal(nameAddress)
 
-	filehandle, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
+	if len(os.Args) > 1 {
+		filename := os.Args[1]
+		filehandle, err := os.Open(filename)
+		if err != nil {
+			//fmt.Fprintf(os.Stderr, "error: %s\n", err)
+			//os.Exit(1)
+			log.Fatal(err)
+		}
+		defer filehandle.Close()
+		scanner = bufio.NewScanner(filehandle)
+	} else {
+		scanner = bufio.NewScanner(os.Stdin)
 	}
-	defer filehandle.Close()
+
 	scanner := bufio.NewScanner(filehandle)
 	for scanner.Scan() {
 		line := scanner.Text()
