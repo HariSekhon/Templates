@@ -1,0 +1,59 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2023-05-31 06:14:44 +0100 (Wed, 31 May 2023)
+#  Original Date: 2014-07-16 22:01:44 +0100 (Wed, 16 Jul 2014)
+#
+#  vim:ts=2:sts=2:sw=2:et:filetype=ini
+#
+#  https://github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                       A n s i b l e   I n v e n t o r y
+# ============================================================================ #
+
+# Static inventory for getting running quickly
+
+# Patterns:
+#
+#    '*'             # wildcards
+#    all
+#    192.168.0.*
+#    *.domain.com
+#    *.domain.com:group1 # mix-and-match wildcards and groups
+#    group1:group2   # OR
+#    group1:!group2  # except group2
+#    group1:&group2  # intersection
+#    group1:group2:&group3:!group4 # groups 1 or 2 if also in group3 but not in group 4
+#    ~group1     # regex
+#    group1[0]   # subscript - first host in group1
+
+[cluster:children]
+masters
+nodes
+
+[masters]
+masters[1:2]
+
+[nodes]
+nodes[1:18]
+
+[webservers:children]
+dc1_webservers
+dc2_webservers
+
+[dc1_webservers]
+www1
+www2
+www3
+
+[dc2_webservers]
+www1
+www2
+www3
