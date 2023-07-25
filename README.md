@@ -48,6 +48,7 @@ Code & DevOps Config templates for many popular programming languages and DevOps
 - GCP - [cloudbuild.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild.yaml), [cloudbuild-golang.yaml](https://github.com/HariSekhon/Templates/blob/master/cloudbuild-golang.yaml), [gcp_deployment-manager.yaml](https://github.com/HariSekhon/Templates/blob/master/gcp_deployment_manager.yaml)
 - Jenkins - [Jenkinsfile](https://github.com/HariSekhon/Jenkins/blob/master/Jenkinsfile) (advanced) and [jenkins/vars/](https://github.com/HariSekhon/Jenkins/tree/master/vars) Jenkins Shared Library
 - GitHub Actions - [github-action.yaml](https://github.com/HariSekhon/GitHub-Actions/blob/master/main.yaml) (advanced) and [github-actions/.github/workflows](https://github.com/HariSekhon/GitHub-Actions/tree/master/.github/workflows) GitHub Workflows Library
+- Azure DevOps Pipelines - [azure-pipelines.yaml](https://github.com/HariSekhon/Templates/blob/master/azure-pipelines.yml)
 - Circle CI - [circleci-config.yml](https://github.com/HariSekhon/Templates/blob/master/circleci-config.yml) (advanced)
 - Vagrant - [Vagrantfile](https://github.com/HariSekhon/Templates/blob/master/Vagrantfile)
 - Make - [Makefile](https://github.com/HariSekhon/Templates/blob/master/Makefile)
