@@ -21,10 +21,10 @@
 
 # only works in GNU make - is ignored by Mac's built-in make - not portable, should avoid and call bash scripts instead
 #.ONESHELL:
-# make oneshell exit on first error
-#.SHELLFLAGS = -e
 
 SHELL = /usr/bin/env bash
+
+.SHELLFLAGS += -eu -o pipefail
 
 PATH := $(PATH):$(PWD)/bash-tools
 
