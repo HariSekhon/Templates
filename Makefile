@@ -135,6 +135,11 @@ release:
 	git tag --force $(RELEASE)
 	git push --tags --force
 
+# Prints the ## suffixed comment from each target to dynamically create a help listing, with colour
+.PHONY: help
+help: ## Show this help
+	@egrep '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
 # ============================================================================ #
 #                 S k a f f o l d   f o r   K u b e r n e t e s
 # ============================================================================ #
