@@ -3,7 +3,8 @@
 #  Date: 2023-05-31 06:14:44 +0100 (Wed, 31 May 2023)
 #  Original Date: 2014-07-16 22:01:44 +0100 (Wed, 16 Jul 2014)
 #
-#  vim:ts=2:sts=2:sw=2:et:filetype=ini
+#  # filetype=ini doesn't syntax highlight # comments
+#  vim:ts=2:sts=2:sw=2:et:filetype=conf
 #
 #  https://github.com/HariSekhon/Templates
 #
@@ -57,3 +58,15 @@ www3
 www1
 www2
 www3
+
+# not used for proxying, this is done in the nodes:vars config below
+[proxy]
+bastion.example.com
+
+[nodes]
+private-server-1.example.com
+private-server-2.example.com
+private-server-3.example.com
+
+[nodes:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -p 2222 -W %h:%p -q username@bastion.example.com"'
