@@ -23,6 +23,9 @@ trigger:
   - master
   - main
 
+variables:
+  myvar: myvalue  # call in code as $(myvar)
+
 pool:
   # there is no /dev/stderr on this azure build!
   #vmImage: 'ubuntu-latest'
