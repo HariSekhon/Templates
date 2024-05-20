@@ -119,6 +119,13 @@ RUN apt-get update && \
     apt-get clean && \
     rm -fr /var/cache/apt/* /var/lib/apt/lists/* \
 
+# ============================================================================ #
+#                                 N o d e J S
+# ============================================================================ #
+
+# production mode only installs dependencies, not devDependencies and peerDependencies
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
 
 # ============================================================================ #
 #               P y t h o n   +   A W S   C o d e A r t i f a c t
