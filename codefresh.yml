@@ -1,0 +1,43 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2020-02-24 17:43:07 +0000 (Mon, 24 Feb 2020)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https://github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                            C o d e f r e s h   C I
+# ============================================================================ #
+
+# https://codefresh.io/docs/docs/codefresh-yaml/
+
+version: "1.0"
+stages:
+  - "checkout"
+  - "build"
+steps:
+  checkout:
+    type: "git-clone"
+    description: "Cloning main repository..."
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: "${{CF_REVISION}}"
+    stage: "checkout"
+  build:
+    title: Running docker image
+    type: freestyle
+    working_directory: '${{CF_REPO_NAME}}'
+    arguments:
+      image: 'ubuntu:18.04'
+      commands:
+        - setup/ci_bootstrap.sh
+        - make init
+        - make ci
+        - make test
