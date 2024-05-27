@@ -170,7 +170,7 @@ steps:
       # https://cloud.google.com/cloud-build/docs/configuring-builds/substitute-variable-values
       - --tag=${_IMAGE}:latest
       - --tag=${_IMAGE}:${_IMAGE_VERSION}
-      # use all cached layers where possible (will pull, better for seldomly rebuilt images, kaniko cache is better for frequent as it's local)
+      # use all cached layers where possible (will pull, better for seldomly rebuilt images)
       - --build-arg=BUILDKIT_INLINE_CACHE=1
       - --cache-from=${_IMAGE}:latest
       - --cache-from=${_IMAGE}:${_IMAGE_VERSION}
@@ -192,7 +192,7 @@ steps:
       #  this works too:
       #- -f=/workspace/DIR1/DIR2/Dockerfile
       - .
-    # or use kaniko builder to cache
+    # or use kaniko userspace builder without docker - https://github.com/GoogleContainerTools/kaniko
     #name: '${_REGISTRY}/kaniko-project/executor:latest'
     #args:
     #  - --destination=${_IMAGE}:${_IMAGE_VERSION}
