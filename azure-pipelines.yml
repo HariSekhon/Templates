@@ -19,26 +19,135 @@
 
 # https://aka.ms/yaml
 
+---
+# Deployment
+#
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-deployment?view=azure-pipelines
+#
+# deployment needs to be the first option to a job to make it a special type of job which can execute against an environment
+#deployment: MyRelease
+#displayName: My Release
+
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/extends?view=azure-pipelines
+#
+# - includes behaves like literal pastes and can be used at top level or in steps
+# - extends  behaves
+#
+#extends:
+#  template: my-template.yml
+#  parameters: # Parameters used in the extend.
+#    ...
+#    ...
+
+# UI configure an approver for this environment - requires a Deployment type of job
+environment: Dev
+
+dependsOn: MyBuildJob
+condition:
+continueOnError: false
+timeoutInMinutes: 60  # terminate after 60 mins
+cancelTimeoutInMinutes: 10  # hard kill if job doesn't stop after 10 mins of exit
+uses:
+
+strategy:
+  runOnce:
+    deploy:
+      steps:
+        - script: ./deploy.sh
+          displayName: Deploy My Stuff
+        - template: templates/include-npm-steps.yml
+
+# Conditional insertion of stages or jobs
+jobs:
+  # conditional - only run this job on the main branch - prevents people doing a manual run and selecting the wrong branch
+  - ${{ if eq(variables['Build.SourceBranchName'], 'refs/heads/main') }}:
+      - job: buildMainOnly
+        steps:
+          - script: echo this only runs if the conditional above is in main
+
+workspace: # Workspace options on the agent.
+  clean:
+
+# if you only want to manually trigger pipeline, such as for a release
+#trigger: none
+
+# simple if you only want triggering on any branch
+#trigger:
+#  - master
+#  - main
+
 trigger:
-  - master
-  - main
+  branches:
+    include:
+      - master
+      - main
+  #paths:
+  #  include:
+  #    - src/    # java
+  #    - '**.py'  # python  # TODO: * or **
+  #    - azure-pipeline.yml
 
 variables:
-  myvar: myvalue  # call in code as $(myvar)
+  DIR: k8s/myapp   # directory in which to edit fleet.yaml, used further down
+  version: latest  # release version to have this pipeline commit to k8s repo fleet.yaml
+  myvar: myvalue   # call in code as $(myvar)
+  # save version.txt between pipelines and download it in subsequent versions to chain the correct release versions
+  VERSION_ARTIFACT: '$(System.ArtifactsDirectory)/image_version/version.txt'
 
 pool:
+  # only run this pipeline on the 'MyLinux' agent pool
+  #name: 'MyLinux'
+  #
   # there is no /dev/stderr on this azure build!
   #vmImage: 'ubuntu-latest'
-  # Ubuntu 16.04 required for docker container support, looks like 18.04 works too
+  #
+  # Ubuntu 16.04+ required for docker container support, looks like 18.04 works too
   vmImage: 'ubuntu-22.04'
 
 # unprivileged container without sudo, cannot install dependencies
 #container: ubuntu:18.04
+services:
 
 steps:
   # requires script as first key, otherwise parsing breaks with error message:  Unexpected value 'displayName'
   - script: env | sort
+    # if you don't specify displayName then defaults to 'CmdLine' rather than the actual command :-/
     displayName: env
+
+  - script: cat /etc/*release
+    displayName: OS Release
+
+  # Replace the implicit checkout with one that persists the credentials to pull and push changes such as GitOps release version updates
+  # https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines
+  #- checkout: self
+  #  persistCredentials: true
+
+  - script: echo "##vso[task.setvariable variable=myvar;]$(MY_AZURE_VARIABLE)"
+    displayName: set variable myvar to the contents of the Azure DevOps variable MY_AZURE_VAR
+
+     # not available on local runners, have to use DownloadBuildArtifacts instead
+     #task: DownloadPipelineArtifact@2
+  #- task: DownloadBuildArtifacts@1
+  #  inputs:
+  #    buildType: specific
+  #    project: GitHub
+  #    pipeline: MyBuild
+  #    buildVersionToDownload: latest
+  #    artifactName: image_version
+  #    #downloadPath: '$(System.ArtifactsDirectory)'
+
+  # if another pipeline has left a version.txt artifact, get the version from it if we only have version latest
+  #- script: |
+  #    set -euxo pipefail
+  #    version="$(VERSION)"
+  #    version="${version##[[:space:]]}"
+  #    version="${version%%[[:space:]]}"
+  #    if [ "$version" = latest ]; then
+  #      version="$(sed 's/[[:space:]]*//; q' "$(VERSION_ARTIFACT)")"
+  #    fi
+  #    echo "Deploying version '$version'"
+  #    echo "##vso[task.setvariable variable=version;]$version"
+  #  displayName: Determine Version and export environment variable 'version'
 
   # doesn't work in container due to unprivileged execution and lack of sudo
   #- script: sudo apt-get update && sudo apt-get install -y git make
@@ -65,3 +174,57 @@ steps:
         make ci test
       '
     displayName: docker build
+
+  - script: git status
+    displayName: git status
+
+  # without this gets this git pull error in next step:
+  #
+  #   You are not currently on a branch.
+  #   Please specify which branch you want to merge with.
+  #
+  - script: git checkout "$BUILD_SOURCEBRANCHNAME"
+    displayName: git pull
+
+  - script: git pull --no-edit --no-rebase
+    displayName: git pull
+
+  #- script: install yq
+  #  displayName: sudo apt-get update && sudo apt-get install -y yq
+
+  - script: |
+      set -euxo pipefail
+      if type -P yq; then
+        yq -i ".helm.version=$(version)" "$(DIR)/fleet.yaml"
+      else
+        sed -i "s/^  version: .*/  version: $(version)/" "$(DIR)/fleet.yaml"
+      fi
+    displayName: update release version
+
+  - script: |
+      git commit \
+            -m "updated $(DIR)/fleet.yaml with version '$version', build queued by '$BUILD_QUEUEDBY', requested for '$BUILD_REQUESTEDFOR <$BUILD_REQUESTEDFOREMAIL>', pipeline version '$BUILD_DEFINITIONVERSION'" \
+            # XXX: Edit company team email address
+            #--author "Azure DevOps Pipeline '$BUILD_DEFINITIONNAME' <devops@company.com>" \
+            --author "Azure DevOps Pipeline '$BUILD_DEFINITIONNAME' <${BUILD_REQUESTEDFOREMAIL}a>" \
+            "$(DIR)/fleet.yaml"
+    displayName: git commit
+
+  # pull and merge to minimize chance of push conflict cause by approval waiting period
+  - script: git pull --no-edit --no-rebase
+    displayName: git pull
+
+  # XXX: git push requires the 'Contribute' permission to the repo:
+  #
+  #   remote: 0000000000aaTF401027: You need the Git 'GenericContribute' permission to perform this action. Details: identity 'Build\xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', scope 'repository'.
+  #   remote: TF401027: You need the Git 'GenericContribute' permission to perform this action. Details: identity 'Build\xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', scope 'repository'.
+  #   fatal: unable to access 'https://devops.azure.com/harisekhon/GitHub/_git/MyRepo/': The requested URL returned error: 403
+  #
+  # from the build error copy the ID without the 'Build\' prefix and then use it to find the 'Project Collection Build Service' user to grant permissions
+  #
+  # repo -> Settings -> Repos -> Repositories -> <name> -> Security -> Contribute -> allow
+  #
+  #   https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/git-commands?view=azure-devops&tabs=yaml
+  #
+  - script: git push
+    displayName: git push
