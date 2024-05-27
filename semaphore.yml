@@ -20,7 +20,7 @@
 # https://docs.semaphoreci.com/reference/pipeline-yaml-reference/
 
 version: v1.0
-name: DevOps-Bash-tools
+name: DevOps-Bash-tools  # XXX: Edit
 agent:
   machine:
     type: e1-standard-2
