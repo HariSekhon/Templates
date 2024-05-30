@@ -55,10 +55,12 @@ strategy:
       steps:
         - script: ./deploy.sh
           displayName: Deploy My Stuff
-        - template: templates/include-npm-steps.yml
+        # or put steps in a template file and reuse in multiple pipelines
+        - template: templates/deploy-steps.yml
 
 # Conditional insertion of stages or jobs
 jobs:
+  - template: templates/build-job.yml
   # conditional - only run this job on the main branch - prevents people doing a manual run and selecting the wrong branch
   - ${{ if eq(variables['Build.SourceBranchName'], 'refs/heads/main') }}:
       - job: buildMainOnly
@@ -68,35 +70,77 @@ jobs:
 workspace: # Workspace options on the agent.
   clean:
 
-# if you only want to manually trigger pipeline, such as for a release
+# disable triggers to only run manually
 #trigger: none
 
-# simple if you only want triggering on any branch
-#trigger:
-#  - master
-#  - main
-
+# cannot use variables in triggers as variables are evaluated at runtime after the trigger has fired
 trigger:
+  # for some reason batch was preventing automatic triggering of pipeline when this yml changed, buggy behaviour
+  #batch: true  # schedules subsequent runs to be non-concurrent and only runs the latest run of accumulated changes when the current run has finished - batch is not supported in repository resource triggers
   branches:
     include:
       - master
       - main
-  #paths:
-  #  include:
-  #    - src/    # java
-  #    - '**.py'  # python  # TODO: * or **
-  #    - azure-pipeline.yml
+  # if either the branch filter or the tag filter matches, will trigger regardless of exclusions on the other filter
+  tags:
+    include:
+      - v2.*
+    exclude:
+      - v2.0
+  paths:
+    # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/file-matching-patterns
+    include:
+      - 'src/**'      # java
+      - '**.py'       # python
+      - '**.pl'       # perl
+      - '**.go'       # golang
+      - '**.sh'       # shell
+      - pom.xml       # Maven
+      - build.gradle  # Gradle
+      - build.sbt     # SBT
+      - requirements.txt  # Python PyPI packages
+      - azure-pipelines.yml  # run if we change this pipeline
 
+# XXX: scheduled triggers in the classic UI take precedence over yaml scheduled triggers
+#        - only the UI scheduled trigger would run
+#        - nobody should be using the 'classic' UI, and if removed a push is required for yaml scheduled triggers to be re-evaluated
+schedules:
+  # List of multiple cron schedules in same file
+  #
+  # If you only want some stages / jobs to run on a given schedule then add this conditional to them:
+  #
+  #   condition: eq(variables['Build.CronSchedule.DisplayName'], 'Daily midnight build')
+  #
+  - cron: '0 0 * * *'  # UTC timezone, standard unix cron format - midnight each night
+    displayName: myScheduleAtMidnight
+    branches:
+      include:
+        - main  # this include must exist on the branch itself for the schedule of that branch to be triggered
+        - master
+      exclude:
+        - dev
+    always: false # run regardless of no changes. Overrides batch setting and would allow concurrent runs
+    batch: false  # default, do not run the pipeline if the previously scheduled pipeline run is still running
+                  # batch is available in Azure DevOps Server 2022.1 and higher
+
+# capitalized and available as $MYVAR or %MYVAR% for Linux/Mac or Windows respectively
 variables:
   DIR: k8s/myapp   # directory in which to edit fleet.yaml, used further down
   version: latest  # release version to have this pipeline commit to k8s repo fleet.yaml
   myvar: myvalue   # call in code as $(myvar)
   # save version.txt between pipelines and download it in subsequent versions to chain the correct release versions
   VERSION_ARTIFACT: '$(System.ArtifactsDirectory)/image_version/version.txt'
+  #- name: myReadOnlyVar
+  #  value: myValue
+  #  readonly: true
+  #- template: vars.yml@myTemplatesRepo # import from another git repo from the resources section below
+  #
+  # same as setting set -euxo pipefail at the top of every Shell / Bash task
+  SHELLOPTS: "errexit:pipefail:nounset:xtrace"
 
 pool:
   # only run this pipeline on the 'MyLinux' agent pool
-  #name: 'MyLinux'
+  #name: 'MyLinux'  # default: Default pool
   #
   # there is no /dev/stderr on this azure build!
   #vmImage: 'ubuntu-latest'
@@ -104,26 +148,124 @@ pool:
   # Ubuntu 16.04+ required for docker container support, looks like 18.04 works too
   vmImage: 'ubuntu-22.04'
 
+resources:
+  repositories:
+    - repository: myTemplatesRepo
+      type: github  # or 'git' for an Azure DevOps repo
+      name: HariSekhon/Azure-DevOps-Templates
+      #ref: refs/tags/v1.0
+      #refs/heads/master  # default: refs/heads/main
+      #endpoint: myServiceConnection  # Azure DevOps service connection for connecting to another Azure DevOps repo
+  pipelines:
+    - pipeline: myPipelineResource1  # used to reference pipeline variables and artifacts from other parts of the pipeline
+      source: myOtherPipeline  # myFolder/myOtherPipeline if it's in a folder
+      project: myOtherProject  # only needed if in another project XXX: the 'Default branch for manual and scheduled builds' UI setting must be set to refs/heads/ prefix otherwise this won't trigger
+      trigger: true # trigger this pipeline when myOtherPipeline completes
+      #trigger:
+      #  branches:
+      #    include:
+      #      - releases/*  # may need to prefix with refs/heads - the documentation doesn't even know if this is needed, it says to try it if it doesn't work, which just goes to show the lack of maturity of this legacy product
+      #    exclude:
+      #      - releases/old*
+      #  tags:
+      #    - Production # tags are AND'ed
+      #    - Signed
+      #  stages:  # trigger whenall of these stages of the other pipeline are completed
+      #    - PreProduction
+      #    - Production
+
 # unprivileged container without sudo, cannot install dependencies
 #container: ubuntu:18.04
 services:
 
+jobs:
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
 steps:
+  # Replaces the implicit checkout stepwith one that persists the credentials to pull and push changes to the same repo, such as GitOps release version updates
+  #
+  #   https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines
+  #
+  #- checkout: self
+  #  #submodules: true # or 'recursive'
+  #  #path: path/to/checkout
+  #  persistCredentials: true
+
+  #- script: set
+  #  displayName: Environment Variables on Windows
+
   # requires script as first key, otherwise parsing breaks with error message:  Unexpected value 'displayName'
   - script: env | sort
     # if you don't specify displayName then defaults to 'CmdLine' rather than the actual command :-/
-    displayName: env
+    displayName: Environment Variables on Linux/Mac
 
+  # Test bash is available on Windows and its environment
+  #- script: '"C:\Program Files\Git\bin\bash.exe" -c "env | sort"'
+  #- script: 'bash -c "env | sort"'
+  #  displayName: Environment Variables
+  #  #workingDirectory: C:\Program Files\Git\bin
+
+  # script takes defaults to Bash on Linux/Mac and cmd.exe on Windows
   - script: cat /etc/*release
     displayName: OS Release
 
-  # Replace the implicit checkout with one that persists the credentials to pull and push changes such as GitOps release version updates
-  # https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines
-  #- checkout: self
-  #  persistCredentials: true
+  # requires a physical script
+  #- task: ShellScript@2
+  #  scriptPath: # string, required
+  #  args: # string, optional
+  #  displayName: MyShellScriptTask
 
   - script: echo "##vso[task.setvariable variable=myvar;]$(MY_AZURE_VARIABLE)"
     displayName: set variable myvar to the contents of the Azure DevOps variable MY_AZURE_VAR
+
+  # =====================
+  # %PATH% on Windows
+  #
+  # XXX: do not single or double quote the end otherwise buggy behaviour leaves the trailing quote in the value eg. Path=C:\Program Files\Git\bin";...
+  - script: echo "##vso[task.prependpath]C:\Program Files\Git\bin
+    displayName: Prepend C:\Program Files\Git\bin to %PATH% for Bash task
+  #
+  # XXX: both this and the above do successfully Prepend/Append to Path but subsequent Bash@3 tasks still fails with this error (caused by using a different agent pool that doesn't have c:\Program Files\Git installed):
+  #
+  #   ##[error]Unable to locate executable file: 'bash'. Please verify either the file path exists or the file can be found within a directory specified by the PATH environment variable. Also verify the file has a valid extension for an executable file.
+  #
+  # the standard environment variable way - 'path' gets capitalized as an environment variable - again leave off the closing quote as above, it works like that, buggy
+  - script: echo ##vso[task.setvariable variable=path]$(PATH);C:\Program Files\Git\bin
+    displayName: Append C:\Program Files\Git\bin to %PATH% for Bash task
+
+  - script: set
+    displayName: Environment Variables on Windows
+
+    # find Bash on Windows
+  - script: where bash
+    displayName: Where bash
+
+  - task: PowerShell@2
+    displayName: Disk Free Space
+    inputs:
+      targetType: filePath
+      filePath: scripts/disk_space.ps1  # copy the contents from HariSekhon/Knowledge-Bash windows.md into a file in the same repo as this pipeline
+
+  # requires Bash to be installed, which on Windows is provided as part of Git installation
+  - task: Bash@3
+    displayName: MyBashCommands
+    inputs:
+      #targetType: filePath # default
+      targetType: inline
+      #filePath: ./script.sh  # only for filePath
+      #arguments:             # only for filePath
+      #workingDirectory:
+      # VERY important otherwise set -x or xtrace in SHELLOPTS will immediately fail the first Bash task with this error:
+      #
+      #   ##[error]The process 'C:\Program Files\Git\bin\bash.exe' failed because one or more lines were written to the STDERR stream
+      #
+      # XXX: buggy as hell Azure DevOps still fails the task when xtrace is set in Bash printing the commands to stderr
+      failOnStderr: false
+      #bashEnvValue:  # non-interactive file to read at startup
+      # if 'targetType: inline'
+      script: |
+        set -euxo pipefail
+        echo someCommands
 
      # not available on local runners, have to use DownloadBuildArtifacts instead
      #task: DownloadPipelineArtifact@2
@@ -189,8 +331,8 @@ steps:
   - script: git pull --no-edit --no-rebase
     displayName: git pull
 
-  #- script: install yq
-  #  displayName: sudo apt-get update && sudo apt-get install -y yq
+  #- script: sudo apt-get update && sudo apt-get install -y yq
+  #  displayName: Install yq
 
   - script: |
       set -euxo pipefail
@@ -202,12 +344,17 @@ steps:
     displayName: update release version
 
   - script: |
-      git commit \
-            -m "updated $(DIR)/fleet.yaml with version '$version', build queued by '$BUILD_QUEUEDBY', requested for '$BUILD_REQUESTEDFOR <$BUILD_REQUESTEDFOREMAIL>', pipeline version '$BUILD_DEFINITIONVERSION'" \
-            # XXX: Edit company team email address
-            #--author "Azure DevOps Pipeline '$BUILD_DEFINITIONNAME' <devops@company.com>" \
-            --author "Azure DevOps Pipeline '$BUILD_DEFINITIONNAME' <${BUILD_REQUESTEDFOREMAIL}a>" \
-            "$(DIR)/fleet.yaml"
+      set -euxo pipefail
+      git add -A
+      # copied from https://github.com/HariSekhon/Jenkins/blob/master/vars/gitKustomizeImage.groovy#L135
+      if ! git diff-index --quiet HEAD; then
+        git commit \
+          -m "updated $(DIR)/fleet.yaml with version '$version', build queued by '$BUILD_QUEUEDBY', requested for '$BUILD_REQUESTEDFOR <$BUILD_REQUESTEDFOREMAIL>', pipeline version '$BUILD_DEFINITIONVERSION'" \
+          # XXX: Edit company team email address
+          #--author "Azure DevOps Pipeline '$BUILD_DEFINITIONNAME' <devops@company.com>" \
+          --author "Azure DevOps Pipeline '$BUILD_DEFINITIONNAME' <${BUILD_REQUESTEDFOREMAIL}>" \
+          "$(DIR)/fleet.yaml"
+      fi
     displayName: git commit
 
   # pull and merge to minimize chance of push conflict cause by approval waiting period
