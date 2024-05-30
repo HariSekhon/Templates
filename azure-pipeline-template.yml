@@ -21,16 +21,61 @@
 
 # By using a template with extends, users can only make limited changes via pre-approved parameters
 
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/process/templates
+
 ---
 parameters:
   - name: usersteps
     type: stepList
     default: []
 
+  - name: userpool
+    type: string
+    default: Azure Pipelines
+    # enumeration of possible values to restrict user pipeline to
+    values:
+    - Azure Pipelines
+    - private-pool-1
+    - private-pool-2
+
+  - name: myBoolean
+    type: boolean
+    default: false
+
+  - name: myNumber
+    type: number
+    default: false
+
+  - name: myObject
+    type: object
+    default: {}
+
+  - name: image
+    displayName: Pool Image
+    type: string
+    default: ubuntu-latest
+    values:
+    - windows-latest
+    - ubuntu-latest
+    - macOS-latest
+
+# put this in a vars.yml to keep variables together and import into the variables section of a pipeline
+variables:
+  myVar: myValue
+  # import in a calling template
+  #- template: vars.yml@self  # self refers to repo in which this template exists if called from another pipeline in another repo
+
+pool: ${{ parameters.userpool }}
+
 resources:
   containers:
     - container: builder
       image: mysecurebuildcontainer:latest
+
+#stages:
+
+# XXX: if using a job template that may be imported multiple times, omit the name to avoid conflicts
+#jobs:
 
 steps:
   - script: echo Run this template step on the agent host - it can use docker commands to tear down or limit the container's network
@@ -80,3 +125,18 @@ steps:
 #      usersteps:
 #      - script: echo This is my first step
 #      - script: echo This is my second step
+
+# have this template add a scan step to each job
+#parameters:
+#  jobs: []
+#
+#jobs:
+#- ${{ each job in parameters.jobs }}: # Each job
+#  - ${{ each pair in job }}:  # Insert all properties other than "steps"
+#      ${{ if ne(pair.key, 'steps') }}:
+#        ${{ pair.key }}: ${{ pair.value }}
+#    steps:                            # Wrap the steps
+#    - task: CredScan@1                # Pre steps
+#    - ${{ job.steps }}                # Users steps - keep in mind injection here, see further up for example to strip shell/cmd steps
+#    - task: PublishMyTelemetry@1      # Post steps
+#      condition: always()
