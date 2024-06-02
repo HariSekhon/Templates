@@ -1,0 +1,49 @@
+---
+# XXX: putting this separator further down with code causes a parsing bug in drone lint
+#
+#  Author: Hari Sekhon
+#  Date: 2020-02-29 12:05:52 +0000 (Sat, 29 Feb 2020)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https://github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                                D r o n e   C I
+# ============================================================================ #
+
+# https://docs.drone.io/quickstart/cli/
+#
+# https://docs.drone.io/cli/install/
+#
+# brew install drone-cli
+#
+# cd to this directory
+#
+# drone exec [--pipeline default] [--include=thisstep] [--exclude=thatstep]
+
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: build
+    image: ubuntu:18.04
+    #environment:
+    #  DEBUG: 1
+    commands:
+      - setup/ci_bootstrap.sh
+      - make init
+      - make ci
+      - make test
+
+trigger:
+  branch:
+    - master

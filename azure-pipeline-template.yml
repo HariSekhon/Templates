@@ -1,0 +1,142 @@
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  Author: Hari Sekhon
+#  Date: Sun Feb 23 19:02:10 2020 +0000
+#
+#  https://github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback
+#  to help improve or steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                   A z u r e   D e v O p s   P i p e l i n e
+# ============================================================================ #
+
+# https://aka.ms/yaml
+
+# By using a template with extends, users can only make limited changes via pre-approved parameters
+
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/process/templates
+
+---
+parameters:
+  - name: usersteps
+    type: stepList
+    default: []
+
+  - name: userpool
+    type: string
+    default: Azure Pipelines
+    # enumeration of possible values to restrict user pipeline to
+    values:
+    - Azure Pipelines
+    - private-pool-1
+    - private-pool-2
+
+  - name: myBoolean
+    type: boolean
+    default: false
+
+  - name: myNumber
+    type: number
+    default: false
+
+  - name: myObject
+    type: object
+    default: {}
+
+  - name: image
+    displayName: Pool Image
+    type: string
+    default: ubuntu-latest
+    values:
+    - windows-latest
+    - ubuntu-latest
+    - macOS-latest
+
+# put this in a vars.yml to keep variables together and import into the variables section of a pipeline
+variables:
+  myVar: myValue
+  # import in a calling template
+  #- template: vars.yml@self  # self refers to repo in which this template exists if called from another pipeline in another repo
+
+pool: ${{ parameters.userpool }}
+
+resources:
+  containers:
+    - container: builder
+      image: mysecurebuildcontainer:latest
+
+#stages:
+
+# XXX: if using a job template that may be imported multiple times, omit the name to avoid conflicts
+#jobs:
+
+steps:
+  - script: echo Run this template step on the agent host - it can use docker commands to tear down or limit the container's network
+  - ${{ each step in parameters.usersteps }}:
+      # do not allow arbitrary shell steps from user - only run the step if it's none of these
+      - ${{ if not(or(startsWith(step.task, 'Bash'),startsWith(step.task, 'CmdLine'), startsWith(step.task, 'PowerShell'), startsWith(step.task, 'BatchScript'), startsWith(step.task, 'ShellScript'))) }}:
+          - ${{ step }}
+      - ${{ else }}:
+          - ${{ each pair in step }}:
+              ${{ if eq(pair.key, 'inputs') }}:
+                inputs:
+                  ${{ each attribute in pair.value }}:
+                    ${{ if eq(attribute.key, 'script') }}:
+                      script: echo "Script removed by template"
+                    ${{ else }}:
+                      ${{ attribute.key }}: ${{ attribute.value }}
+              ${{ elseif ne(pair.key, 'displayName') }}:
+                ${{ pair.key }}: ${{ pair.value }}
+
+                displayName: 'Disabled by template: ${{ step.displayName }}'
+
+  # https://learn.microsoft.com/en-us/azure/devops/pipelines/security/templates?view=azure-devops
+  #  make the user steps run in the container
+  - script: echo Run inside builder labelled container to limit its access
+    target: builder
+    #target:
+      # restricted mode for a task prevents it from using special logging commands to request services or upload artifacts or test results
+      #commands: restricted
+      # only allow the command to set these environment variables to prevent injection attacks on later parts of the pipeline from untrusted step output
+      #settableVariables:  # an empty list disallows the task from setting any variables
+      #- expectedVar
+      #- ok*
+
+# In the calling azure-pipelines.yml file:
+#
+#  # pin the extends to a given tag to prevent existing pipelines from inheriting breaking changes
+#  resources:
+#    repositories:
+#    - repository: templates
+#      type: git
+#      name: MyProject/MyTemplates
+#      ref: refs/tags/v1
+#
+#  extends:
+#    template: template.yml@templates
+#    parameters:
+#      usersteps:
+#      - script: echo This is my first step
+#      - script: echo This is my second step
+
+# have this template add a scan step to each job
+#parameters:
+#  jobs: []
+#
+#jobs:
+#- ${{ each job in parameters.jobs }}: # Each job
+#  - ${{ each pair in job }}:  # Insert all properties other than "steps"
+#      ${{ if ne(pair.key, 'steps') }}:
+#        ${{ pair.key }}: ${{ pair.value }}
+#    steps:                            # Wrap the steps
+#    - task: CredScan@1                # Pre steps
+#    - ${{ job.steps }}                # Users steps - keep in mind injection here, see further up for example to strip shell/cmd steps
+#    - task: PublishMyTelemetry@1      # Post steps
+#      condition: always()

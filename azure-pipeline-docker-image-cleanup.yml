@@ -1,0 +1,137 @@
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  Author: Hari Sekhon
+#  Date: Sun Feb 23 19:02:10 2020 +0000
+#
+#  https://github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback
+#  to help improve or steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                   A z u r e   D e v O p s   P i p e l i n e
+# ============================================================================ #
+
+# https://aka.ms/yaml
+
+---
+trigger:
+  branches:
+    include:
+      - master
+      - main
+  paths:
+    include:
+      - azure-pipeline-docker-image-cleanup.yml
+
+schedules:
+  - cron: '0 0 * * *'  # UTC timezone
+    displayName: myScheduleAtMidnight
+    branches:
+      include:
+        - main
+        - master
+    always: true
+
+variables:
+  SHELLOPTS: "errexit:pipefail:nounset"
+
+steps:
+  # XXX: do not single or double quote the end otherwise buggy behaviour leaves the trailing quote in the value eg. Path=C:\Program Files\Git\bin";...
+  - script: echo "##vso[task.prependpath]C:\Program Files\Git\bin
+    displayName: Prepend C:\Program Files\Git\bin to %PATH% for Bash task
+
+  - script: set
+    displayName: Environment Variables on Windows
+
+  - task: PowerShell@2
+    displayName: Disk Free Space
+    inputs:
+      targetType: filePath
+      filePath: scripts/disk_space.ps1   # copy the contents from HariSekhon/Knowledge-Bash windows.md into a file in the same repo as this pipeline
+
+  - script: docker info
+    displayName: Docker Info
+
+  - script: docker image ls
+    displayName: Docker Images
+
+  # requires Bash to be installed, which is provided as part of Git installation on Windows
+  - task: Bash@3
+    displayName: Old Docker Images
+    inputs:
+      targetType: inline
+      failOnStderr: false
+      script: |
+        # find all docker images over 1 week old
+        # beware 'docker images' is equivalent to 'docker image ls' so putting 'docker images ls' breaks the filter and returns nothing as a silent failure
+        docker image ls \
+          --filter "until=$((7*24))h" \
+          --format '{{.Repository}}:{{.Tag}}' > docker_images.txt
+        # Docker version 24 fails with this:
+        #
+        #   Error response from daemon: invalid filter 'until'
+        #
+        # 'until' works on docker 25
+        #
+        # for Docker 24 do an older manual parsing
+        #docker images --format '{{.Repository}}:{{.Tag}}__{{.CreateSince}}' |
+        #grep -e week -e month > docker_images.txt
+        #echo
+        #echo "List of Docker Images older than 1 week:"
+        #echo
+        #sed 's/__/	/' docker_images.txt | column -t
+
+  - task: Bash@3
+    displayName: Docker Images Allowed to Delete
+    inputs:
+      targetType: inline
+      failOnStderr: false
+      script: cat docker_images_to_clean_up.txt
+
+  - task: Bash@3
+    displayName: Old Docker Images to Delete
+    inputs:
+      targetType: inline
+      failOnStderr: false
+      script: |
+        echo "Docker Images to Delete"
+        sed 's/__.*$//; /<none>/d' docker_images.txt |
+        # don't delete big base images like microsoft ones that we're have to pull again
+        #grep -v microsoft docker_images.txt < docker_images_to_delete.txt  > docker_images_to_delete.txt || :
+        # or for only a specific list of images
+        # can't use -x because the :<tag> would break the match unless we removed -F and used regex in the file
+        grep -Ff docker_images_to_clean_up.txt > docker_images_to_delete.txt || :
+        cat docker_images_to_delete.txt
+
+  - task: Bash@3
+    displayName: Delete Stopped Docker Containers to Allow Deleting Dangling Images
+    inputs:
+      targetType: inline
+      failOnStderr: false
+      script: docker container prune -f
+
+  - task: Bash@3
+    displayName: Delete Old Docker Images
+    inputs:
+      targetType: inline
+      failOnStderr: false
+      script: |
+        if [ -s docker_images_to_delete.txt ]; then
+          cat docker_images_to_delete.txt |
+          xargs --no-run-if-empty echo docker rmi
+        fi
+
+  - task: Bash@3
+    displayName: Delete Dangling Docker Images
+    inputs:
+      targetType: inline
+      failOnStderr: false
+      script: |
+        docker images -f "dangling=true" -q |
+        xargs --no-run-if-empty docker rmi

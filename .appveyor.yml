@@ -1,0 +1,89 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2020-02-24 16:19:35 +0000 (Mon, 24 Feb 2020)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https://github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                             A p p V e y o r   C I
+# ============================================================================ #
+
+# https://www.appveyor.com/docs/appveyor-yml/
+
+image: Ubuntu
+
+# workaround for default JDK9 have old CA certs:
+#
+#   https://github.com/appveyor/ci/issues/3833
+#
+#   https://www.appveyor.com/docs/getting-started-with-appveyor-for-linux/#configuring-language-stack
+#
+stack: jdk 15
+
+skip_commits:
+  files:
+    - docs/*
+    - '**/*.md'
+
+# https://www.appveyor.com/docs/how-to/ssh-to-build-worker/
+environment:
+  APPVEYOR_SSH_KEY: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvihSRU+YjBKvKiacDfUoZ7ghoVMcwNh4cWIYUNFGZosXOzNtyOcBpIb71TCgLFhOd+aMWKXCEC67BpNSIjt+a/FLD27AwmgVHv6cPlE3G0JJ9zmIrNmx9511dshTsxUW2O0SbYG+3InuO7FUkSrld+kA1OucyjgmZU7/+Cs9shpAEOaIVYmGlpDGRucAHpwtckvdgRTtnA3WNZ/Qg1vU6Ik4Xm03vjrW6lSiuTffYO1kbdcMQ4IZBlzfmovOtXQ0PomvN5NMCpgOyQuoNlvyS11tOXoqNiWOkiLE15XEzAQth9hHbNiH8jHJbAtkHqWWh0KK4IUyNGvoL6QfNxsTlw== hari@anotherdimension
+
+# enable SSH session accessible via my public key
+#init:
+#  - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
+
+# more useful at end to leverage .appveyor.yml tweaks like disabling broken mssql repo/dependencies, checking out project and building the core stuff happen first so we don't have to do all that manually in SSH session
+on_finish:
+  # set this in Settings -> Environment dynamically instead of here
+  #- sh: export APPVEYOR_SSH_BLOCK=true
+  #
+  # workaround for https://github.com/appveyor/ci/issues/3373
+  #            and https://github.com/appveyor/ci/issues/3384
+  #
+  # has since been added to AppVeyor's own scripts:
+  #
+  #     https://github.com/appveyor/ci/pull/3385
+  #
+  #- sh: curl -sflL 'https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/install/install_openssh.sh' | bash -e -
+  #
+  # https://www.appveyor.com/docs/how-to/ssh-to-build-worker/
+  - sh: if [ "$APPVEYOR_SSH_BLOCK" = true ]; then curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -; fi
+
+install:
+  # workaround for:
+  # Some packages could not be installed. This may mean that you have
+  # requested an impossible situation or if you are using the unstable
+  # distribution that some required packages have not yet been created
+  # or been moved out of Incoming.
+  # The following information may help to resolve the situation:
+  #
+  # The following packages have unmet dependencies:
+  #  mssql-server : Depends: libsasl2-modules-gssapi-mit but it is not going to be installed
+  #  E: Error, pkgProblemResolver::Resolve generated breaks, this may be caused by held packages.
+  #  bash-tools/Makefile.in:272: recipe for target 'apt-packages' failed
+  #  make[2]: *** [apt-packages] Error 123
+  #  make[2]: Leaving directory '/home/appveyor/projects/pylib'
+  #  bash-tools/Makefile.in:212: recipe for target 'system-packages' failed
+  #
+  #  adding "|| :" to the end of these commands causes them to be silently ignored!
+  - sudo sed -i '/https:\/\/packages.microsoft.com\/ubuntu\/.*\/mssql-server/d' /etc/apt/sources.list
+  - sudo apt purge -yq --allow-change-held-packages mssql-server
+  # this prevents conflicts installing default-jdk - see https://github.com/appveyor/ci/issues/3411
+  #- dpkg -l | awk '/openjdk/{print $2}' | DEBIAN_FRONTEND=noninteractive xargs sudo apt-get remove -y --allow-change-held-packages
+  - setup/ci_bootstrap.sh
+  - make
+
+test_script:
+  - make test
+
+build: off
