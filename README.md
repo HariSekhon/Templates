@@ -82,9 +82,15 @@ Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools)
 - [DevOps Python tools](https://github.com/HariSekhon/DevOps-Python-tools)
 - [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools)
 
+See also the [HariSekhon/Template-Repo](https://github.com/HariSekhon/Template-Repo)
+for quickly generating new GitHub repos containing all the basic CI/CD configurations, SonarCloud, README badges etc.
+
 ### New
 
-`new.pl` can instantiate these templates as new date-timestamped files, autopopulating the date, vim tags, GitHub URL and other headers and drops you in to your `$EDITOR` of choice (eg. `vim`).
+`new.pl` can instantiate these templates as new date-timestamped files, autopopulating the date, vim tags, GitHub
+URL and other headers and drops you in to your `$EDITOR` of choice (eg.
+[vim](https://github.com/HariSekhon/Knowledge-Base/blob/main/vim.md) or
+[IntelliJ IDEA](https://github.com/HariSekhon/Knowledge-Base/blob/main/intellij.md)).
 
 You can give an exact filename like `Dockerfile`, `Makefile`, `Jenkinsfile`, `docker-compose.yml`, `pom.xml`, `build.gradle`, or you can instantiate one of the templates based on their file extension (eg. `py`, `sh`) with any filename (eg. `main.py`, `test.py`, `myapp.py`).
 
