@@ -265,7 +265,7 @@ CMD ["/app"]
 # ======================================
 # 1.23GB docker image results from this:
 #
-#FROM python:3.10
+#FROM python:3.11
 #
 #COPY . /app
 #
@@ -276,7 +276,7 @@ CMD ["/app"]
 #
 #EXPOSE 4000
 #
-#ENV PYTHONPATH=/usr/local/lib/python3.10/site-packages
+#ENV PYTHONPATH=/usr/local/lib/python3.11/site-packages
 #
 #CMD ["app.py"]
 
@@ -293,12 +293,16 @@ RUN pip3 install --upgrade pip && \
 
 # ============================================================================ #
 
-# XXX: the only problem with this is that the Python version is not tagged and using 'latest' tag means that
-#      this is actually copying the wrong python version - build against latest and then quickly change to using it's hash to pin it, see here:
+# XXX: One caveat with using Google's Distroless Python is that the Python version is not tagged and using 'latest' tag means that
+#      when the Python version gets updated you could end up building against the wrong version of Python in the builder and also
+#      copying the libraries to the wrong directory in the new image, so it's better to find the current latest tag and FROM against
+#      its explicit hash by looking it up here:
 #
 #           https://console.cloud.google.com/gcr/images/distroless/GLOBAL/python3
 #
-FROM gcr.io/distroless/python3
+# pin to hash because there is no python version tags and latest will change versions over time otherwise
+#FROM gcr.io/distroless/python3
+FROM gcr.io/distroless/python3@sha256:e8e50bc861b16d916f598d7ec920a8cef1e35e99b668a738fe80c032801ceb78
 
 COPY --from=builder /app /app
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
