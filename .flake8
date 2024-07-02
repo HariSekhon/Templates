@@ -25,11 +25,11 @@ statistics = True
 
 max-line-length = 20
 
-ignore = F401,
-         E225,
-         E251,
-         E302,
-         E305,
-         E401,
-         E501,
-         E722
+#ignore = F401,
+#         E225,
+#         E251,
+#         E302,
+#         E305,
+#         E401,
+#         E501,
+#         E722
