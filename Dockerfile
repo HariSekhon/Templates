@@ -262,8 +262,8 @@ CMD ["/app"]
 
 # On a simple flask app the default way is 1.23GB but the distroless builder pattern way is 244MB !! Huge difference
 
-# ======================================
-# 1.25GB docker image results from this:
+# ====================================================
+# 1.25GB docker image results from this classic build:
 #
 #FROM python:3.11
 #
