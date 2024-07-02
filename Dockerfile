@@ -281,7 +281,7 @@ CMD ["/app"]
 #CMD ["app.py"]
 
 # ================================================
-# 244MB docker image results from builder pattern:
+# 252MB docker image results from builder pattern:
 #
 # must ensure this python version matches the Google Distroless Python version below
 FROM python:3.11 AS builder
