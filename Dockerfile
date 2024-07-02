@@ -304,13 +304,15 @@ RUN pip3 install --upgrade pip && \
 #FROM gcr.io/distroless/python3
 FROM gcr.io/distroless/python3@sha256:e8e50bc861b16d916f598d7ec920a8cef1e35e99b668a738fe80c032801ceb78
 
+ENV PYTHON_VERSION=3.11
+
 COPY --from=builder /app /app
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/lib/python${PYTHON_VERSION}/site-packages /usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 WORKDIR /app
 
 EXPOSE 4000
 
-ENV PYTHONPATH=/usr/local/lib/python3.10/site-packages
+ENV PYTHONPATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 CMD ["app.py"]
