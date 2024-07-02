@@ -255,3 +255,58 @@ COPY --from=builder /app .
 ENV GOTRACEBACK=single
 
 CMD ["/app"]
+
+# ============================================================================ #
+#                  P y t h o n   B u i l d e r   P a t t e r n
+# ============================================================================ #
+
+# On a simple flask app the default way is 1.23GB but the distroless builder pattern way is 244MB !! Huge difference
+
+# ======================================
+# 1.23GB docker image results from this:
+#
+#FROM python:3.10
+#
+#COPY . /app
+#
+#WORKDIR /app
+#
+#RUN pip3 install --upgrade pip && \
+#    pip3 install -r ./requirements.txt
+#
+#EXPOSE 4000
+#
+#ENV PYTHONPATH=/usr/local/lib/python3.10/site-packages
+#
+#CMD ["app.py"]
+
+# ================================================
+# 244MB docker image results from builder pattern:
+#
+FROM python:3.11 AS builder
+
+COPY . /app
+WORKDIR /app
+
+RUN pip3 install --upgrade pip && \
+    pip3 install -r ./requirements.txt
+
+# ============================================================================ #
+
+# XXX: the only problem with this is that the Python version is not tagged and using 'latest' tag means that
+#      this is actually copying the wrong python version - build against latest and then quickly change to using it's hash to pin it, see here:
+#
+#           https://console.cloud.google.com/gcr/images/distroless/GLOBAL/python3
+#
+FROM gcr.io/distroless/python3
+
+COPY --from=builder /app /app
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+
+WORKDIR /app
+
+EXPOSE 4000
+
+ENV PYTHONPATH=/usr/local/lib/python3.10/site-packages
+
+CMD ["app.py"]
