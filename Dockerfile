@@ -283,6 +283,7 @@ CMD ["/app"]
 # ================================================
 # 244MB docker image results from builder pattern:
 #
+# must ensure this python version matches the Google Distroless Python version below
 FROM python:3.11 AS builder
 
 COPY . /app
@@ -300,7 +301,7 @@ RUN pip3 install --upgrade pip && \
 #
 #           https://console.cloud.google.com/gcr/images/distroless/GLOBAL/python3
 #
-# pin to hash because there is no python version tags and latest will change versions over time otherwise
+# pin to hash because there is no python version tag and latest will change versions over time otherwise
 #FROM gcr.io/distroless/python3
 FROM gcr.io/distroless/python3@sha256:e8e50bc861b16d916f598d7ec920a8cef1e35e99b668a738fe80c032801ceb78
 
