@@ -86,7 +86,7 @@ docker-build-hash:
 		dirty="-dirty-$$(git status --porcelain | md5sum | cut -c 1-7)"; \
 	fi; \
 	docker build . -t "$${image_name}:$${git_commit_short_sha}$${dirty}" && \
-	docker images | grep "^$${image_name}"
+	docker images | grep "^$$image_name"
 
 .PHONY: packer
 packer-parallel:
