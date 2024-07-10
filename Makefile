@@ -67,6 +67,26 @@ tests: test
 push:
 	git push
 
+# build a locally named obvious docker image with the git checkout dir and subdirectories for testing purposes
+# -  with a tag of the Git Commit Short Sha of this current commit +
+# - a unique checksum of the list of files changed as a 'dirty' differentiator
+# - to compare the different resulting docker image sizes from
+# - the current commit's version of the Dockerfile
+#     vs
+# - the currently modified Dockerfile
+.PHONY: docker-build-hash
+docker-build-hash:
+	set -euxo pipefail; \
+	git_commit_short_sha="$$(git rev-parse --short HEAD)"; \
+	git_root="$$(git rev-parse --show-toplevel)"; \
+	git_root_dir="$${git_root##*/}"; \
+	git_path="$${git_root_dir}/$${PWD##$$git_root/}"; \
+	image_name="$${git_path////--}"; \
+	if git status --porcelain | grep -q . ; then \
+		dirty="-dirty-$$(git status --porcelain | md5sum | cut -c 1-7)"; \
+	fi; \
+	docker build . -t "$${image_name}:$${git_commit_short_sha}$${dirty}"
+
 .PHONY: packer
 packer-parallel:
 	for x in debian fedora ubuntu; do VBoxManage unregistervm "$$x" --delete 2>/dev/null || : ; done
