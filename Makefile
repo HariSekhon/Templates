@@ -74,8 +74,8 @@ push:
 # - the current commit's version of the Dockerfile
 #     vs
 # - the currently modified Dockerfile
-.PHONY: docker-build-autotag
-docker-build-autotag:
+.PHONY: docker-build-hashtag
+docker-build-hashtag:
 	set -euxo pipefail; \
 	git_commit_short_sha="$$(git rev-parse --short HEAD)"; \
 	git_root="$$(git rev-parse --show-toplevel)"; \
