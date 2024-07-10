@@ -111,13 +111,19 @@ RUN yum install -y curl && \
 
 # ===============
 # Debian / Ubuntu
+# - universe repo is needed for direnv package
+# - ppa:rmescandon/yq repo is needed for yq packages
 RUN apt-get update && \
-    apt-get install -y curl --no-install-recommends && \
+    add-apt-repository -y --update ppa:ansible/ansible && \
+    add-apt-repository -y --update ppa:rmescandon/yq && \
+    add-apt-repository -y --update universe && \
+    apt-get install -y --no-install-recommends \
+        curl && \
     curl -sS https://raw.githubusercontent.com/HariSekhon/DevOps-Bash-tools/master/clean_caches.sh | sh && \
     apt-get purge -y curl && \
     apt-get autoremove -y && \
     apt-get clean && \
-    rm -fr /var/cache/apt/* /var/lib/apt/lists/* \
+    rm -rf /var/cache/apt/* /var/lib/apt/lists/* \
 
 # ============================================================================ #
 #                                 N o d e J S
