@@ -51,7 +51,7 @@ repos:
 
   # Git secrets Leaks
   - repo: https://github.com/awslabs/git-secrets.git
-    rev: b4a3208756632bfb87e37ba085c792863deccc74
+    rev: 5357e18
     hooks:
       - id: git-secrets
 
