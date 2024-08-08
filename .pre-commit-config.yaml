@@ -51,6 +51,10 @@ repos:
 
   # Git secrets Leaks
   - repo: https://github.com/awslabs/git-secrets.git
+    # the release tags for 1.2.0, 1.2.1 and 1.3.0 are broken with this error:
+    #
+    #   /Users/hari/.cache/pre-commit/repo......./.pre-commit-hooks.yaml is not a file
+    #
     rev: 5357e18
     hooks:
       - id: git-secrets
