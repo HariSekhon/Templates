@@ -24,7 +24,7 @@ fail_fast: false
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.6.0
     hooks:
       - id: check-yaml
       # Common errors
@@ -45,7 +45,7 @@ repos:
         args: ['--allow-missing-credentials']
 
   - repo: https://github.com/psf/black
-    rev: 22.10.0
+    rev: 24.8.0
     hooks:
       - id: black
 
@@ -56,7 +56,7 @@ repos:
       - id: git-secrets
 
   - repo: https://github.com/markdownlint/markdownlint
-    rev: 41fc308f0d7f2647f0ae2c2d3826f48e42d964f4
+    rev: v0.12.0
     hooks:
       - id: markdownlint
         name: Markdownlint
