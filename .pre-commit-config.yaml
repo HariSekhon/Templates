@@ -1,0 +1,66 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2024-08-08 17:34:56 +0300 (Thu, 08 Aug 2024)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https///github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                              P r e - C o m m i t
+# ============================================================================ #
+
+---
+fail_fast: false
+#exclude: *.tmp$
+
+repos:
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-yaml
+      # Common errors
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      # Git style
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-vcs-permalinks
+      - id: forbid-new-submodules
+      # Cross platform
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      # Security
+      - id: detect-aws-credentials
+        args: ['--allow-missing-credentials']
+
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+
+  # Git secrets Leaks
+  - repo: https://github.com/awslabs/git-secrets.git
+    rev: b4a3208756632bfb87e37ba085c792863deccc74
+    hooks:
+      - id: git-secrets
+
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: 41fc308f0d7f2647f0ae2c2d3826f48e42d964f4
+    hooks:
+      - id: markdownlint
+        name: Markdownlint
+        description: Run markdownlint on your Markdown files
+        entry: mdl
+        language: ruby
+        files: \.(md|mdown|markdown)$
