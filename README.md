@@ -126,7 +126,9 @@ new .github/workflows/build.yaml
 
 `new.pl` can be found in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo.
 
-`alias new=new.pl`
+```shell
+alias new=new.pl
+```
 
 (done automatically in the [DevOps Bash tools](https://github.com/HariSekhon/DevOps-Bash-tools) repo `.bash.d/`)
 
