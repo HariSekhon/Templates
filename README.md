@@ -34,15 +34,15 @@
 Code & DevOps Config templates for many popular programming languages and DevOps tools including:
 
 - Kubernetes - advanced K8s templates eg.
-[deployment.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/deployment.yaml),
-[statefulset.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/statefulset.yaml),
-[service.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/service.yaml),
-[ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml), [skaffold.yaml](https://github.com/HariSekhon/Templates/blob/master/skaffold.yaml), [helmfile.yaml](https://github.com/HariSekhon/Templates/blob/master/helmfile.yaml), [k3d.yaml](https://github.com/HariSekhon/Templates/blob/master/k3d.yaml), [kind.yaml](https://github.com/HariSekhon/Templates/blob/master/kind.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
+  [deployment.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/deployment.yaml),
+  [statefulset.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/statefulset.yaml),
+  [service.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/service.yaml),
+  [ingress.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/ingress.yaml), [kustomization.yaml](https://github.com/HariSekhon/Kubernetes-configs/blob/master/kustomization.yaml), [skaffold.yaml](https://github.com/HariSekhon/Templates/blob/master/skaffold.yaml), [helmfile.yaml](https://github.com/HariSekhon/Templates/blob/master/helmfile.yaml), [k3d.yaml](https://github.com/HariSekhon/Templates/blob/master/k3d.yaml), [kind.yaml](https://github.com/HariSekhon/Templates/blob/master/kind.yaml) and [many others](https://github.com/HariSekhon/Kubernetes-configs)
 - Terraform -
-[provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
-[backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
-[variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
-[terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - see this [bundle trick](https://github.com/HariSekhon/Templates/#new-terraform)
+  [provider.tf](https://github.com/HariSekhon/Templates/blob/master/provider.tf),
+  [backend.tf](https://github.com/HariSekhon/Templates/blob/master/backend.tf),
+  [variables.tf](https://github.com/HariSekhon/Templates/blob/master/variables.tf),
+  [terraform.tfvars](https://github.com/HariSekhon/Templates/blob/master/terraform.tfvars) - see this [bundle trick](https://github.com/HariSekhon/Templates/#new-terraform)
 - Docker - [Dockerfile](https://github.com/HariSekhon/Templates/blob/master/Dockerfile), [docker-compose.yml](https://github.com/HariSekhon/Templates/blob/master/docker-compose.yml)
 - HashiCorp Packer - [template.pkr.hcl](https://github.com/HariSekhon/Templates/blob/master/template.pkr.hcl) - build portable Virtual Machines of Debian, Ubuntu and RHEL-based distros using 100% automated installs via Kickstart, Preseed, AutoInstaller. See [Packer-templates](https://github.com/HariSekhon/Packer-templates)
 - AWS - various - `aws_*`, [buildspec.yml](https://github.com/HariSekhon/Templates/blob/master/buildspec.yml), `ec*`, [eksctl.yaml](https://github.com/HariSekhon/Templates/blob/master/eksctl.yaml), `lambda*`, `s3*`
@@ -85,7 +85,7 @@ Forked from [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools)
 See also the [HariSekhon/Template-Repo](https://github.com/HariSekhon/Template-Repo)
 for quickly generating new GitHub repos containing all the basic CI/CD configurations, SonarCloud, README badges etc.
 
-### New
+## New
 
 `new.pl` can instantiate these templates as new date-timestamped files, autopopulating the date, vim tags, GitHub
 URL and other headers and drops you in to your `$EDITOR` of choice (eg.
@@ -99,31 +99,36 @@ Examples:
 ```shell
 new Makefile
 ```
+
 ```shell
 new Dockerfile
 ```
+
 ```shell
 new Jenkinsfile
 ```
+
 ```shell
 new docker-compose.yml
 ```
+
 ```shell
 new myapp.py
 ```
+
 ```shell
 new build.gradle
 ```
+
 ```shell
 new .github/workflows/build.yaml
 ```
 
 `new.pl` can be found in the [DevOps Perl tools](https://github.com/HariSekhon/DevOps-Perl-tools) repo.
 
-```alias new=new.pl```
+`alias new=new.pl`
 
 (done automatically in the [DevOps Bash tools](https://github.com/HariSekhon/DevOps-Bash-tools) repo `.bash.d/`)
-
 
 ### Terraform
 
@@ -143,7 +148,9 @@ all heavily commented to get a new Terraform environment up and running quickly 
 ```shell
 new terraform
 ```
+
 or shorter
+
 ```shell
 new tf
 ```
@@ -158,7 +165,6 @@ Creates portable Virtual Machines in OVA format using 100% automated installs of
 - Ubuntu AutoInstall - [autoinstall-user-data](https://github.com/HariSekhon/Templates/blob/master/autoinstall-user-data)
 
 See [Packer-templates](https://github.com/HariSekhon/Packer-templates) for more details and ready-to-run templates for each distro.
-
 
 ## Related Repositories
 
