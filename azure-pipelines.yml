@@ -60,7 +60,10 @@ strategy:
 
 # Conditional insertion of stages or jobs
 jobs:
+  #condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
   - template: templates/build-job.yml
+
   # conditional - only run this job on the main branch - prevents people doing a manual run and selecting the wrong branch
   - ${{ if eq(variables['Build.SourceBranchName'], 'refs/heads/main') }}:
       - job: buildMainOnly
@@ -177,9 +180,6 @@ resources:
 # unprivileged container without sudo, cannot install dependencies
 #container: ubuntu:18.04
 services:
-
-jobs:
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 steps:
   # Replaces the implicit checkout stepwith one that persists the credentials to pull and push changes to the same repo, such as GitOps release version updates
@@ -346,7 +346,7 @@ steps:
   - script: |
       set -euxo pipefail
       git add -A
-      # copied from https://github.com/HariSekhon/Jenkins/blob/master/vars/gitKustomizeImage.groovy#L135
+      # copied from https://github.com/HariSekhon/Jenkins/blob/fa65824209e85445834f03330e1d19a9e65ba1b4/vars/gitKustomizeImage.groovy#L135
       if ! git diff-index --quiet HEAD; then
         git commit \
           -m "updated $(DIR)/fleet.yaml with version '$version', build queued by '$BUILD_QUEUEDBY', requested for '$BUILD_REQUESTEDFOR <$BUILD_REQUESTEDFOREMAIL>', pipeline version '$BUILD_DEFINITIONVERSION'" \
