@@ -34,9 +34,9 @@ parameters:
     default: Azure Pipelines
     # enumeration of possible values to restrict user pipeline to
     values:
-    - Azure Pipelines
-    - private-pool-1
-    - private-pool-2
+      - Azure Pipelines
+      - private-pool-1
+      - private-pool-2
 
   - name: myBoolean
     type: boolean
@@ -55,9 +55,9 @@ parameters:
     type: string
     default: ubuntu-latest
     values:
-    - windows-latest
-    - ubuntu-latest
-    - macOS-latest
+      - windows-latest
+      - ubuntu-latest
+      - macOS-latest
 
 # put this in a vars.yml to keep variables together and import into the variables section of a pipeline
 variables:
