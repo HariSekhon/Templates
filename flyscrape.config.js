@@ -1,15 +1,15 @@
-//  [% VIM_TAGS %]
+//  vim:ts=4:sts=4:sw=4:et
 //
 //  Author: Hari Sekhon
-//  Date: [% DATE # 2008-10-20 16:20:20 +0100 (Mon, 20 Oct 2008) %]
+//  Date: 2024-09-25 13:57:27 +0100 (Wed, 25 Sep 2024)
 //
-//  [% URL %]
+//  https://github.com/HariSekhon
 //
-//  [% LICENSE %]
+//  License: see accompanying Hari Sekhon LICENSE file
 //
-//  [% MESSAGE %]
+//  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
 //
-//  [% LINKEDIN %]
+//  https://www.linkedin.com/in/HariSekhon
 //
 
 export const config = {
