@@ -12,6 +12,14 @@
 //  https://www.linkedin.com/in/HariSekhon
 //
 
+// ========================================================================== //
+//                        F l y s c r a p e   C o n f i g
+// ========================================================================== //
+
+// Config Settings reference:
+//
+//      https://flyscrape.com/docs/configuration/starting-url
+
 export const config = {
 
   // follows redirects eg. to https://news.ycombinator.com
@@ -66,6 +74,7 @@ export const config = {
 
   // XXX: use this in development mode to not have to repeatedly request the page
   // Enable file-based request caching.                  (default = no cache)
+  // creates a <configfile_without_.js>.cache in the same directory
   cache: "file",
 
   // Specify the HTTP request header.                    (default = none)
@@ -89,6 +98,10 @@ export const config = {
   //     format: "json",
   // },
 };
+
+// Reference for how to select HTML elements:
+//
+//      https://flyscrape.com/docs/api-reference/
 
 export default function({ doc, absoluteURL }) {
   const title = doc.find("h1");
