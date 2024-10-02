@@ -31,6 +31,9 @@ SHELL = /usr/bin/env bash
 
 PATH := $(PATH):$(PWD)/bash-tools
 
+# XXX: Edit
+BINARY=go-binary-name
+
 RELEASE := v1
 
 .PHONY: default
@@ -41,6 +44,18 @@ default:  ## default if no arg target specified (runs build)
 .PHONY: build
 build: init  ## run init and then build
 	@echo "running build:"
+	go build -o "$(BINARY)" main.go
+
+.PHONY: gorun
+gorun:
+	go run main.go # harisekhon
+	@#if uname -s | grep -q Darwin; then open graph.png; fi
+	@#if uname -s | grep -q Darwin; then open graph.svg; fi
+
+.PHONY: goupdates
+goupdates:
+	go get -u all
+	go mod tidy
 
 .PHONY: init
 init:  ## run init to pull / update git submodules
