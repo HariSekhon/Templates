@@ -19,3 +19,6 @@
 [submodule "vagrant-templates"]
 	path = vagrant-templates
 	url = https://github.com/HariSekhon/Vagrant-templates
+[submodule "ansible-templates"]
+	path = ansible-templates
+	url = https://github.com/HariSekhon/Ansible.git
