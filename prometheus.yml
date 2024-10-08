@@ -53,3 +53,8 @@ scrape_configs:
           - demo.promlabs.com:10000
           - demo.promlabs.com:10001
           - demo.promlabs.com:10002
+
+  - job_name: node_exporter
+    static_configs:
+      - targets:
+        - localhost:9100  # run ./node_exporter on the host - see https://github.com/HariSekhon/Knowledge-Base/blob/main/prometheus.md
