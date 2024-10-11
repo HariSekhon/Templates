@@ -12,6 +12,7 @@
 [![JSON](https://github.com/HariSekhon/Templates/actions/workflows/json.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/json.yaml)
 [![YAML](https://github.com/HariSekhon/Templates/actions/workflows/yaml.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/yaml.yaml)
 [![XML](https://github.com/HariSekhon/Templates/actions/workflows/xml.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/xml.yaml)
+[![Markdown](https://github.com/HariSekhon/Templates/actions/workflows/markdown.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/markdown.yaml)
 [![Validation](https://github.com/HariSekhon/Templates/actions/workflows/validate.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/validate.yaml)
 [![Checkov](https://github.com/HariSekhon/Templates/actions/workflows/checkov.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/checkov.yaml)
 [![Kics](https://github.com/HariSekhon/Templates/actions/workflows/kics.yaml/badge.svg)](https://github.com/HariSekhon/Templates/actions/workflows/kics.yaml)
