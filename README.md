@@ -169,9 +169,9 @@ Creates portable Virtual Machines in OVA format using 100% automated installs of
 
 See [Packer-templates](https://github.com/HariSekhon/Packer-templates) for more details and ready-to-run templates for each distro.
 
-## Stargazers over time
+## Star History
 
-[![Stargazers over time](https://starchart.cc/HariSekhon/Templates.svg)](https://starchart.cc/HariSekhon/Templates)
+[![Star History Chart](https://api.star-history.com/svg?repos=HariSekhon/Templates&type=Date)](https://star-history.com/#HariSekhon/Templates&Date)
 
 [git.io/code-templates](https://git.io/code-templates)
 
