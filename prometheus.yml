@@ -57,4 +57,4 @@ scrape_configs:
   - job_name: node
     static_configs:
       - targets:
-        - localhost:9100  # run ./node_exporter on the host - see https://github.com/HariSekhon/Knowledge-Base/blob/main/prometheus.md
+          - localhost:9100  # run ./node_exporter on the host - see https://github.com/HariSekhon/Knowledge-Base/blob/main/prometheus.md
