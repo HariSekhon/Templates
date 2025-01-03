@@ -37,8 +37,8 @@ set yrange [0:100]    # Percentages range from 0% to 100%
 # results in X axis labels every 2 years
 #set xdata time
 
-#set timefmt "%H"
-#set format x "%H"
+#set timefmt "%H"   # "%Y"
+#set format x "%H"  # "%Y"
 
 #set key off  # Turn off the legend key if it’s a single dataset
 
