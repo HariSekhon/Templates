@@ -1,0 +1,31 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2025-01-01 01:43:27 +0700 (Wed, 01 Jan 2025)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https///github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# https://docs.aws.amazon.com/eks/latest/userguide/updating-an-add-on.html
+
+# eksctl update addon -f update-addon.yaml
+
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: MYCLUSTER # XXX: Edit
+  region: eu-west-1
+
+addons:
+  - name: vpc-cni
+    version: latest
+    serviceAccountRoleARN: arn:aws:iam::111122223333:role/role-name  # XXX: Edit
+    resolveConflicts: preserve
