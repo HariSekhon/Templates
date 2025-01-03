@@ -40,7 +40,7 @@ set yrange [0:100]    # Percentages range from 0% to 100%
 #set timefmt "%H"
 #set format x "%H"
 
-set key off  # Turn off the legend key if it’s a single dataset
+#set key off  # Turn off the legend key if it’s a single dataset
 
 # ============================================================================ #
 # X Labels
