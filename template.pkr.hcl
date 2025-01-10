@@ -215,9 +215,9 @@ local "mylocal" {
 
 # https://developer.hashicorp.com/packer/plugins/datasources/external/external
 
-# https://developer.hashicorp.com/packer/plugins/datasources/amazon
+# https://developer.hashicorp.com/packer/integrations/hashicorp/amazon
 
-# https://developer.hashicorp.com/packer/plugins/datasources/amazon/ami
+# https://developer.hashicorp.com/packer/integrations/hashicorp/amazon/latest/components/data-source/ami
 #data "amazon-ami" "ubuntu" {
 #  filters = {
 #    virtualization-type = "hvm"
@@ -228,7 +228,7 @@ local "mylocal" {
 #  most_recent = true
 #}
 
-# https://developer.hashicorp.com/packer/plugins/datasources/amazon/secretsmanager
+# https://developer.hashicorp.com/packer/integrations/hashicorp/amazon/latest/components/data-source/secretsmanager
 #data "amazon-secretsmanager" "NAME" {
 #  name          = "packer_test_secret"
 #  key           = "packer_test_key"
@@ -256,7 +256,7 @@ local "mylocal" {
 # Ubuntu and Fedora are allocated more resources to try to prevent them stalling / crashing
 # Fedora's anaconda installer is the most resource hungry and unrealiable when resource constrained
 
-# https://developer.hashicorp.com/packer/plugins/builders/qemu
+# https://developer.hashicorp.com/packer/integrations/hashicorp/qemu/latest/components/builder/qemu
 source "qemu" "ubuntu" {
   vm_name     = "ubuntu"             # name of the OVF file without the extension, default: packer-<buildname>-<epoch> eg. packer-ubuntu-1685455208
   qemu_binary = "qemu-system-x86_64" # default: qemu-system-x86_64, change for ARM eg. Mac M1/M2
@@ -277,7 +277,7 @@ source "qemu" "ubuntu" {
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
   #http_directory       = "${path.root}" # doesn't work
-  # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
+  # https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox/latest/components/builder/iso#boot-configuration
   boot_wait = "5s" # default: 10s
   boot_command = [
     #"<tab><wait>",
@@ -327,7 +327,7 @@ source "qemu" "ubuntu" {
 # WARNING: XXX: Do not build on ARM M1/M2 Macs using VirtualBox 7.0 - as of 2023 VirtualBox 7.0 Beta is extremely buggy, slow,
 #               results in "Aborted" VMs and so slow it even misses bootloader keystrokes - it is unworkable on ARM as of this date
 
-# https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
+# https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox/latest/components/builder/iso
 source "virtualbox-iso" "ubuntu" {
   vm_name = "ubuntu" # name of the OVF file without the extension, default: packer-<buildname>-<epoch> eg. packer-ubuntu-1685455208
   # VBoxManage list ostypes
@@ -351,7 +351,7 @@ source "virtualbox-iso" "ubuntu" {
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
   #http_directory       = "${path.root}" # doesn't work
-  # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
+  # https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox/latest/components/builder/iso#boot-configuration
   boot_wait = "5s" # default: 10s
   boot_command = [
     #"<tab><wait>",
@@ -408,7 +408,7 @@ source "virtualbox-iso" "ubuntu" {
   #output_filename  = "" # default: '${vm_name}'
 }
 
-# https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
+# https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox/latest/components/builder/iso
 source "virtualbox-iso" "debian" {
   vm_name       = "debian"
   guest_os_type = "Debian_64"
@@ -433,7 +433,7 @@ source "virtualbox-iso" "debian" {
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
-  # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
+  # https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox/latest/components/builder/iso#boot-configuration
   boot_wait = "5s" # default: 10s
   # Aliases useful with preseeding
   # https://www.debian.org/releases/stable/amd64/apbs02.en.html
@@ -463,7 +463,7 @@ source "virtualbox-iso" "debian" {
   #output_filename  = "" # default: '${vm_name}'
 }
 
-# https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso
+# https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox/latest/components/builder/iso
 source "virtualbox-iso" "fedora" {
   vm_name       = "fedora"
   guest_os_type = "Fedora_64"
@@ -484,7 +484,7 @@ source "virtualbox-iso" "fedora" {
   disk_size            = 40000 # default: 40000 MB = around 40GB
   disk_additional_size = []    # add MiB sizes, disks will be called ${vm_name}-# where # is the incrementing integer
   http_directory       = "."   # necessary for the user-data to be served out for autoinstall boot_command
-  # https://developer.hashicorp.com/packer/plugins/builders/virtualbox/iso#boot-configuration
+  # https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox/latest/components/builder/iso#boot-configuration
   boot_wait = "5s" # default: 10s
   # trigger GUI install - mouse isn't working, move to text-mode first install to collect a baseline anaconda-ks.cfg
   #boot_command = [
@@ -527,7 +527,7 @@ source "virtualbox-iso" "fedora" {
 }
 
 # ============================================================================ #
-# https://developer.hashicorp.com/packer/plugins/builders/virtualbox/ovf
+# https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox/latest/components/builder/ovf
 #source "virtualbox-ovf" "ubuntu" {
 #  vm_name                 = "ubuntu"
 #  source_path             = "source.ovf"
@@ -553,19 +553,21 @@ source "virtualbox-iso" "fedora" {
 #  #output_filename  = "" # default: '${vm_name}'
 #}
 
-# https://developer.hashicorp.com/packer/plugins/builders/docker
+# https://developer.hashicorp.com/packer/integrations/hashicorp/docker/latest/components/builder/docker
 #source "docker" "NAME" {
 #  image  = var.docker_image
 #  commit = true
 #}
 
-# https://developer.hashicorp.com/packer/plugins/builders/vagrant
+# https://developer.hashicorp.com/packer/integrations/hashicorp/vagrant/latest/components/builder/vagrant
 #source "vagrant" "ubuntu" {
 #  source_path = "hashicorp/precise64"
 #  provider    = "virtualbox"
 #}
 
-# https://developer.hashicorp.com/packer/plugins/builders/amazon
+# https://developer.hashicorp.com/packer/integrations/hashicorp/amazon
+# https://developer.hashicorp.com/packer/integrations/hashicorp/amazon/latest/components/data-source/ami
+# https://developer.hashicorp.com/packer/integrations/hashicorp/amazon/latest/components/builder/ebs
 #source "amazon-ebs" "NAME" {
 #  source_ami = locals.source_ami
 #  // ...
@@ -576,21 +578,21 @@ source "virtualbox-iso" "fedora" {
 #                                   B u i l d
 # ============================================================================ #
 
-# https://developer.hashicorp.com/packer/plugins/builders/virtualbox
+# https://developer.hashicorp.com/packer/integrations/hashicorp/virtualbox
 
-# https://developer.hashicorp.com/packer/plugins/builders/vagrant
+# https://developer.hashicorp.com/packer/integrations/hashicorp/vagrant/latest/components/builder/vagrant
 
-# https://developer.hashicorp.com/packer/plugins/post-processors/vagrant/vagrant
+# https://developer.hashicorp.com/packer/integrations/hashicorp/vagrant/latest/components/post-processor/vagrant
 
-# https://developer.hashicorp.com/packer/plugins/builders/amazon
+# https://developer.hashicorp.com/packer/integrations/hashicorp/amazon
 
-# https://developer.hashicorp.com/packer/plugins/builders/azure
+# https://developer.hashicorp.com/packer/integrations/hashicorp/azure
 
-# https://developer.hashicorp.com/packer/plugins/builders/googlecompute
+# https://developer.hashicorp.com/packer/integrations/hashicorp/googlecompute/latest/components/builder/googlecompute
 
-# https://developer.hashicorp.com/packer/plugins/builders/vmware
+# https://developer.hashicorp.com/packer/integrations/hashicorp/vmware
 
-# https://developer.hashicorp.com/packer/plugins/builders/vsphere/vsphere-iso
+# https://developer.hashicorp.com/packer/integrations/hashicorp/vsphere/latest/components/builder/vsphere-iso
 
 build {
   name = "ubuntu"
@@ -635,7 +637,7 @@ build {
   #  destination = "/etc/packer-version"
   #}
 
-  # https://developer.hashicorp.com/packer/plugins/provisioners/ansible/ansible
+  # https://developer.hashicorp.com/packer/integrations/hashicorp/ansible/latest/components/provisioner/ansible
   #
   #provisioner "ansible" {
   #  playbook_file = "./playbook.yml"
@@ -722,7 +724,7 @@ build {
     output              = "output-{{.BuildName}}/{{.BuildName}}.{{.ChecksumType}}"  # default: packer_{{.BuildName}}_{{.BuilderType}}_{{.ChecksumType}}.checksum, at top level not in the directory with the .ova, and it keeps appending to it
   }
 
-  # https://developer.hashicorp.com/packer/plugins/post-processors/docker/docker-tag
+  # https://developer.hashicorp.com/packer/integrations/hashicorp/docker/latest/components/post-processor/docker-tag
   #post-processor "docker-tag" {
   #  repository = "myrepo"  # XXX: Edit
   #  tags       = ["ubuntu", "mytag"]
@@ -740,7 +742,7 @@ build {
   #    repository = "swampdragons/testpush"
   #    tag        = "0.7"
   #  }
-  #  # https://developer.hashicorp.com/packer/plugins/post-processors/docker/docker-push
+  #  # https://developer.hashicorp.com/packer/integrations/hashicorp/docker/latest/components/post-processor/docker-push
   #  post-processor "docker-push" {}
   #}
 }
