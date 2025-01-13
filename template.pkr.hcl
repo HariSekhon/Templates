@@ -678,6 +678,9 @@ build {
       #"VBoxManage sharedfolder add ubuntu --name vboxsf --hostpath ~/vboxsf --automount --transient",
       "VBoxManage sharedfolder add $PACKER_BUILD_NAME --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
+    # some common scripts found in https://github.com/HariSekhon/Packer
+    script = "./scripts/local_virtiofs.sh"
+    script = "./scripts/local_vboxsf.sh"
   }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
@@ -685,11 +688,24 @@ build {
   provisioner "shell" {
     #script = "/path/to/script.sh"
     #script = "./script.sh"
-    #scripts = [
-    #  "/path/to/script.sh",
-    #  "./script.sh"
-    #  "${local.scripts_dir}/script.sh"
-    #]
+    scripts = [
+      "/path/to/script.sh",
+      "./script.sh"
+      "${local.scripts_dir}/script.sh"
+
+      # some common scripts found in https://github.com/HariSekhon/Packer
+      "./scripts/version.sh",
+      #
+      #"./scripts/install_vbox_additions.sh",
+      #"./scripts/mount_vboxsf.sh",
+      #
+      #"./scripts/mount_apple_virtiofs.sh",
+      #
+      #"./scripts/collect_anaconda.sh",
+      #"./scripts/collect_preseed.sh",
+      #"./scripts/collect_autoinstall_user_data.sh",
+      "./scripts/final.sh"
+    ]
     environment_vars = [
       "FOO=bar"
     ]
