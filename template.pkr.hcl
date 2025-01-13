@@ -808,6 +808,20 @@ build {
       # preseed.cfg is not created - see adjacent file preseed.cfg for details
       #"sudo cp -fv /var/log/preseed.cfg /mnt/vboxsf/",
     ]
+    scripts = [
+      # some common scripts found in https://github.com/HariSekhon/Packer
+      "./scripts/version.sh",
+      #
+      #"./scripts/install_vbox_additions.sh",
+      #"./scripts/mount_vboxsf.sh",
+      #
+      #"./scripts/mount_apple_virtiofs.sh",
+      #
+      #"./scripts/collect_anaconda.sh",
+      #"./scripts/collect_preseed.sh",
+      #"./scripts/collect_autoinstall_user_data.sh",
+      "./scripts/final.sh"
+    ]
     # max_retries = 5
     # timeout = "5m"
   }
@@ -865,6 +879,20 @@ build {
       # mount point is owned by root
       "cp -fv /root/anaconda-ks.cfg /mnt/vboxsf/",
       "for x in ks-pre.log ks-post.log; do if [ -f /root/$x ]; then cp -fv /root/$x /mnt/vboxsf/; fi; done"
+    ]
+    scripts = [
+      # some common scripts found in https://github.com/HariSekhon/Packer
+      "./scripts/version.sh",
+      #
+      #"./scripts/install_vbox_additions.sh",
+      #"./scripts/mount_vboxsf.sh",
+      #
+      #"./scripts/mount_apple_virtiofs.sh",
+      #
+      #"./scripts/collect_anaconda.sh",
+      #"./scripts/collect_preseed.sh",
+      #"./scripts/collect_autoinstall_user_data.sh",
+      "./scripts/final.sh"
     ]
     # max_retries = 5
     # timeout = "5m"
