@@ -703,7 +703,7 @@ build {
       #
       #"./scripts/collect_anaconda.sh",
       #"./scripts/collect_preseed.sh",
-      #"./scripts/collect_autoinstall_user_data.sh",
+      "./scripts/collect_autoinstall_user_data.sh",
       "./scripts/final.sh"
     ]
     environment_vars = [
@@ -818,7 +818,7 @@ build {
       #"./scripts/mount_apple_virtiofs.sh",
       #
       #"./scripts/collect_anaconda.sh",
-      #"./scripts/collect_preseed.sh",
+      "./scripts/collect_preseed.sh",
       #"./scripts/collect_autoinstall_user_data.sh",
       "./scripts/final.sh"
     ]
@@ -889,7 +889,7 @@ build {
       #
       #"./scripts/mount_apple_virtiofs.sh",
       #
-      #"./scripts/collect_anaconda.sh",
+      "./scripts/collect_anaconda.sh",
       #"./scripts/collect_preseed.sh",
       #"./scripts/collect_autoinstall_user_data.sh",
       "./scripts/final.sh"
