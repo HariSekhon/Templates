@@ -680,7 +680,7 @@ build {
     ]
     # some common scripts found in https://github.com/HariSekhon/Packer
     #script = "./scripts/local_virtiofs.sh"
-    script = "./scripts/local_vboxsf.sh"
+    #script = "./scripts/local_vboxsf.sh"
   }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
@@ -710,18 +710,18 @@ build {
       "FOO=bar"
     ]
     execute_command = "echo 'packer' | sudo -S -E bash '{{ .Path }}'"
-    inline = [
-      "env",
-      # pre-authorize sudo - or run whole shell as root using execute_command above
-      #"echo 'packer' | sudo -S echo",
-      "echo Built using Packer version '${packer.version}' | sudo tee /etc/packer-version",
-      #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem",  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
-      "sudo mkdir -pv /mnt/vboxsf",
-      "echo Mounting /mnt/vboxsf",
-      "sudo mount -t vboxsf vboxsf /mnt/vboxsf",
-      # mount point is owned by root
-      "sudo cp -fv /var/log/installer/autoinstall-user-data /mnt/vboxsf/",
-    ]
+    #inline = [
+    #  "env",
+    #  # pre-authorize sudo - or run whole shell as root using execute_command above
+    #  #"echo 'packer' | sudo -S echo",
+    #  "echo Built using Packer version '${packer.version}' | sudo tee /etc/packer-version",
+    #  #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem",  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
+    #  "sudo mkdir -pv /mnt/vboxsf",
+    #  "echo Mounting /mnt/vboxsf",
+    #  "sudo mount -t vboxsf vboxsf /mnt/vboxsf",
+    #  # mount point is owned by root
+    #  "sudo cp -fv /var/log/installer/autoinstall-user-data /mnt/vboxsf/",
+    #]
     # max_retries = 5
     # timeout = "5m"
   }
@@ -789,25 +789,28 @@ build {
       #"VBoxManage sharedfolder add debian --name vboxsf --hostpath ~/vboxsf --automount --transient",
       "VBoxManage sharedfolder add $PACKER_BUILD_NAME --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
+    # some common scripts found in https://github.com/HariSekhon/Packer
+    #script = "./scripts/local_virtiofs.sh"
+    #script = "./scripts/local_vboxsf.sh"
   }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
   #
   provisioner "shell" {
     execute_command = "echo 'packer' | sudo -S -E bash '{{ .Path }}'"
-    inline = [
-      "env",
-      # pre-authorize sudo - or run whole shell as root using execute_command above
-      #"echo 'packer' | sudo -S echo",
-      "echo Built using Packer version '${packer.version}' | sudo tee /etc/packer-version",
-      #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem",  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
-      "sudo mkdir -pv /mnt/vboxsf",
-      "echo Mounting /mnt/vboxsf",
-      "sudo mount -t vboxsf vboxsf /mnt/vboxsf",
-      # mount point is owned by root
-      # preseed.cfg is not created - see adjacent file preseed.cfg for details
-      #"sudo cp -fv /var/log/preseed.cfg /mnt/vboxsf/",
-    ]
+    #inline = [
+    #  "env",
+    #  # pre-authorize sudo - or run whole shell as root using execute_command above
+    #  #"echo 'packer' | sudo -S echo",
+    #  "echo Built using Packer version '${packer.version}' | sudo tee /etc/packer-version",
+    #  #"echo '${build.SSHPrivateKey}' > /tmp/packer-session.pem",  # temporary SSH private key eg. git clone a private repo git@github.com:org/repo
+    #  "sudo mkdir -pv /mnt/vboxsf",
+    #  "echo Mounting /mnt/vboxsf",
+    #  "sudo mount -t vboxsf vboxsf /mnt/vboxsf",
+    #  # mount point is owned by root
+    #  # preseed.cfg is not created - see adjacent file preseed.cfg for details
+    #  #"sudo cp -fv /var/log/preseed.cfg /mnt/vboxsf/",
+    #]
     scripts = [
       # some common scripts found in https://github.com/HariSekhon/Packer
       "./scripts/version.sh",
@@ -860,6 +863,9 @@ build {
       #"VBoxManage sharedfolder add fedora --name vboxsf --hostpath ~/vboxsf --automount --transient",
       "VBoxManage sharedfolder add $PACKER_BUILD_NAME --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
+    # some common scripts found in https://github.com/HariSekhon/Packer
+    #script = "./scripts/local_virtiofs.sh"
+    #script = "./scripts/local_vboxsf.sh"
   }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
