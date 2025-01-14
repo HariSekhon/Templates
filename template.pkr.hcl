@@ -679,7 +679,7 @@ build {
       "VBoxManage sharedfolder add $PACKER_BUILD_NAME --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
     # some common scripts found in https://github.com/HariSekhon/Packer
-    script = "./scripts/local_virtiofs.sh"
+    #script = "./scripts/local_virtiofs.sh"
     script = "./scripts/local_vboxsf.sh"
   }
 
@@ -690,8 +690,8 @@ build {
     #script = "./script.sh"
     scripts = [
       "/path/to/script.sh",
-      "./script.sh"
-      "${local.scripts_dir}/script.sh"
+      "./script.sh",
+      "${local.scripts_dir}/script.sh",
 
       # some common scripts found in https://github.com/HariSekhon/Packer
       "./scripts/version.sh",
