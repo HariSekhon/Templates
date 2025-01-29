@@ -25,6 +25,7 @@ source 'https://rubygems.org'
 gem 'cfn-nag'
 gem 'json'
 gem 'gitlab'
+gem "fastlane"  # mobile development
 
 # install from another source
 #source 'https://gems.example.com' do
