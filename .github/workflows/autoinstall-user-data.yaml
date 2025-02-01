@@ -19,7 +19,7 @@
 ---
 name: Ubuntu AutoInstaller Cloud-Init
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
