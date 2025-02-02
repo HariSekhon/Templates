@@ -31,7 +31,7 @@ packer {
   required_version = ">= 1.7.0, < 2.0.0"
   required_plugins {
     virtualbox = {
-      version = ">= 0.0.1"
+      version = "~> 0.0"
       source  = "github.com/hashicorp/virtualbox"
     }
     #amazon = {
@@ -39,20 +39,20 @@ packer {
     #  source  = "github.com/hashicorp/amazon"
     #}
     #googlecompute = {
-    #  version = ">= 1.1.1"
+    #  version = "~> 1.1"
     #  source  = "github.com/hashicorp/googlecompute"
     #}
     #docker = {
-    #  version = ">= 0.0.7"
+    #  version = "~> 0.0"
     #  source  = "github.com/hashicorp/docker"
     #}
     #vmware = {
-    #  version = ">= 1.0.8"
+    #  version = "~> 1.0"
     #  source  = "github.com/hashicorp/vmware"
     #}
     # used to build remotely on ESXi
     #vsphere = {
-    #  version = ">= 1.1.1"
+    #  version = "~> 1.1"
     #  source  = "github.com/hashicorp/vsphere"
     #}
   }
