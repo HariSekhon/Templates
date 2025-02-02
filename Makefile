@@ -36,6 +36,12 @@ BINARY=go-binary-name
 
 RELEASE := v1
 
+# Environment Variables
+export AWS_PROFILE=cicd
+export AWS_CONFIG_FILE=../aws/configs.ini
+export AWS_REGION=eu-west-1
+export AWS_DEFAULT_REGION=eu-west-1
+
 .PHONY: default
 default:  ## default if no arg target specified (runs build)
 	@echo "running default build:"
