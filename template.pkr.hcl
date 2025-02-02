@@ -84,6 +84,18 @@ variable "aws_region" {
   default = env("AWS_DEFAULT_REGION")
 }
 
+#variable "http_proxy" {
+#  default = env("HTTP_PROXY")
+#}
+#
+#variable "https_proxy" {
+#  default = env("HTTPS_PROXY")
+#}
+#
+#variable "no_proxy" {
+#  default = env("NO_PROXY")
+#}
+
 variable "availability_zone_names" {
   type = list(string)
   default = [
@@ -681,8 +693,13 @@ build {
       "VBoxManage sharedfolder add $PACKER_BUILD_NAME --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
     # some common scripts found in https://github.com/HariSekhon/Packer
-    #script = "./scripts/local_virtiofs.sh"
-    #script = "./scripts/local_vboxsf.sh"
+    #script = "${local.scripts}/local_virtiofs.sh"
+    #script = "${local.scripts}/local_vboxsf.sh"
+    #environment_vars = [
+    #  "HTTP_PROXY=${var.http_proxy}",
+    #  "HTTPS_PROXY=${var.https_proxy}",
+    #  "NO_PROXY=${var.no_proxy}"
+    #]
   }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
@@ -696,20 +713,23 @@ build {
       "${local.scripts}/script.sh",
 
       # some common scripts found in https://github.com/HariSekhon/Packer
-      "./scripts/version.sh",
+      "${local.scripts}/version.sh",
       #
-      #"./scripts/install_vbox_additions.sh",
-      #"./scripts/mount_vboxsf.sh",
+      #"${local.scripts}/install_vbox_additions.sh",
+      #"${local.scripts}/mount_vboxsf.sh",
       #
-      #"./scripts/mount_apple_virtiofs.sh",
+      #"${local.scripts}/mount_apple_virtiofs.sh",
       #
-      #"./scripts/collect_anaconda.sh",
-      #"./scripts/collect_preseed.sh",
-      "./scripts/collect_autoinstall_user_data.sh",
-      "./scripts/final.sh"
+      #"${local.scripts}/collect_anaconda.sh",
+      #"${local.scripts}/collect_preseed.sh",
+      "${local.scripts}/collect_autoinstall_user_data.sh",
+      "${local.scripts}/final.sh"
     ]
     environment_vars = [
-      "FOO=bar"
+      "FOO=bar",
+      #"HTTP_PROXY=${var.http_proxy}",
+      #"HTTPS_PROXY=${var.https_proxy}",
+      #"NO_PROXY=${var.no_proxy}"
     ]
     execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
@@ -792,8 +812,8 @@ build {
       "VBoxManage sharedfolder add $PACKER_BUILD_NAME --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
     # some common scripts found in https://github.com/HariSekhon/Packer
-    #script = "./scripts/local_virtiofs.sh"
-    #script = "./scripts/local_vboxsf.sh"
+    #script = "${local.scripts}/local_virtiofs.sh"
+    #script = "${local.scripts}/local_vboxsf.sh"
   }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
@@ -815,20 +835,25 @@ build {
     #]
     scripts = [
       # some common scripts found in https://github.com/HariSekhon/Packer
-      "./scripts/version.sh",
+      "${local.scripts}/version.sh",
       #
-      #"./scripts/install_vbox_additions.sh",
-      #"./scripts/mount_vboxsf.sh",
+      #"${local.scripts}/install_vbox_additions.sh",
+      #"${local.scripts}/mount_vboxsf.sh",
       #
-      #"./scripts/mount_apple_virtiofs.sh",
+      #"${local.scripts}/mount_apple_virtiofs.sh",
       #
-      #"./scripts/collect_anaconda.sh",
-      "./scripts/collect_preseed.sh",
-      #"./scripts/collect_autoinstall_user_data.sh",
-      "./scripts/final.sh"
+      #"${local.scripts}/collect_anaconda.sh",
+      "${local.scripts}/collect_preseed.sh",
+      #"${local.scripts}/collect_autoinstall_user_data.sh",
+      "${local.scripts}/final.sh"
     ]
     # max_retries = 5
     # timeout = "5m"
+    #environment_vars = [
+    #  "HTTP_PROXY=${var.http_proxy}",
+    #  "HTTPS_PROXY=${var.https_proxy}",
+    #  "NO_PROXY=${var.no_proxy}"
+    #]
   }
 
   # post-processor blocks run in parallel
@@ -866,8 +891,13 @@ build {
       "VBoxManage sharedfolder add $PACKER_BUILD_NAME --name vboxsf --hostpath ~/vboxsf --automount --transient",
     ]
     # some common scripts found in https://github.com/HariSekhon/Packer
-    #script = "./scripts/local_virtiofs.sh"
-    #script = "./scripts/local_vboxsf.sh"
+    #script = "${local.scripts}/local_virtiofs.sh"
+    #script = "${local.scripts}/local_vboxsf.sh"
+    #environment_vars = [
+    #  "HTTP_PROXY=${var.http_proxy}",
+    #  "HTTPS_PROXY=${var.https_proxy}",
+    #  "NO_PROXY=${var.no_proxy}"
+    #]
   }
 
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
@@ -890,20 +920,25 @@ build {
     ]
     scripts = [
       # some common scripts found in https://github.com/HariSekhon/Packer
-      "./scripts/version.sh",
+      "${local.scripts}/version.sh",
       #
-      #"./scripts/install_vbox_additions.sh",
-      #"./scripts/mount_vboxsf.sh",
+      #"${local.scripts}/install_vbox_additions.sh",
+      #"${local.scripts}/mount_vboxsf.sh",
       #
-      #"./scripts/mount_apple_virtiofs.sh",
+      #"${local.scripts}/mount_apple_virtiofs.sh",
       #
-      "./scripts/collect_anaconda.sh",
-      #"./scripts/collect_preseed.sh",
-      #"./scripts/collect_autoinstall_user_data.sh",
-      "./scripts/final.sh"
+      "${local.scripts}/collect_anaconda.sh",
+      #"${local.scripts}/collect_preseed.sh",
+      #"${local.scripts}/collect_autoinstall_user_data.sh",
+      "${local.scripts}/final.sh"
     ]
     # max_retries = 5
     # timeout = "5m"
+    #environment_vars = [
+    #  "HTTP_PROXY=${var.http_proxy}",
+    #  "HTTPS_PROXY=${var.https_proxy}",
+    #  "NO_PROXY=${var.no_proxy}"
+    #]
   }
 
   # post-processor blocks run in parallel
