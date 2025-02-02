@@ -709,7 +709,7 @@ build {
     environment_vars = [
       "FOO=bar"
     ]
-    execute_command = "echo 'packer' | sudo -S -E bash '{{ .Path }}'"
+    execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
     #  "env",
     #  # pre-authorize sudo - or run whole shell as root using execute_command above
@@ -797,7 +797,7 @@ build {
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
   #
   provisioner "shell" {
-    execute_command = "echo 'packer' | sudo -S -E bash '{{ .Path }}'"
+    execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
     #  "env",
     #  # pre-authorize sudo - or run whole shell as root using execute_command above
@@ -872,7 +872,7 @@ build {
   #
   provisioner "shell" {
     # needed to test for existing of logs in /root to copy out to vboxsf shared folder
-    execute_command = "echo 'packer' | sudo -S -E bash '{{ .Path }}'"
+    execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     inline = [
       "env",
       # pre-authorize sudo - or run whole shell as root using execute_command above
