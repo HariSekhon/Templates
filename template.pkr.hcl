@@ -59,7 +59,62 @@ packer {
 }
 
 # ============================================================================ #
-#                               V a r i a b l e s
+#                         L o c a l   V a r i a b l e s
+# ============================================================================ #
+
+# https://developer.hashicorp.com/packer/docs/templates/hcl_templates/locals
+
+# locals are like constants and unlike variables cannot be overridden at runtime
+
+# can't be used within data sources as of Packer 1.8
+
+locals {
+  foo = "bar"
+  #baz = "Foo is '${var.foo}'"
+
+  #default_name_prefix = "${var.project_name}-web"
+  #name_prefix         = "${var.name_prefix != "" ? var.name_prefix : local.default_name_prefix}"
+
+  settings_file  = "${path.cwd}/settings.txt" # path.cwd  = 'packer' commands's $PWD
+  scripts        = "${path.root}/scripts"     # path.root = dirname(file.pkr.hcl)
+  root           = path.root
+
+  # locals can access data sources but data sources cannot access locals, to prevent circular dependencies
+  #source_ami_id   = data.amazon-ami.ubuntu.id
+  #source_ami_name = data.amazon-ami.ubuntu.name
+
+  #value         = data.amazon-secretsmanager.NAME.value
+  #secret_string = data.amazon-secretsmanager.NAME.secret_string
+  #version_id    = data.amazon-secretsmanager.NAME.version_id
+  #secret_value  = jsondecode(data.amazon-secretsmanager.NAME.secret_string)["packer_test_key"]
+
+  # for Cloud builds for auditing and Cost Explorer breakdowns
+  tags = {
+    App         = "MyApp"  # XXX: Edit and add relevant tags
+    Environment = "Production"
+    BuildDate   = "${timestamp()}"
+  }
+
+  # requires AWS profile / access key to be found, else errors out
+  #
+  # set second arg to the key if secret had multiple keys, else set to null
+  #secret = aws_secretsmanager("my_secret", null)  # always pulls latest version AWSCURRENT, previous versions not supported
+
+  #my_version = "${consul_key("myservice/version")}"
+
+  # requires VAULT_TOKEN and VAULT_ADDR environment variables to be set
+  #
+  #foo2 = vault("/secret/data/hello", "foo")
+}
+
+# Use the singular local block if you need to mark a local as sensitive
+local "mylocal" {
+  expression = "${var.docker_image}"
+  sensitive  = true
+}
+
+# ============================================================================ #
+#                          U s e r   V a r i a b l e s
 # ============================================================================ #
 
 # https://developer.hashicorp.com/packer/docs/templates/hcl_templates/variables
@@ -162,62 +217,6 @@ variable "image_metadata" {
   }
 
 }
-
-# ============================================================================ #
-#                         L o c a l   V a r i a b l e s
-# ============================================================================ #
-
-# https://developer.hashicorp.com/packer/docs/templates/hcl_templates/locals
-
-# locals are like constants and unlike variables cannot be overridden at runtime
-
-# can't be used within data sources as of Packer 1.8
-
-locals {
-  foo = "bar"
-  #baz = "Foo is '${var.foo}'"
-
-  #default_name_prefix = "${var.project_name}-web"
-  #name_prefix         = "${var.name_prefix != "" ? var.name_prefix : local.default_name_prefix}"
-
-  settings_file  = "${path.cwd}/settings.txt" # path.cwd  = 'packer' commands's $PWD
-  scripts        = "${path.root}/scripts"     # path.root = dirname(file.pkr.hcl)
-  root           = path.root
-
-  # locals can access data sources but data sources cannot access locals, to prevent circular dependencies
-  #source_ami_id   = data.amazon-ami.ubuntu.id
-  #source_ami_name = data.amazon-ami.ubuntu.name
-
-  #value         = data.amazon-secretsmanager.NAME.value
-  #secret_string = data.amazon-secretsmanager.NAME.secret_string
-  #version_id    = data.amazon-secretsmanager.NAME.version_id
-  #secret_value  = jsondecode(data.amazon-secretsmanager.NAME.secret_string)["packer_test_key"]
-
-  # for Cloud builds for auditing and Cost Explorer breakdowns
-  tags = {
-    App         = "MyApp"  # XXX: Edit and add relevant tags
-    Environment = "Production"
-    BuildDate   = "${timestamp()}"
-  }
-
-  # requires AWS profile / access key to be found, else errors out
-  #
-  # set second arg to the key if secret had multiple keys, else set to null
-  #secret = aws_secretsmanager("my_secret", null)  # always pulls latest version AWSCURRENT, previous versions not supported
-
-  #my_version = "${consul_key("myservice/version")}"
-
-  # requires VAULT_TOKEN and VAULT_ADDR environment variables to be set
-  #
-  #foo2 = vault("/secret/data/hello", "foo")
-}
-
-# Use the singular local block if you need to mark a local as sensitive
-local "mylocal" {
-  expression = "${var.docker_image}"
-  sensitive  = true
-}
-
 
 # ============================================================================ #
 #                            D a t a   S o u r c e s
