@@ -708,8 +708,8 @@ build {
     #script = "/path/to/script.sh"
     #script = "./script.sh"
     scripts = [
-      "/path/to/script.sh",
-      "./script.sh",
+      #"/path/to/script.sh",
+      #"./script.sh",
       "${local.scripts}/script.sh",
 
       # some common scripts found in https://github.com/HariSekhon/Packer
