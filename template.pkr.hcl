@@ -306,7 +306,7 @@ source "qemu" "ubuntu" {
   ssh_timeout  = "30m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username = "packer"
   ssh_password = "packer"
-  # needed to ensure filesystem is fsync'd
+  # ensure filesystem is fsync'd
   shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
   net_device       = "virtio-net"
   disk_interface   = "virtio"
@@ -380,7 +380,7 @@ source "virtualbox-iso" "ubuntu" {
   ssh_timeout  = "30m" # default: 5m - waits 5 mins for SSH to come up otherwise kills VM
   ssh_username = "packer"
   ssh_password = "packer"
-  # needed to ensure filesystem is fsync'd
+  # ensure filesystem is fsync'd
   shutdown_command = "echo 'packer' | sudo -S shutdown -P now"
   rtc_time_base    = "UTC"
   #virtualbox_version_file = ".vbox_version" # file created in $HOME directory to indicate which version of VirtualBox created this
