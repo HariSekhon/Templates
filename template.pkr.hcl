@@ -35,7 +35,7 @@ packer {
       source  = "github.com/hashicorp/virtualbox"
     }
     #amazon = {
-    #  version = ">= 1.2.5"
+    #  version = "~> 1.2"
     #  source  = "github.com/hashicorp/amazon"
     #}
     #googlecompute = {
