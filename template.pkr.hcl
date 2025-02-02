@@ -181,9 +181,10 @@ locals {
   #version_id    = data.amazon-secretsmanager.NAME.version_id
   #secret_value  = jsondecode(data.amazon-secretsmanager.NAME.secret_string)["packer_test_key"]
 
-  common_tags = {
-    Component   = "awesome-app"
-    Environment = "production"
+  tags = {
+    App         = "MyApp"  # XXX: Edit and add relevant tags
+    Environment = "Production"
+    BuildDate   = "${timestamp()}"
   }
 
   # requires AWS profile / access key to be found, else errors out
