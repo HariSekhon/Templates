@@ -169,7 +169,7 @@ locals {
   #name_prefix         = "${var.name_prefix != "" ? var.name_prefix : local.default_name_prefix}"
 
   settings_file  = "${path.cwd}/settings.txt" # path.cwd  = 'packer' commands's $PWD
-  scripts        = "${path.root}/scripts"     # path.root = is the dirname(file.pkr.hcl)
+  scripts        = "${path.root}/scripts"     # path.root = dirname(file.pkr.hcl)
   root           = path.root
 
   # locals can access data sources but data sources cannot access locals, to prevent circular dependencies
