@@ -734,6 +734,8 @@ build {
       #"HTTPS_PROXY=${var.https_proxy}",
       #"NO_PROXY=${var.no_proxy}"
     ]
+    # WARNING: in testing sudo -E does not preserve environment variables
+    # and carries on without erroring out as per man doc
     execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
     #  "env",
@@ -822,6 +824,8 @@ build {
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
   #
   provisioner "shell" {
+    # WARNING: in testing sudo -E does not preserve environment variables
+    # and carries on without erroring out as per man doc
     execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
     #  "env",
@@ -907,6 +911,8 @@ build {
   #
   provisioner "shell" {
     # needed to test for existing of logs in /root to copy out to vboxsf shared folder
+    # WARNING: in testing sudo -E does not preserve environment variables
+    # and carries on without erroring out as per man doc
     execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     inline = [
       "env",
