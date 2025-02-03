@@ -735,7 +735,7 @@ build {
       #"NO_PROXY=${var.no_proxy}"
     ]
     # overriding execute_command you must manually put {{ .Vars }} prefixed in the command otherwise you'll lose environment_vars
-    execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
+    execute_command = "{{ .Vars }} echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
     #  "env",
     #  # pre-authorize sudo - or run whole shell as root using execute_command above
@@ -824,7 +824,7 @@ build {
   #
   provisioner "shell" {
     # overriding execute_command you must manually put {{ .Vars }} prefixed in the command otherwise you'll lose environment_vars
-    execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
+    execute_command = "{{ .Vars }} echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
     #  "env",
     #  # pre-authorize sudo - or run whole shell as root using execute_command above
@@ -910,7 +910,7 @@ build {
   provisioner "shell" {
     # needed to test for existing of logs in /root to copy out to vboxsf shared folder
     # overriding execute_command you must manually put {{ .Vars }} prefixed in the command otherwise you'll lose environment_vars
-    execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
+    execute_command = "{{ .Vars }} echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     inline = [
       "env",
       # pre-authorize sudo - or run whole shell as root using execute_command above
