@@ -734,6 +734,7 @@ build {
       #"HTTPS_PROXY=${var.https_proxy}",
       #"NO_PROXY=${var.no_proxy}"
     ]
+    # overriding execute_command you must manually put {{ .Vars }} prefixed in the command otherwise you'll lose environment_vars
     execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
     #  "env",
@@ -822,6 +823,7 @@ build {
   # https://developer.hashicorp.com/packer/docs/provisioners/shell
   #
   provisioner "shell" {
+    # overriding execute_command you must manually put {{ .Vars }} prefixed in the command otherwise you'll lose environment_vars
     execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     #inline = [
     #  "env",
@@ -907,6 +909,7 @@ build {
   #
   provisioner "shell" {
     # needed to test for existing of logs in /root to copy out to vboxsf shared folder
+    # overriding execute_command you must manually put {{ .Vars }} prefixed in the command otherwise you'll lose environment_vars
     execute_command = "echo 'packer' | sudo -S -E bash -euxo pipefail '{{ .Path }}'"
     inline = [
       "env",
