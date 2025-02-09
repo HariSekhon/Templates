@@ -1,3 +1,18 @@
+#
+#  Author: Hari Sekhon
+#  Date: [% DATE  # Wed Jan 29 20:06:48 2025 +0700 %]
+#
+#  vim:ts=2:sts=2:sw=2:et:filetype=ruby
+#
+#  [% URL # https://github.com/HariSekhon/Templates %]
+#
+#  [% LICENSE %]
+#
+#  [% MESSAGE %]
+#
+#  [% LINKEDIN %]
+#
+
 # This file contains the fastlane.tools configuration
 # You can find the documentation at https://docs.fastlane.tools
 #
@@ -13,7 +28,126 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+#import './path/to/other/Fastfile'
+
+# List all available fastlane actions
+#
+#   fastlane actions
+#
+# Get usage details on any step action
+#
+#   fastlane action [action_name]
+
 default_platform(:android)
+
+platform :ios do
+  desc "Runs all the tests"
+  # https://docs.fastlane.tools/actions/#building
+  lane :build do
+    puts "Starting Custom Build"
+    get_version_number
+    get_build_number
+    get_info_plist_value
+    #get_ipa_info_plist_value(ipa: "path.ipa", key: "KEY_YOU_READ")
+
+    ensure_git_status_clean  # raise exception if uncommitted git changes
+    git_branch  # get git branch
+    last_git_commit  # show last commit details
+
+    increment_build_number
+    #increment_build_number(xcodeproj: "Example.xcodeproj")
+    #commit_version_bump(xcodeproj: "Example.xcodeproj")  # commit version increment to Git
+
+    #ensure_git_branch  # ensures on specific branch
+    #add_git_tag  # add a Git tag
+    #last_git_tag  # get latest Git tag
+    #push_to_git_remote  # push commits back to Git
+    #set_github_release
+
+    # Testflight requirement to increment the build number each time you upload a new build
+    # fetches latest build number from Testflight and increments it
+    increment_build_number(
+        build_number: latest_testflight_build_number + 1,
+        xcodeproj: "Example.xcodeproj"
+    )
+    get_version_number
+
+    #capture_screenshots  # generate new screenshots for the App Store
+
+    #sync_code_signing
+
+    #clear_derived_data  # deletes the Xcode Derived Data
+    #clean_cocoapods_cache
+
+    verify_pod_keys  # verify all keys referenced from the Podfile are non-empty
+    cocoapods  # run 'pod install'
+
+    # Uses xcodes CLI to install XCode
+    #
+    # if version not specified, uses version specified in the .xcode-version file
+    #
+    # https://github.com/XcodesOrg/xcodes#installation
+    #
+    # ensure specific version of XCode is installed, installing it only if needed
+    #xcodes(version: "14.1")
+    #ensure_xcode_version(version: "12.5")
+    #verify_xcode  # check signed by Apple
+
+    #xcbuild     # builds using xcodebuild
+    #xcodebuild  # use xcodebuild command to build and sign your app
+    #xctest      # runs tests on given simulator
+    #xcarchive   # archives project using xcodebuild
+    #xcexport    # exports project using xcodebuild
+
+    #gradle  # run Gradle build + test
+    build_app  # should result in an <APP>.ipa file in $PWD
+    # See Changelog on CLI:
+    #
+    #   fastlane action changelog_from_git_commits
+    #
+    #changelog_from_git_commits # this will generate the changelog based on your last commits
+    #
+    # Or Read changelog from file:
+    #
+    #changelog = File.read("../Changelog.txt")
+    #
+    # Or download changelog from web server:
+    #
+    #changelog = download(url: "https://lookatmycms.com/changelog.txt")
+    #
+    # Or Prompt for changelog instead:
+    #
+    #changelog = prompt(text: "Changelog: ")
+    #
+    # Or multiline changelog instead
+    #
+    #changelog = prompt(
+    #    text: "Changelog: ",
+    #    multi_line_end_keyword: "END"
+    #)
+  end
+  # https://docs.fastlane.tools/actions/#testing
+  lane :test do
+    sonar
+    gradle(task: "test")
+  end
+  # https://docs.fastlane.tools/actions/#code-signing
+  #lane :sign do
+  #end
+  # https://docs.fastlane.tools/actions/#releasing-your-app
+  #lane :release do
+  #  # Ensure latest push notification certificate is still valid for 2 weeks or create another one in project dir
+  #  #get_push_certificate
+  #  #
+  #  #upload_to_testflight
+  #  #upload_to_testflight(changelog: changelog)
+  #  #upload_to_app_store  # upload your app to App Store Connect
+  #  #
+  #  # https://docs.fastlane.tools/actions/#notifications
+  #  #
+  #  #slack(message: "Successfully uploaded a new App Store build")
+  #end
+end
 
 platform :android do
   desc "Runs all the tests"
@@ -23,6 +157,9 @@ platform :android do
 
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
+    #increment_build_number
+    #build_app
+    #upload_to_testflight
     gradle(task: "clean assembleRelease")
     crashlytics
 
@@ -36,3 +173,12 @@ platform :android do
     upload_to_play_store
   end
 end
+
+# run: fastlane release
+#
+#lane :release do
+#  capture_screenshots
+#  build_app
+#  upload_to_app_store       # Upload the screenshots and the binary to iTunes
+#  slack                     # Let your team-mates know the new version is live
+#end
