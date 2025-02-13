@@ -170,7 +170,8 @@ platform :android do
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     gradle(task: "clean assembleRelease")
-    upload_to_play_store
+    screengrab()
+    upload_to_play_store  # same as 'supply', uses 'supply' command line tool
   end
 end
 
