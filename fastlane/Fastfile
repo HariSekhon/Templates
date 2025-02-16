@@ -41,7 +41,8 @@
 default_platform(:android)
 
 platform :ios do
-  desc "Build & Publish to Firebase App Distribution"
+  # the desc just before each lane goes into the fastlane/README.md inside each command's section
+  desc "Publish the .ipa to Firebase App Distribution"
   # https://docs.fastlane.tools/actions/#building
   # Lane names must be lowercase if you want to call them from another lane
   # eg. 'build_release' lane calls 'build' and then 'release' lanes as sub-steps for maximum code reuse
@@ -64,6 +65,7 @@ platform :ios do
     # The return value of the action, saved as 'release' above, is a hash representing the latest release.
     # This hash is also available using lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE]
   end
+  desc "Build & Publish the .ipa to Firebase App Distribution"
   lane :build_release do
     puts "SIT Build & Firebase Release"
     build    # call 'build'   lane
@@ -75,6 +77,7 @@ platform :ios do
   #lane :build do |options|
   #  puts "Building version #{options[:version]}"
   #end
+  desc "Build the .ipa"
   lane :build do
     puts "Starting Custom Build"
     setup_ci  # only runs in CI, in which case uses keychain called 'fastlane_tmp_keychain-db'
