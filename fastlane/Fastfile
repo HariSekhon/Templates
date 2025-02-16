@@ -56,8 +56,12 @@ platform :ios do
   lane :build_release do
     puts "SIT Build & Firebase Release"
     build    # call 'build'   lane
+    #build(version: "1.2.3")  # if build has 'do |options|' as shown below
     release  # then 'release' lane for code reuse - lanes must already be named in lowecase
   end
+  #lane :build do |options|
+  #  puts "Building version #{options[:version]}"
+  #end
   lane :build do
     puts "Starting Custom Build"
     setup_ci  # only runs in CI, in which case uses keychain called 'fastlane_tmp_keychain-db'
