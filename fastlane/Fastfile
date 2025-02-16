@@ -47,7 +47,15 @@ platform :ios do
   # eg. 'build_release' lane calls 'build' and then 'release' lanes as sub-steps for maximum code reuse
   lane :release do
     puts "SIT Firebase Release"
+    #
     # https://firebase.google.com/docs/app-distribution/ios/distribute-fastlane
+    #
+    # Requires Fastlane firebase plugin:
+    #
+    #   fastlane add_plugin firebase_app_distribution
+    #
+    # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
+    #
     release = firebase_app_distribution(
         app: "1:234567890123:def:a456bc7d8e9fa012b34567",
         testers: "hari@domain.com",
