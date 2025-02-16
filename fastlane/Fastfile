@@ -57,6 +57,8 @@ platform :ios do
     puts "SIT Build & Firebase Release"
     build    # call 'build'   lane
     #build(version: "1.2.3")  # if build has 'do |options|' as shown below
+    #build if ENV["RUN_BUILD"] == "true"
+    #test  if ENV["RUN_TEST"] == "true"
     release  # then 'release' lane for code reuse - lanes must already be named in lowecase
   end
   #lane :build do |options|
