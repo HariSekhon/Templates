@@ -52,6 +52,8 @@ platform :ios do
         testers: "hari@domain.com",
         release_notes: "Fastlane SIT Release"
     )
+    # The return value of the action, saved as 'release' above, is a hash representing the latest release.
+    # This hash is also available using lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE]
   end
   lane :build_release do
     puts "SIT Build & Firebase Release"
