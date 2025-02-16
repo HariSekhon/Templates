@@ -41,11 +41,37 @@
 default_platform(:android)
 
 platform :ios do
-  desc "Runs all the tests"
+  desc "Build & Publish to Firebase App Distribution"
   # https://docs.fastlane.tools/actions/#building
+  # Lane names must be lowercase if you want to call them from another lane
+  # eg. 'build_release' lane calls 'build' and then 'release' lanes as sub-steps for maximum code reuse
+  lane :release do
+    puts "SIT Firebase Release"
+    release = firebase_app_distribution(
+        app: "1:234567890123:def:a456bc7d8e9fa012b34567",
+        testers: "hari@domain.com",
+        release_notes: "Fastlane SIT Release"
+    )
+  end
+  lane :build_release do
+    puts "SIT Build & Firebase Release"
+    build    # call 'build'   lane
+    release  # then 'release' lane for code reuse - lanes must already be named in lowecase
+  end
   lane :build do
     puts "Starting Custom Build"
     setup_ci  # only runs in CI, in which case uses keychain called 'fastlane_tmp_keychain-db'
+    # add actions here: https://docs.fastlane.tools/actions
+    build_app(
+        workspace: "APP.xcworkspace",
+        scheme: "SIT",
+        configuration: "SIT",
+        archive_path: "./build/APP.xcarchive",
+        #export_method: "development"
+        #skip_package_ipa: true,  # behave like xcodebuild archive without export which is failing
+        export_options: "./ExportOptions/SIT-ExportOptions.plist",
+        silent: false
+    )
     get_version_number
     get_build_number
     get_info_plist_value
