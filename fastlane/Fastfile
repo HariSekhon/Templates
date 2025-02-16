@@ -45,6 +45,7 @@ platform :ios do
   # https://docs.fastlane.tools/actions/#building
   lane :build do
     puts "Starting Custom Build"
+    setup_ci  # only runs in CI, in which case uses keychain called 'fastlane_tmp_keychain-db'
     get_version_number
     get_build_number
     get_info_plist_value
