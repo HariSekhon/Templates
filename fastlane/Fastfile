@@ -40,6 +40,16 @@
 
 default_platform(:android)
 
+# fastlane/README.md will be regenerated on each run or explicitly via:
+#
+#   fastlane docs
+#
+# to exclude a lane from being generated into the fastlane/README.md, use private_lane instead of lane
+#
+# private_lane :internal_debug do
+#   puts "This lane won't appear in the README"
+# end
+
 platform :ios do
   # the desc just before each lane goes into the fastlane/README.md inside each command's section
   desc "Publish the .ipa to Firebase App Distribution"
