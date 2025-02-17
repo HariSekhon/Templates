@@ -14,6 +14,10 @@
 #  https://www.linkedin.com/in/HariSekhon
 #
 
+# For real-world builds see this repo:
+#
+#   https://github.com/HariSekhon/Packer
+
 # Uses adjacent Redhat Kickstart, Debian Preseed & Ubuntu Autoinstaller
 #
 # 'packer' command must be run from the same directory as the provided adjacent files which are auto-served via HTTP:
