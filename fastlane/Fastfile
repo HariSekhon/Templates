@@ -68,8 +68,8 @@ platform :ios do
     # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
     #
     release = firebase_app_distribution(
-        app: "1:234567890123:abc:d456ef7a8b9cd012e34567",
-        testers: "hari@domain.com",
+        app: "1:234567890123:abc:d456ef7a8b9cd012e34567",  # XXX: Edit
+        testers: "hari@domain.com",  # XXX: Edit
         release_notes: "Fastlane SIT Release"
     )
     # The return value of the action, saved as 'release' above, is a hash representing the latest release.
