@@ -68,7 +68,7 @@ platform :ios do
     # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
     #
     release = firebase_app_distribution(
-        app: "1:234567890123:def:a456bc7d8e9fa012b34567",
+        app: "1:234567890123:abc:d456ef7a8b9cd012e34567",
         testers: "hari@domain.com",
         release_notes: "Fastlane SIT Release"
     )
