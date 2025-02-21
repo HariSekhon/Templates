@@ -56,6 +56,7 @@ default_platform(:android)
 
 platform :ios do
   # the desc just before each lane goes into the fastlane/README.md inside each command's section
+  #
   desc "Build & Publish the .ipa to Firebase App Distribution"
   lane :build_release do
     puts "SIT Build & Firebase Release"
@@ -65,61 +66,57 @@ platform :ios do
     #test  if ENV["RUN_TEST"] == "true"
     release  # then 'release' lane for code reuse - lanes must already be named in lowecase
   end
+
   #lane :build do |options|
   #  puts "Building version #{options[:version]}"
   #end
+
   # https://docs.fastlane.tools/actions/#building
   desc "Build the .ipa"
   lane :build do
+    # Add actions to lanes:
+    #
+    #   https://docs.fastlane.tools/actions
+
     puts "Starting Custom Build"
+
     setup_ci  # only runs in CI, in which case uses keychain called 'fastlane_tmp_keychain-db'
-    # add actions here: https://docs.fastlane.tools/actions
-    build_app(
-        workspace: "APP.xcworkspace",
-        scheme: "SIT",
-        configuration: "SIT",
-        archive_path: "./build/APP.xcarchive",
-        #export_method: "development"
-        #skip_package_ipa: true,  # behave like xcodebuild archive without export which is failing
-        export_options: "./ExportOptions/SIT-ExportOptions.plist",
-        silent: false
-    )
+
+    # ============================================================================ #
     get_version_number
     get_build_number
-    get_info_plist_value
+    #get_info_plist_value
     #get_ipa_info_plist_value(ipa: "path.ipa", key: "KEY_YOU_READ")
 
-    ensure_git_status_clean  # raise exception if uncommitted git changes
-    git_branch  # get git branch
+    git_branch       # get git branch
     last_git_commit  # show last commit details
+    ensure_git_status_clean  # raise exception if uncommitted git changes
+    ensure_git_branch main   # ensures on specific branch
+    #add_git_tag         # add a Git tag
+    #last_git_tag        # get latest Git tag
+    #push_to_git_remote  # push commits back to Git
+    #set_github_release
+    # ============================================================================ #
 
-    increment_build_number
+    #increment_build_number
     #increment_build_number(xcodeproj: "Example.xcodeproj")
     #commit_version_bump(xcodeproj: "Example.xcodeproj")  # commit version increment to Git
 
-    #ensure_git_branch  # ensures on specific branch
-    #add_git_tag  # add a Git tag
-    #last_git_tag  # get latest Git tag
-    #push_to_git_remote  # push commits back to Git
-    #set_github_release
-
     # Testflight requirement to increment the build number each time you upload a new build
     # fetches latest build number from Testflight and increments it
-    increment_build_number(
-        build_number: latest_testflight_build_number + 1,
-        xcodeproj: "Example.xcodeproj"
-    )
-    get_version_number
-
-    #capture_screenshots  # generate new screenshots for the App Store
-
-    #sync_code_signing
+    #increment_build_number(
+    #    build_number: latest_testflight_build_number + 1,
+    #    xcodeproj: "Example.xcodeproj"
+    #)
+    # ============================================================================ #
 
     #clear_derived_data  # deletes the Xcode Derived Data
     #clean_cocoapods_cache
 
     verify_pod_keys  # verify all keys referenced from the Podfile are non-empty
     cocoapods  # run 'pod install'
+
+    # ============================================================================ #
 
     # Uses xcodes CLI to install Xcode
     #
@@ -132,14 +129,35 @@ platform :ios do
     #ensure_xcode_version(version: "12.5")
     #verify_xcode  # check signed by Apple
 
+    # ============================================================================ #
+
+    #gradle      # run Gradle build + test
+    #build_app   # run iOs or Android standard build, resulting in an <APP>.ipa file in $PWD or subdir if specified by config
     #xcbuild     # build using xcodebuild
     #xcodebuild  # use xcodebuild command to build and sign your app
     #xctest      # runs tests on given simulator
     #xcarchive   # archives project using xcodebuild
     #xcexport    # exports project using xcodebuild
 
-    #gradle  # run Gradle build + test
-    build_app  # should result in an <APP>.ipa file in $PWD
+    build_app(
+        workspace: "APP.xcworkspace",
+        scheme: "SIT",
+        configuration: "SIT",
+        archive_path: "./build/APP.xcarchive",
+        #export_method: "development"
+        #skip_package_ipa: true,  # behave like xcodebuild archive without export which is failing
+        export_options: "./ExportOptions/SIT-ExportOptions.plist",
+        silent: false
+    )
+
+    # ============================================================================ #
+
+    #capture_screenshots  # generate new screenshots for the App Store
+
+    #sync_code_signing
+
+    # ============================================================================ #
+
     # See Changelog on CLI:
     #
     #   fastlane action changelog_from_git_commits
@@ -164,12 +182,15 @@ platform :ios do
     #    text: "Changelog: ",
     #    multi_line_end_keyword: "END"
     #)
+
   end
+
   # https://docs.fastlane.tools/actions/#testing
   lane :test do
     sonar
     gradle(task: "test")
   end
+
   # https://docs.fastlane.tools/actions/#code-signing
   #lane :sign do
   #end
@@ -186,8 +207,10 @@ platform :ios do
   #  #
   #  #slack(message: "Successfully uploaded a new App Store build")
   #end
-  desc "Publish the .ipa to Firebase App Distribution"
-  # https://firebase.google.com/docs/app-distribution/ios/distribute-fastlane
+
+  # Publish to Firebase App Distribution
+  #
+  #   https://firebase.google.com/docs/app-distribution/ios/distribute-fastlane
   #
   # Requires Fastlane firebase plugin:
   #
@@ -195,6 +218,7 @@ platform :ios do
   #
   # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
   #
+  desc "Publish the .ipa to Firebase App Distribution"
   lane :release do
     puts "SIT Firebase Release"
     release = firebase_app_distribution(
@@ -205,6 +229,7 @@ platform :ios do
     # The return value of the action, saved as 'release' above, is a hash representing the latest release.
     # This hash is also available using lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE]
   end
+
 end
 
 platform :android do
