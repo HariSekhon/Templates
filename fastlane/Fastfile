@@ -128,7 +128,12 @@ platform :ios do
     #
     #xcodes(version: "16.2")
     #
-    #ensure_xcode_version(version: "16.2")  # installs Ruby gem 'xcode-install' and then fails when you're on the wrong version. Why does it need to install this gem just for that?
+    # - ensure_xcode_version() installs Ruby gem 'xcode-install'
+    # - then fails when you're on the wrong version
+    # - fails '15' when you have '15.4' installed, must specify minor version too
+    # - why does it need to install this gem just for that?
+    #
+    #ensure_xcode_version(version: "16.2")
     #
     #verify_xcode  # check signed by Apple - takes around 10 seconds, but could apparently take a few minutes
 
