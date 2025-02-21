@@ -56,7 +56,6 @@ default_platform(:android)
 platform :ios do
   # the desc just before each lane goes into the fastlane/README.md inside each command's section
   desc "Build & Publish the .ipa to Firebase App Distribution"
-  # https://docs.fastlane.tools/actions/#building
   lane :build_release do
     puts "SIT Build & Firebase Release"
     build    # call 'build'   lane
@@ -68,6 +67,7 @@ platform :ios do
   #lane :build do |options|
   #  puts "Building version #{options[:version]}"
   #end
+  # https://docs.fastlane.tools/actions/#building
   desc "Build the .ipa"
   lane :build do
     puts "Starting Custom Build"
