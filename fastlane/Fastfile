@@ -122,12 +122,15 @@ platform :ios do
     #
     # if version not specified, uses version specified in the .xcode-version file
     #
-    # https://github.com/XcodesOrg/xcodes#installation
+    #   https://github.com/XcodesOrg/xcodes#installation
     #
     # ensure specific version of Xcode is installed, installing it only if needed
-    # xcodes(version: "14.1")
-    # ensure_xcode_version(version: "12.5")
-    # verify_xcode  # check signed by Apple
+    #
+    #xcodes(version: "16.2")
+    #
+    #ensure_xcode_version(version: "16.2")
+    #
+    #verify_xcode  # check signed by Apple - takes around 10 seconds, but could apparently take a few minutes
 
     # ============================================================================ #
 
