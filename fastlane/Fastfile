@@ -121,13 +121,13 @@ platform :ios do
     verify_pod_keys  # verify all keys referenced from the Podfile are non-empty
     cocoapods  # run 'pod install'
 
-    # Uses xcodes CLI to install XCode
+    # Uses xcodes CLI to install Xcode
     #
     # if version not specified, uses version specified in the .xcode-version file
     #
     # https://github.com/XcodesOrg/xcodes#installation
     #
-    # ensure specific version of XCode is installed, installing it only if needed
+    # ensure specific version of Xcode is installed, installing it only if needed
     #xcodes(version: "14.1")
     #ensure_xcode_version(version: "12.5")
     #verify_xcode  # check signed by Apple
