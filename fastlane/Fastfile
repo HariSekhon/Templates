@@ -29,7 +29,7 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
-#import './path/to/other/Fastfile'
+# import './path/to/other/Fastfile'
 
 # List all available fastlane actions
 #
@@ -57,64 +57,64 @@ default_platform(:android)
 platform :ios do
   # the desc just before each lane goes into the fastlane/README.md inside each command's section
   #
-  desc "Build & Publish the .ipa to Firebase App Distribution"
+  desc 'Build & Publish the .ipa to Firebase App Distribution'
   lane :build_release do
-    puts "SIT Build & Firebase Release"
-    build    # call 'build'   lane
-    #build(version: "1.2.3")  # if build has 'do |options|' as shown below
-    #build if ENV["RUN_BUILD"] == "true"
-    #test  if ENV["RUN_TEST"] == "true"
-    release  # then 'release' lane for code reuse - lanes must already be named in lowecase
+    puts 'SIT Build & Firebase Release'
+    build # call 'build'   lane
+    # build(version: "1.2.3")  # if build has 'do |options|' as shown below
+    # build if ENV["RUN_BUILD"] == "true"
+    # test  if ENV["RUN_TEST"] == "true"
+    release # then 'release' lane for code reuse - lanes must already be named in lowecase
   end
 
-  #lane :build do |options|
-  #  puts "Building version #{options[:version]}"
-  #end
+  # lane :build do |options|
+  #   puts "Building version #{options[:version]}"
+  # end
 
   # https://docs.fastlane.tools/actions/#building
-  desc "Build the .ipa"
+  desc 'Build the .ipa'
   lane :build do
     # Add actions to lanes:
     #
     #   https://docs.fastlane.tools/actions
 
-    puts "Starting Custom Build"
+    puts 'Starting Custom Build'
 
-    setup_ci  # only runs in CI, in which case uses keychain called 'fastlane_tmp_keychain-db'
+    setup_ci # only runs in CI, in which case uses keychain called 'fastlane_tmp_keychain-db'
 
     # ============================================================================ #
     get_version_number
     get_build_number
-    #get_info_plist_value
-    #get_ipa_info_plist_value(ipa: "path.ipa", key: "KEY_YOU_READ")
+    # get_info_plist_value
+    # get_ipa_info_plist_value(ipa: "path.ipa", key: "KEY_YOU_READ")
 
     git_branch       # get git branch
     last_git_commit  # show last commit details
     ensure_git_status_clean  # raise exception if uncommitted git changes
     ensure_git_branch main   # ensures on specific branch
-    #add_git_tag         # add a Git tag
-    #last_git_tag        # get latest Git tag
-    #push_to_git_remote  # push commits back to Git
-    #set_github_release
+    # add_git_tag         # add a Git tag
+    # last_git_tag        # get latest Git tag
+    # push_to_git_remote  # push commits back to Git
+    # set_github_release
     # ============================================================================ #
 
-    #increment_build_number
-    #increment_build_number(xcodeproj: "Example.xcodeproj")
-    #commit_version_bump(xcodeproj: "Example.xcodeproj")  # commit version increment to Git
+    # increment_build_number
+    # increment_build_number(xcodeproj: "Example.xcodeproj")
+    # commit_version_bump(xcodeproj: "Example.xcodeproj")  # commit version increment to Git
 
     # Testflight requirement to increment the build number each time you upload a new build
     # fetches latest build number from Testflight and increments it
-    #increment_build_number(
+    # increment_build_number(
     #    build_number: latest_testflight_build_number + 1,
     #    xcodeproj: "Example.xcodeproj"
-    #)
+    # )
     # ============================================================================ #
 
-    #clear_derived_data  # deletes the Xcode Derived Data
-    #clean_cocoapods_cache
+    # clear_derived_data  # deletes the Xcode Derived Data
+    # clean_cocoapods_cache
 
-    verify_pod_keys  # verify all keys referenced from the Podfile are non-empty
-    cocoapods  # run 'pod install'
+    verify_pod_keys # verify all keys referenced from the Podfile are non-empty
+    cocoapods # run 'pod install'
 
     # ============================================================================ #
 
@@ -125,36 +125,36 @@ platform :ios do
     # https://github.com/XcodesOrg/xcodes#installation
     #
     # ensure specific version of Xcode is installed, installing it only if needed
-    #xcodes(version: "14.1")
-    #ensure_xcode_version(version: "12.5")
-    #verify_xcode  # check signed by Apple
+    # xcodes(version: "14.1")
+    # ensure_xcode_version(version: "12.5")
+    # verify_xcode  # check signed by Apple
 
     # ============================================================================ #
 
-    #gradle      # run Gradle build + test
-    #build_app   # run iOs or Android standard build, resulting in an <APP>.ipa file in $PWD or subdir if specified by config
-    #xcbuild     # build using xcodebuild
-    #xcodebuild  # use xcodebuild command to build and sign your app
-    #xctest      # runs tests on given simulator
-    #xcarchive   # archives project using xcodebuild
-    #xcexport    # exports project using xcodebuild
+    # gradle      # run Gradle build + test
+    # build_app   # run iOs or Android standard build, resulting in an <APP>.ipa file in $PWD or subdir if specified by config
+    # xcbuild     # build using xcodebuild
+    # xcodebuild  # use xcodebuild command to build and sign your app
+    # xctest      # runs tests on given simulator
+    # xcarchive   # archives project using xcodebuild
+    # xcexport    # exports project using xcodebuild
 
     build_app(
-        workspace: "APP.xcworkspace",
-        scheme: "SIT",
-        configuration: "SIT",
-        archive_path: "./build/APP.xcarchive",
-        #export_method: "development"
-        #skip_package_ipa: true,  # behave like xcodebuild archive without export which is failing
-        export_options: "./ExportOptions/SIT-ExportOptions.plist",
-        silent: false
+      workspace: 'APP.xcworkspace',
+      scheme: 'SIT',
+      configuration: 'SIT',
+      archive_path: './build/APP.xcarchive',
+      # export_method: "development"
+      # skip_package_ipa: true,  # behave like xcodebuild archive without export which is failing
+      export_options: './ExportOptions/SIT-ExportOptions.plist',
+      silent: false
     )
 
     # ============================================================================ #
 
-    #capture_screenshots  # generate new screenshots for the App Store
+    # capture_screenshots  # generate new screenshots for the App Store
 
-    #sync_code_signing
+    # sync_code_signing
 
     # ============================================================================ #
 
@@ -162,51 +162,50 @@ platform :ios do
     #
     #   fastlane action changelog_from_git_commits
     #
-    #changelog_from_git_commits # this will generate the changelog based on your last commits
+    # changelog_from_git_commits # this will generate the changelog based on your last commits
     #
     # Or Read changelog from file:
     #
-    #changelog = File.read("../Changelog.txt")
+    # changelog = File.read("../Changelog.txt")
     #
     # Or download changelog from web server:
     #
-    #changelog = download(url: "https://lookatmycms.com/changelog.txt")
+    # changelog = download(url: "https://lookatmycms.com/changelog.txt")
     #
     # Or Prompt for changelog instead:
     #
-    #changelog = prompt(text: "Changelog: ")
+    # changelog = prompt(text: "Changelog: ")
     #
     # Or multiline changelog instead
     #
-    #changelog = prompt(
+    # changelog = prompt(
     #    text: "Changelog: ",
     #    multi_line_end_keyword: "END"
-    #)
-
+    # )
   end
 
   # https://docs.fastlane.tools/actions/#testing
   lane :test do
     sonar
-    gradle(task: "test")
+    gradle(task: 'test')
   end
 
   # https://docs.fastlane.tools/actions/#code-signing
-  #lane :sign do
-  #end
+  # lane :sign do
+  # end
   # https://docs.fastlane.tools/actions/#releasing-your-app
-  #lane :release do
-  #  # Ensure latest push notification certificate is still valid for 2 weeks or create another one in project dir
-  #  #get_push_certificate
-  #  #
-  #  #upload_to_testflight
-  #  #upload_to_testflight(changelog: changelog)
-  #  #upload_to_app_store  # upload your app to App Store Connect
-  #  #
-  #  # https://docs.fastlane.tools/actions/#notifications
-  #  #
-  #  #slack(message: "Successfully uploaded a new App Store build")
-  #end
+  # lane :release do
+  #   # Ensure latest push notification certificate is still valid for 2 weeks or create another one in project dir
+  #   #get_push_certificate
+  #   #
+  #   #upload_to_testflight
+  #   #upload_to_testflight(changelog: changelog)
+  #   #upload_to_app_store  # upload your app to App Store Connect
+  #   #
+  #   # https://docs.fastlane.tools/actions/#notifications
+  #   #
+  #   #slack(message: "Successfully uploaded a new App Store build")
+  # end
 
   # Publish to Firebase App Distribution
   #
@@ -218,51 +217,50 @@ platform :ios do
   #
   # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
   #
-  desc "Publish the .ipa to Firebase App Distribution"
+  desc 'Publish the .ipa to Firebase App Distribution'
   lane :release do
-    puts "SIT Firebase Release"
-    release = firebase_app_distribution(
-        app: "1:234567890123:abc:d456ef7a8b9cd012e34567",  # XXX: Edit
-        testers: "hari@domain.com",  # XXX: Edit
-        release_notes: "Fastlane SIT Release"
+    puts 'SIT Firebase Release'
+    firebase_app_distribution(
+      app: '1:234567890123:abc:d456ef7a8b9cd012e34567', # XXX: Edit
+      testers: 'hari@domain.com', # XXX: Edit
+      release_notes: 'Fastlane SIT Release'
     )
     # The return value of the action, saved as 'release' above, is a hash representing the latest release.
     # This hash is also available using lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE]
   end
-
 end
 
 platform :android do
-  desc "Runs all the tests"
+  desc 'Runs all the tests'
   lane :test do
-    gradle(task: "test")
+    gradle(task: 'test')
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
+  desc 'Submit a new Beta Build to Crashlytics Beta'
   lane :beta do
-    #increment_build_number
-    #build_app
-    #upload_to_testflight
-    gradle(task: "clean assembleRelease")
+    # increment_build_number
+    # build_app
+    # upload_to_testflight
+    gradle(task: 'clean assembleRelease')
     crashlytics
 
     # sh "your_script.sh"
     # You can also use other beta testing services here
   end
 
-  desc "Deploy a new version to the Google Play"
+  desc 'Deploy a new version to the Google Play'
   lane :deploy do
-    gradle(task: "clean assembleRelease")
-    screengrab()
-    upload_to_play_store  # same as 'supply', uses 'supply' command line tool
+    gradle(task: 'clean assembleRelease')
+    screengrab
+    upload_to_play_store # same as 'supply', uses 'supply' command line tool
   end
 end
 
 # run: fastlane release
 #
-#lane :release do
-#  capture_screenshots
-#  build_app
-#  upload_to_app_store       # Upload the screenshots and the binary to iTunes
-#  slack                     # Let your team-mates know the new version is live
-#end
+# lane :release do
+#   capture_screenshots
+#   build_app
+#   upload_to_app_store       # Upload the screenshots and the binary to iTunes
+#   slack                     # Let your team-mates know the new version is live
+# end
