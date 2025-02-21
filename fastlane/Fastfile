@@ -66,25 +66,6 @@ platform :ios do
     #test  if ENV["RUN_TEST"] == "true"
     release  # then 'release' lane for code reuse - lanes must already be named in lowecase
   end
-  desc "Publish the .ipa to Firebase App Distribution"
-  # https://firebase.google.com/docs/app-distribution/ios/distribute-fastlane
-  #
-  # Requires Fastlane firebase plugin:
-  #
-  #   fastlane add_plugin firebase_app_distribution
-  #
-  # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
-  #
-  lane :release do
-    puts "SIT Firebase Release"
-    release = firebase_app_distribution(
-        app: "1:234567890123:abc:d456ef7a8b9cd012e34567",  # XXX: Edit
-        testers: "hari@domain.com",  # XXX: Edit
-        release_notes: "Fastlane SIT Release"
-    )
-    # The return value of the action, saved as 'release' above, is a hash representing the latest release.
-    # This hash is also available using lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE]
-  end
   #lane :build do |options|
   #  puts "Building version #{options[:version]}"
   #end
@@ -205,6 +186,25 @@ platform :ios do
   #  #
   #  #slack(message: "Successfully uploaded a new App Store build")
   #end
+  desc "Publish the .ipa to Firebase App Distribution"
+  # https://firebase.google.com/docs/app-distribution/ios/distribute-fastlane
+  #
+  # Requires Fastlane firebase plugin:
+  #
+  #   fastlane add_plugin firebase_app_distribution
+  #
+  # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
+  #
+  lane :release do
+    puts "SIT Firebase Release"
+    release = firebase_app_distribution(
+        app: "1:234567890123:abc:d456ef7a8b9cd012e34567",  # XXX: Edit
+        testers: "hari@domain.com",  # XXX: Edit
+        release_notes: "Fastlane SIT Release"
+    )
+    # The return value of the action, saved as 'release' above, is a hash representing the latest release.
+    # This hash is also available using lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE]
+  end
 end
 
 platform :android do
