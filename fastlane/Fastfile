@@ -52,29 +52,11 @@ default_platform(:android)
 
 platform :ios do
   # the desc just before each lane goes into the fastlane/README.md inside each command's section
-  desc "Publish the .ipa to Firebase App Distribution"
-  # https://docs.fastlane.tools/actions/#building
+  #
   # Lane names must be lowercase if you want to call them from another lane
   # eg. 'build_release' lane calls 'build' and then 'release' lanes as sub-steps for maximum code reuse
-  lane :release do
-    puts "SIT Firebase Release"
-    #
-    # https://firebase.google.com/docs/app-distribution/ios/distribute-fastlane
-    #
-    # Requires Fastlane firebase plugin:
-    #
-    #   fastlane add_plugin firebase_app_distribution
-    #
-    # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
-    #
-    release = firebase_app_distribution(
-        app: "1:234567890123:abc:d456ef7a8b9cd012e34567",  # XXX: Edit
-        testers: "hari@domain.com",  # XXX: Edit
-        release_notes: "Fastlane SIT Release"
-    )
-    # The return value of the action, saved as 'release' above, is a hash representing the latest release.
-    # This hash is also available using lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE]
-  end
+  #
+  # https://docs.fastlane.tools/actions/#building
   desc "Build & Publish the .ipa to Firebase App Distribution"
   lane :build_release do
     puts "SIT Build & Firebase Release"
@@ -83,6 +65,25 @@ platform :ios do
     #build if ENV["RUN_BUILD"] == "true"
     #test  if ENV["RUN_TEST"] == "true"
     release  # then 'release' lane for code reuse - lanes must already be named in lowecase
+  end
+  desc "Publish the .ipa to Firebase App Distribution"
+  # https://firebase.google.com/docs/app-distribution/ios/distribute-fastlane
+  #
+  # Requires Fastlane firebase plugin:
+  #
+  #   fastlane add_plugin firebase_app_distribution
+  #
+  # and 'firebase login' or GOOGLE_APPLICATION_CREDENTIALS to be set to path of downloaded JSON cred
+  #
+  lane :release do
+    puts "SIT Firebase Release"
+    release = firebase_app_distribution(
+        app: "1:234567890123:abc:d456ef7a8b9cd012e34567",  # XXX: Edit
+        testers: "hari@domain.com",  # XXX: Edit
+        release_notes: "Fastlane SIT Release"
+    )
+    # The return value of the action, saved as 'release' above, is a hash representing the latest release.
+    # This hash is also available using lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE]
   end
   #lane :build do |options|
   #  puts "Building version #{options[:version]}"
