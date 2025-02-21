@@ -132,7 +132,7 @@ platform :ios do
     #ensure_xcode_version(version: "12.5")
     #verify_xcode  # check signed by Apple
 
-    #xcbuild     # builds using xcodebuild
+    #xcbuild     # build using xcodebuild
     #xcodebuild  # use xcodebuild command to build and sign your app
     #xctest      # runs tests on given simulator
     #xcarchive   # archives project using xcodebuild
