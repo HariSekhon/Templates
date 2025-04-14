@@ -1,0 +1,47 @@
+#
+#  Author: Hari Sekhon
+#  Date: 2025-04-14 19:37:36 +0800 (Mon, 14 Apr 2025)
+#
+#  vim:ts=2:sts=2:sw=2:et
+#
+#  https///github.com/HariSekhon/Templates
+#
+#  License: see accompanying Hari Sekhon LICENSE file
+#
+#  If you're using my code you're welcome to connect with me on LinkedIn and optionally send me feedback to help steer this or other code I publish
+#
+#  https://www.linkedin.com/in/HariSekhon
+#
+
+# ============================================================================ #
+#                   i X G u a r d   C o n f i g u r a t i o n
+# ============================================================================ #
+
+# Knowledge-Base page:
+#
+#   https://github.com/HariSekhon/Knowledge-Base/blob/main/ixguard.md
+
+---
+license:
+  - "./ixguard-license.txt"
+debug:
+  verbosity: info
+  autoconfigure: false
+protection:
+  enabled: true
+  names:
+    enabled: false
+  arithmetic-operations:
+    enabled: true
+  control-flow:
+    enabled: true
+  data:
+    enabled: true
+  code-integrity:
+    enabled: false
+  environment-integrity:
+    enabled: false
+  resources:
+    enabled: false
+export:
+  embed-bitcode: false
