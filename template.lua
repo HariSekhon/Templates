@@ -2,14 +2,14 @@
 --  Author: Hari Sekhon
 --  Date: [% DATE  # 2025-10-28 20:42:08 +0300 (Tue, 28 Oct 2025) %]
 --
---  vim:ts=4:sts=4:sw=4:et
+--  [% VIM_TAGS %]
 --
---  https///github.com/HariSekhon/Templates
+--  [% URL %]
 --
---  License: see accompanying Hari Sekhon LICENSE file
+--  [% LICENSE %]
 --
---  If you're using my code you're welcome to connect with me on LinkedIn
---  and optionally send me feedback to help steer this or other code I publish
+--  [% MESSAGE %]
 --
---  https://www.linkedin.com/in/HariSekhon
+--  [% LINKEDIN %]
+--
 --
